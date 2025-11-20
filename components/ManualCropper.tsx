@@ -20,7 +20,10 @@ const RATIOS = [
 const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel }) => {
   const [imageUrl, setImageUrl] = useState<string>('');
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+  
+  // Refs
   const containerRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null); // Wrapper to measure available space
   
   // Calc original size details
   const originalSizeMB = file.size / (1024 * 1024);
@@ -33,6 +36,7 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [wrapperSize, setWrapperSize] = useState({ width: 0, height: 0 });
   
   // Default target size is 2MB, or original size if original is smaller than 2MB
   const [targetSizeMB, setTargetSizeMB] = useState(() => Math.min(2.0, maxSliderValue));
@@ -49,11 +53,54 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
+  // Observe wrapper size to calculate fit logic
+  useEffect(() => {
+    if (!wrapperRef.current) return;
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        // Use contentRect to get size excluding padding/border if box-sizing is content-box, 
+        // but typically we want the available space inside the padding.
+        setWrapperSize({
+          width: entry.contentRect.width,
+          height: entry.contentRect.height,
+        });
+      }
+    });
+    resizeObserver.observe(wrapperRef.current);
+    return () => resizeObserver.disconnect();
+  }, []);
+
   // Reset view when ratio changes
   useEffect(() => {
     setScale(1);
     setPosition({ x: 0, y: 0 });
   }, [selectedRatio]);
+
+  // Calculate dynamic style for the crop container based on available space vs target ratio
+  const getCropContainerStyle = () => {
+    const { width: w, height: h } = wrapperSize;
+    if (!w || !h) return { opacity: 0 }; // Hide until measured to avoid jump
+
+    const wrapperAspect = w / h;
+    const targetAspect = selectedRatio.width / selectedRatio.height;
+
+    let style: React.CSSProperties = {
+      aspectRatio: `${selectedRatio.width} / ${selectedRatio.height}`,
+      maxWidth: '100%',
+      maxHeight: '100%',
+    };
+
+    if (targetAspect > wrapperAspect) {
+      // Target is wider than container (relative to aspect) -> constrained by width
+      style.width = '100%';
+      style.height = 'auto';
+    } else {
+      // Target is taller than container -> constrained by height
+      style.width = 'auto';
+      style.height = '100%';
+    }
+    return style;
+  };
 
   // Handle drag constraints
   const updatePosition = (newX: number, newY: number, currentScale: number) => {
@@ -199,7 +246,10 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
         <div className="flex-1 flex overflow-hidden relative">
           
           {/* Canvas Area (Left) */}
-          <div className="flex-1 bg-[#090b10] relative flex items-center justify-center p-4 md:p-8 overflow-hidden select-none group">
+          <div 
+            ref={wrapperRef}
+            className="flex-1 bg-[#090b10] relative flex items-center justify-center p-4 md:p-8 overflow-hidden select-none group"
+          >
             {/* Pattern Background */}
             <div className="absolute inset-0 opacity-10 pointer-events-none" 
                  style={{ backgroundImage: 'radial-gradient(#4F46E5 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
@@ -209,13 +259,7 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
             <div 
               ref={containerRef}
               className="relative bg-black border-2 border-indigo-500/50 shadow-[0_0_0_9999px_rgba(0,0,0,0.85)] cursor-move overflow-hidden rounded-sm touch-none transition-all duration-300 ease-in-out ring-4 ring-black/20"
-              style={{ 
-                aspectRatio: `${selectedRatio.width} / ${selectedRatio.height}`,
-                width: selectedRatio.width >= selectedRatio.height ? '100%' : 'auto',
-                height: selectedRatio.height > selectedRatio.width ? '100%' : 'auto',
-                maxWidth: '100%',
-                maxHeight: '100%'
-              }}
+              style={getCropContainerStyle()}
               onMouseDown={handleMouseDown}
               onTouchStart={handleMouseDown}
               onMouseMove={handleMouseMove}
