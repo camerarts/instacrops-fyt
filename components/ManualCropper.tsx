@@ -7,6 +7,7 @@ interface ManualCropperProps {
   file: File;
   onConfirm: (cropConfig: CropConfig, outputDimensions: OutputDimensions, maxSizeBytes: number) => void;
   onCancel: () => void;
+  t: any;
 }
 
 const RATIOS = [
@@ -17,7 +18,7 @@ const RATIOS = [
   { id: '9-16', label: '9:16', width: 1080, height: 1920, icon: Smartphone },
 ];
 
-const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel }) => {
+const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel, t }) => {
   const [imageUrl, setImageUrl] = useState<string>('');
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   
@@ -243,7 +244,7 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
         <div className="h-16 border-b border-white/5 flex justify-between items-center px-6 shrink-0 bg-[#131620] z-20">
           <h3 className="text-white font-semibold flex items-center gap-2 text-lg">
             <Move className="w-5 h-5 text-indigo-400" />
-            <span className="tracking-wide">调整裁剪区域</span>
+            <span className="tracking-wide">{t.mcTitle}</span>
           </h3>
           <button onClick={onCancel} className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-full">
             <X className="w-6 h-6" />
@@ -263,7 +264,7 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
               <div className="absolute top-6 left-0 right-0 z-30 flex justify-center pointer-events-none animate-fade-in-up">
                 <div className="bg-black/60 backdrop-blur-xl border border-indigo-500/30 px-5 py-2.5 rounded-full flex items-center gap-3 text-sm font-medium text-indigo-100 shadow-xl shadow-black/50">
                     <Hand className="w-4 h-4 text-indigo-400 animate-pulse" />
-                    <span>提示：按住图片拖动可调整位置</span>
+                    <span>{t.mcHint}</span>
                 </div>
               </div>
             )}
@@ -318,7 +319,7 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
 
           {/* Ratio Sidebar (Right) */}
           <div className="w-24 bg-[#131620] border-l border-white/5 flex flex-col items-center py-6 gap-3 overflow-y-auto scrollbar-hide z-10">
-            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">画布比例</span>
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">{t.mcRatio}</span>
             {RATIOS.map((ratio) => {
               const Icon = ratio.icon;
               const isSelected = selectedRatio.id === ratio.id;
@@ -358,8 +359,8 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
                       <ZoomIn className="w-4 h-4" />
                     </div>
                     <div>
-                      <span className="text-sm font-semibold text-gray-200 block">画面缩放</span>
-                      <span className="text-xs text-gray-500">调整裁剪范围</span>
+                      <span className="text-sm font-semibold text-gray-200 block">{t.mcZoomTitle}</span>
+                      <span className="text-xs text-gray-500">{t.mcZoomDesc}</span>
                     </div>
                   </div>
                   <div className="font-mono text-sm font-bold text-indigo-300 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">
@@ -388,8 +389,8 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
                       <HardDrive className="w-4 h-4" />
                     </div>
                     <div>
-                      <span className="text-sm font-semibold text-gray-200 block">输出限制</span>
-                      <span className="text-xs text-gray-500">压缩至指定大小 (Max: {originalSizeMB.toFixed(1)}MB)</span>
+                      <span className="text-sm font-semibold text-gray-200 block">{t.mcLimitTitle}</span>
+                      <span className="text-xs text-gray-500">{t.mcLimitDesc} (Max: {originalSizeMB.toFixed(1)}MB)</span>
                     </div>
                   </div>
                   <div className="font-mono text-sm font-bold text-pink-300 bg-pink-500/10 px-2 py-0.5 rounded border border-pink-500/20">
@@ -420,14 +421,14 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
                   onClick={onCancel}
                   className="px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors font-medium text-sm border border-white/5 hover:border-white/10"
                 >
-                  取消
+                  {t.mcCancel}
                 </button>
                 <button 
                   onClick={handleConfirm}
                   className="flex-1 lg:flex-none px-8 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 transition-transform active:scale-95 ring-1 ring-white/20"
                 >
                   <Check className="w-4 h-4" />
-                  <span>确认生成</span>
+                  <span>{t.mcConfirm}</span>
                 </button>
             </div>
 
