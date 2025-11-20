@@ -20,6 +20,7 @@
               'fade-in': 'fadeIn 0.5s ease-out forwards',
               'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
               'bounce-x': 'bounceX 1s infinite',
+              'dash': 'dash 1.5s linear infinite',
             },
             keyframes: {
               fadeIn: {
@@ -33,6 +34,9 @@
               bounceX: {
                 '0%, 100%': { transform: 'translateX(-25%)', animationTimingFunction: 'cubic-bezier(0.8, 0, 1, 1)' },
                 '50%': { transform: 'translateX(0)', animationTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)' },
+              },
+              dash: {
+                'to': { 'stroke-dashoffset': '-20' },
               }
             }
           },
