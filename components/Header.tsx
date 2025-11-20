@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { Crop, Layers, Globe } from 'lucide-react';
+import React, { useState } from 'react';
+import { Crop, Layers, ChevronDown, Check } from 'lucide-react';
 import { languages, Language } from '../utils/translations';
 
 interface HeaderProps {
@@ -11,6 +11,9 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ totalConverted, lang, setLang, t }) => {
+  const [isLangOpen, setIsLangOpen] = useState(false);
+  const currentLang = languages.find(l => l.code === lang) || languages[0];
+
   return (
     <header className="w-full h-24 flex items-center sticky top-0 z-50 transition-all duration-300">
       {/* Glassmorphism Container */}
@@ -54,22 +57,61 @@ const Header: React.FC<HeaderProps> = ({ totalConverted, lang, setLang, t }) => 
             </div>
           </div>
 
-          {/* Language Selector */}
-          <div className="relative group">
-            <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-indigo-500/30 transition-all duration-200">
-              <Globe className="w-4 h-4 text-gray-400 group-hover:text-indigo-400 transition-colors" />
-              <select 
-                value={lang} 
-                onChange={(e) => setLang(e.target.value as Language)}
-                className="bg-transparent text-sm text-gray-300 font-medium focus:outline-none cursor-pointer appearance-none pr-4"
-                aria-label="Select Language"
-              >
-                {languages.map((l) => (
-                  <option key={l.code} value={l.code} className="bg-[#1A1F2E] text-white">
-                    {l.label}
-                  </option>
-                ))}
-              </select>
+          {/* Custom Language Selector */}
+          {isLangOpen && (
+              <div className="fixed inset-0 z-40 bg-transparent" onClick={() => setIsLangOpen(false)} />
+          )}
+          <div className="relative z-50">
+            <button
+              onClick={() => setIsLangOpen(!isLangOpen)}
+              className={`
+                flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border transition-all duration-300 group
+                ${isLangOpen 
+                  ? 'bg-[#1A1F2E] border-indigo-500/50 text-white shadow-[0_0_15px_rgba(79,70,229,0.15)]' 
+                  : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-indigo-500/30 text-gray-300'
+                }
+              `}
+              aria-label="Select Language"
+              aria-expanded={isLangOpen}
+            >
+              <span className="text-lg leading-none filter drop-shadow-sm">{currentLang.flag}</span>
+              <span className="text-sm font-semibold hidden md:block group-hover:text-white transition-colors">
+                {currentLang.label}
+              </span>
+              <ChevronDown 
+                className={`w-4 h-4 text-gray-500 group-hover:text-indigo-300 transition-transform duration-300 ${isLangOpen ? 'rotate-180 text-indigo-400' : ''}`} 
+              />
+            </button>
+
+            {/* Dropdown Menu */}
+            <div className={`
+              absolute right-0 mt-3 w-48 bg-[#131725] border border-white/10 rounded-xl shadow-2xl overflow-hidden origin-top-right transition-all duration-200 ring-1 ring-black/50 backdrop-blur-xl
+              ${isLangOpen 
+                ? 'opacity-100 scale-100 translate-y-0 visible' 
+                : 'opacity-0 scale-95 -translate-y-2 invisible pointer-events-none'
+              }
+            `}>
+               <div className="py-1 max-h-[320px] overflow-y-auto custom-scrollbar">
+                  {languages.map((l) => (
+                    <button
+                      key={l.code}
+                      onClick={() => {
+                        setLang(l.code);
+                        setIsLangOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-3 text-sm flex items-center gap-3 transition-colors border-l-[3px]
+                        ${lang === l.code 
+                          ? 'bg-indigo-500/10 text-white border-indigo-500 font-medium' 
+                          : 'text-gray-400 hover:bg-white/5 hover:text-gray-200 border-transparent'
+                        }
+                      `}
+                    >
+                      <span className="text-xl leading-none">{l.flag}</span>
+                      <span>{l.label}</span>
+                      {lang === l.code && <Check className="w-3.5 h-3.5 ml-auto text-indigo-400" />}
+                    </button>
+                  ))}
+               </div>
             </div>
           </div>
           
