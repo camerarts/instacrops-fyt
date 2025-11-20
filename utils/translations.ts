@@ -1,4 +1,5 @@
 
+
 export type Language = 'zh-CN' | 'en-US' | 'ja-JP' | 'ko-KR' | 'es-ES' | 'fr-FR' | 'de-DE';
 
 export const languages: { code: Language; label: string; flag: string }[] = [
@@ -23,6 +24,7 @@ export const translations = {
     heroDesc: '专为创作者打造的图像处理引擎。无论是社交媒体封面还是高清展示图，一键实现',
     heroDescHighlight1: '完美裁剪',
     heroDescHighlight2: '无损压缩',
+    freeService: '永久免费提供即时画面裁切',
     autoModeTitle: '自动模式 (16:9)',
     autoModeDesc: '智能识别，一键生成',
     manualModeTitle: '手动裁剪',
@@ -80,6 +82,7 @@ export const translations = {
     heroDesc: 'Image processing engine for creators. Achieve ',
     heroDescHighlight1: 'perfect cropping',
     heroDescHighlight2: 'lossless compression',
+    freeService: 'Free instant image cropping forever',
     autoModeTitle: 'Auto Mode (16:9)',
     autoModeDesc: 'Smart detection, one-click',
     manualModeTitle: 'Manual Crop',
@@ -135,6 +138,7 @@ export const translations = {
     heroDesc: 'クリエイターのための画像処理エンジン。',
     heroDescHighlight1: '完璧なクロップ',
     heroDescHighlight2: 'ロスレス圧縮',
+    freeService: '永久に無料で即時の画像切り抜きを提供',
     autoModeTitle: '自動モード (16:9)',
     autoModeDesc: 'スマート検出、ワンクリック生成',
     manualModeTitle: '手動クロップ',
@@ -190,6 +194,7 @@ export const translations = {
     heroDesc: '크리에이터를 위한 이미지 처리 엔진. ',
     heroDescHighlight1: '완벽한 크롭',
     heroDescHighlight2: '무손실 압축',
+    freeService: '영구 무료 즉시 이미지 자르기 제공',
     autoModeTitle: '자동 모드 (16:9)',
     autoModeDesc: '스마트 감지, 원클릭 생성',
     manualModeTitle: '수동 크롭',
@@ -245,6 +250,7 @@ export const translations = {
     heroDesc: 'Motor de procesamiento de imágenes para creadores. Logra ',
     heroDescHighlight1: 'recorte perfecto',
     heroDescHighlight2: 'compresión sin pérdidas',
+    freeService: 'Recorte de imagen instantáneo gratuito para siempre',
     autoModeTitle: 'Modo Auto (16:9)',
     autoModeDesc: 'Detección inteligente',
     manualModeTitle: 'Recorte Manual',
@@ -300,6 +306,7 @@ export const translations = {
     heroDesc: 'Moteur de traitement d\'image pour créateurs. Obtenez ',
     heroDescHighlight1: 'recadrage parfait',
     heroDescHighlight2: 'compression sans perte',
+    freeService: 'Recadrage d\'image instantané gratuit pour toujours',
     autoModeTitle: 'Mode Auto (16:9)',
     autoModeDesc: 'Détection intelligente',
     manualModeTitle: 'Recadrage Manuel',
@@ -355,6 +362,7 @@ export const translations = {
     heroDesc: 'Bildverarbeitungs-Engine für Creator. Erreiche ',
     heroDescHighlight1: 'perfekten Zuschnitt',
     heroDescHighlight2: 'verlustfreie Kompression',
+    freeService: 'Für immer kostenloser sofortiger Bildzuschnitt',
     autoModeTitle: 'Auto-Modus (16:9)',
     autoModeDesc: 'Smarte Erkennung',
     manualModeTitle: 'Manueller Zuschnitt',
