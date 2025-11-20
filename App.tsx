@@ -4,7 +4,7 @@ import UploadArea from './components/UploadArea';
 import ResultCard from './components/ResultCard';
 import ManualCropper from './components/ManualCropper';
 import { ProcessedImage, ProcessingStatus, processImage, CropConfig, OutputDimensions } from './utils/imageProcessor';
-import { Loader2, Wand2, Crop as CropIcon, Zap, Lock, Maximize2, ArrowRight, MoveRight } from 'lucide-react';
+import { Loader2, Wand2, Crop as CropIcon, Zap, Lock, Maximize2, UploadCloud, Download, MoveRight } from 'lucide-react';
 import { translations, Language } from './utils/translations';
 
 type ProcessMode = 'auto' | 'manual';
@@ -166,20 +166,31 @@ const App: React.FC = () => {
           
           {/* LEFT COLUMN: Text & Info (Hidden in Success state to focus on result) */}
           {status !== ProcessingStatus.SUCCESS && (
-            <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left space-y-5 animate-fade-in-up relative">
+            <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6 animate-fade-in-up relative group/left">
                
-               {/* Visual Arrow Cue (Desktop Only) */}
-               <div className="hidden lg:flex absolute -right-12 top-1/2 -translate-y-1/2 z-20 text-indigo-500/30 animate-bounce-x">
-                  <MoveRight className="w-12 h-12" />
-               </div>
-
-               {/* Minimalist Workflow Indicator */}
-               <div className="flex items-center gap-2 md:gap-3 text-[11px] md:text-xs font-semibold text-indigo-300/90 uppercase tracking-wider bg-indigo-900/20 px-4 py-2 rounded-full border border-indigo-500/20 mb-2">
-                 <span>{t.step1}</span>
-                 <ArrowRight className="w-3 h-3 text-indigo-500" />
-                 <span>{t.step2}</span>
-                 <ArrowRight className="w-3 h-3 text-indigo-500" />
-                 <span>{t.step3}</span>
+               {/* Visual Flowing Arrow Cue (Desktop Only) */}
+               <div className="hidden lg:block absolute -right-24 top-1/2 -translate-y-1/2 z-0 pointer-events-none opacity-60">
+                  <svg width="120" height="60" viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    {/* Glow effect path */}
+                    <path 
+                      d="M0 30 C 40 30, 60 30, 100 30" 
+                      stroke="url(#gradient-arrow)" 
+                      strokeWidth="2" 
+                      strokeLinecap="round"
+                      fill="none"
+                      className="animate-dash" 
+                      strokeDasharray="10 10"
+                    />
+                    {/* Arrow Head */}
+                    <path d="M95 25 L105 30 L95 35" fill="none" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-pulse" />
+                    <defs>
+                      <linearGradient id="gradient-arrow" x1="0" y1="0" x2="100" y2="0" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#6366f1" stopOpacity="0" />
+                        <stop offset="0.5" stopColor="#818cf8" />
+                        <stop offset="1" stopColor="#c084fc" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
                </div>
 
                {/* Main Title */}
@@ -200,33 +211,77 @@ const App: React.FC = () => {
                   {t.heroDesc} <span className="text-gray-200 font-medium">{t.heroDescHighlight1}</span> {lang === 'en-US' ? 'and' : '与'} <span className="text-gray-200 font-medium">{t.heroDescHighlight2}</span>。
                </p>
 
+               {/* REDESIGNED VISUAL WORKFLOW */}
+               <div className="w-full max-w-2xl py-4">
+                  <div className="relative flex items-center justify-between md:justify-start md:gap-16 text-sm font-medium">
+                    
+                    {/* Connecting Line */}
+                    <div className="absolute top-1/2 left-0 w-full h-[2px] bg-gradient-to-r from-indigo-500/0 via-indigo-500/20 to-indigo-500/0 -z-10"></div>
+                    
+                    {/* Step 1 */}
+                    <div className="flex flex-col items-center gap-2 bg-[#0B0F19] px-2 z-10">
+                       <div className="w-10 h-10 rounded-full bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.15)]">
+                         <UploadCloud className="w-5 h-5" />
+                       </div>
+                       <span className="text-gray-300 text-xs">{t.step1}</span>
+                    </div>
+
+                    {/* Arrow 1 */}
+                     <div className="hidden md:block text-indigo-500/30">
+                       <MoveRight className="w-4 h-4" />
+                     </div>
+
+                    {/* Step 2 */}
+                    <div className="flex flex-col items-center gap-2 bg-[#0B0F19] px-2 z-10">
+                       <div className="w-10 h-10 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.15)]">
+                         <Wand2 className="w-5 h-5" />
+                       </div>
+                       <span className="text-gray-300 text-xs">{t.step2}</span>
+                    </div>
+
+                    {/* Arrow 2 */}
+                     <div className="hidden md:block text-purple-500/30">
+                       <MoveRight className="w-4 h-4" />
+                     </div>
+
+                    {/* Step 3 */}
+                    <div className="flex flex-col items-center gap-2 bg-[#0B0F19] px-2 z-10">
+                       <div className="w-10 h-10 rounded-full bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400 shadow-[0_0_15px_rgba(236,72,153,0.15)]">
+                         <Download className="w-5 h-5" />
+                       </div>
+                       <span className="text-gray-300 text-xs">{t.step3}</span>
+                    </div>
+
+                  </div>
+               </div>
+
                {/* Detailed Features List (Grid Layout) */}
-               <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 pt-4 opacity-90">
+               <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 pt-2 opacity-90">
                   {/* Feature 1 */}
-                  <div className="flex flex-col items-start bg-white/[0.03] p-4 rounded-xl border border-white/5 hover:bg-white/[0.05] transition-colors text-left">
+                  <div className="flex flex-col items-start bg-white/[0.03] p-4 rounded-xl border border-white/5 hover:bg-white/[0.05] transition-colors text-left group">
                       <div className="flex items-center gap-2 text-sm font-bold text-indigo-200 mb-1.5">
                         <Maximize2 className="w-4 h-4 text-indigo-400" />
                         <span>{t.featRatio}</span>
                       </div>
-                      <p className="text-xs text-gray-400 leading-relaxed">{t.featRatioDesc}</p>
+                      <p className="text-xs text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">{t.featRatioDesc}</p>
                   </div>
                   
                   {/* Feature 2 */}
-                  <div className="flex flex-col items-start bg-white/[0.03] p-4 rounded-xl border border-white/5 hover:bg-white/[0.05] transition-colors text-left">
+                  <div className="flex flex-col items-start bg-white/[0.03] p-4 rounded-xl border border-white/5 hover:bg-white/[0.05] transition-colors text-left group">
                       <div className="flex items-center gap-2 text-sm font-bold text-indigo-200 mb-1.5">
                         <Zap className="w-4 h-4 text-purple-400" />
                         <span>{t.featCompress}</span>
                       </div>
-                      <p className="text-xs text-gray-400 leading-relaxed">{t.featCompressDesc}</p>
+                      <p className="text-xs text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">{t.featCompressDesc}</p>
                   </div>
 
                   {/* Feature 3 */}
-                  <div className="flex flex-col items-start bg-white/[0.03] p-4 rounded-xl border border-white/5 hover:bg-white/[0.05] transition-colors text-left">
+                  <div className="flex flex-col items-start bg-white/[0.03] p-4 rounded-xl border border-white/5 hover:bg-white/[0.05] transition-colors text-left group">
                       <div className="flex items-center gap-2 text-sm font-bold text-indigo-200 mb-1.5">
                         <Lock className="w-4 h-4 text-pink-400" />
                         <span>{t.featPrivacy}</span>
                       </div>
-                      <p className="text-xs text-gray-400 leading-relaxed">{t.featPrivacyDesc}</p>
+                      <p className="text-xs text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">{t.featPrivacyDesc}</p>
                   </div>
                </div>
 
