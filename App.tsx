@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect } from 'react';
 import Header from './components/Header';
 import UploadArea from './components/UploadArea';
@@ -216,23 +217,28 @@ const App: React.FC = () => {
                 </div>
               </div>
 
-              {/* Small Feature Tags (Secondary Info) */}
-              <div className="flex flex-wrap gap-4 pt-4 animate-fade-in-up delay-300">
-                 <div className="flex items-center gap-2 text-sm text-gray-500">
-                    <Maximize2 className="w-4 h-4 text-indigo-500/50" />
-                    <span>{t.featRatio}</span>
-                 </div>
-                 <div className="flex items-center gap-2 text-sm text-gray-500">
-                    <Lock className="w-4 h-4 text-pink-500/50" />
-                    <span>{t.featPrivacy}</span>
-                 </div>
+              {/* Feature Tags List */}
+              <div className="grid gap-4 pt-6 animate-fade-in-up delay-300">
+                {[
+                    { icon: Maximize2, title: t.featRatio, desc: t.featRatioDesc, color: 'text-indigo-400' },
+                    { icon: Zap, title: t.featCompress, desc: t.featCompressDesc, color: 'text-yellow-400' },
+                    { icon: Lock, title: t.featPrivacy, desc: t.featPrivacyDesc, color: 'text-pink-400' }
+                ].map((item, i) => (
+                    <div key={i} className="flex items-start gap-3 group">
+                        <div className={`mt-0.5 ${item.color} group-hover:scale-110 transition-transform duration-300`}><item.icon className="w-5 h-5" /></div>
+                        <div>
+                            <h4 className="text-sm font-bold text-gray-200 group-hover:text-white transition-colors">{item.title}</h4>
+                            <p className="text-xs text-gray-500 leading-relaxed max-w-sm mt-0.5">{item.desc}</p>
+                        </div>
+                    </div>
+                ))}
               </div>
             </div>
 
              {/* OPTICAL FLOW ARROW (Desktop Only) */}
              {/* Curves from the end of text section towards the upload card */}
-            <div className="hidden lg:block absolute left-[45%] top-1/2 -translate-y-1/2 w-[280px] h-[120px] pointer-events-none z-10 opacity-80">
-                 <svg width="100%" height="100%" viewBox="0 0 280 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="overflow-visible">
+            <div className="hidden lg:block absolute left-[45%] top-1/2 -translate-y-1/2 w-[300px] h-[120px] pointer-events-none z-10 opacity-80">
+                 <svg width="100%" height="100%" viewBox="0 0 300 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="overflow-visible">
                     <defs>
                       <linearGradient id="flowGradient" x1="0" y1="0" x2="1" y2="0">
                         <stop offset="0%" stopColor="#6366f1" stopOpacity="0" />
@@ -243,6 +249,10 @@ const App: React.FC = () => {
                           <feGaussianBlur stdDeviation="3" result="blur" />
                           <feComposite in="SourceGraphic" in2="blur" operator="over" />
                        </filter>
+                       {/* Arrow Marker */}
+                       <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+                         <path d="M2,2 L10,6 L2,10" fill="none" stroke="#ec4899" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                       </marker>
                     </defs>
                     {/* The Path */}
                     <path 
@@ -254,9 +264,8 @@ const App: React.FC = () => {
                       className="animate-flow"
                       strokeDasharray="120 300" 
                       filter="url(#glow)"
+                      markerEnd="url(#arrowhead)"
                     />
-                    {/* Arrow Head */}
-                    <path d="M 270,35 L 280,40 L 270,45" stroke="#ec4899" strokeWidth="2" fill="none" className="opacity-80" />
                  </svg>
             </div>
 
@@ -320,7 +329,7 @@ const App: React.FC = () => {
                      <div className="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_10px_rgba(74,222,128,0.5)] animate-pulse"></div>
                      <span className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">System Online</span>
                   </div>
-                  <div className="text-[10px] text-gray-600 font-mono">v2.4.0</div>
+                  <div className="text-[10px] text-gray-600 font-mono">v2.5.0</div>
                 </div>
 
               </div>
