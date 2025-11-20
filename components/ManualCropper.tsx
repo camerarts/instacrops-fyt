@@ -1,7 +1,6 @@
 
-
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { Check, X, ZoomIn, Move, Smartphone, Monitor, Square, LayoutTemplate, HardDrive, Hand, Sparkles } from 'lucide-react';
+import { Check, X, ZoomIn, Move, Smartphone, Monitor, Square, LayoutTemplate, HardDrive, Hand } from 'lucide-react';
 import { CropConfig, OutputDimensions } from '../utils/imageProcessor';
 
 interface ManualCropperProps {
@@ -302,33 +301,36 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
             onTouchEnd={handleMouseUp}
             onMouseLeave={handleMouseUp}
           >
-            {/* Hint Overlay */}
-            {showHint && (
-              <div className="absolute top-6 left-0 right-0 z-40 flex justify-center pointer-events-none animate-fade-in-up">
-                <div className="bg-black/60 backdrop-blur-xl border border-indigo-500/30 px-5 py-2.5 rounded-full flex items-center gap-3 text-sm font-medium text-indigo-100 shadow-xl shadow-black/50">
-                    <Hand className="w-4 h-4 text-indigo-400 animate-pulse" />
-                    <span>{t.mcHint}</span>
+            
+            {/* Merged Tips Overlay - Hidden while dragging for better visibility */}
+            {showHint && !isDragging && (
+              <div className="absolute bottom-6 left-0 right-0 z-30 flex justify-center pointer-events-none animate-fade-in-up">
+                <div className="bg-[#0f1219]/80 backdrop-blur-xl border border-white/10 px-6 py-3 rounded-full flex items-center gap-6 shadow-[0_8px_30px_rgba(0,0,0,0.5)] ring-1 ring-white/5">
+                  
+                  {/* Drag Hint */}
+                  <div className="flex items-center gap-2">
+                      <div className="p-1.5 rounded-full bg-indigo-500/20 text-indigo-400">
+                          <Hand className="w-3.5 h-3.5" />
+                      </div>
+                      <span className="text-xs font-medium text-indigo-100 tracking-wide">{t.mcHint}</span>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="w-px h-4 bg-white/10 hidden md:block"></div>
+
+                  {/* Keyboard Tips */}
+                  <div className="hidden md:flex items-center gap-4">
+                    {t.mcKeyTips && t.mcKeyTips.map((tip: string, idx: number) => (
+                      <span key={idx} className="flex items-center gap-2 text-[11px] text-gray-400 font-mono">
+                        <span className="w-1 h-1 rounded-full bg-gray-600"></span>
+                        {tip}
+                      </span>
+                    ))}
+                  </div>
+
                 </div>
               </div>
             )}
-            
-            {/* New Tips Overlay at bottom */}
-            <div className="absolute bottom-8 left-0 right-0 z-30 flex justify-center pointer-events-none">
-              <div className="bg-black/50 backdrop-blur-md border border-white/5 px-6 py-3 rounded-2xl flex flex-col items-center gap-2 shadow-2xl">
-                <div className="flex items-center gap-2 text-indigo-300 font-bold text-xs uppercase tracking-wider">
-                  <Sparkles className="w-3 h-3" />
-                  {t.mcTipsTitle}
-                </div>
-                <div className="flex gap-4 text-[11px] text-gray-400 font-mono">
-                  {t.mcKeyTips && t.mcKeyTips.map((tip: string, idx: number) => (
-                    <span key={idx} className="flex items-center gap-1">
-                      <div className="w-1 h-1 rounded-full bg-gray-500"></div>
-                      {tip}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
 
             {/* Pattern Background */}
             <div className="absolute inset-0 opacity-10 pointer-events-none" 
