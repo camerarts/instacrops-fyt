@@ -1,10 +1,11 @@
+
 import React, { useRef, useState, useEffect } from 'react';
-import { Check, X, ZoomIn, Move, Smartphone, Monitor, Square, LayoutTemplate } from 'lucide-react';
+import { Check, X, ZoomIn, Move, Smartphone, Monitor, Square, LayoutTemplate, HardDrive } from 'lucide-react';
 import { CropConfig, OutputDimensions } from '../utils/imageProcessor';
 
 interface ManualCropperProps {
   file: File;
-  onConfirm: (cropConfig: CropConfig, outputDimensions: OutputDimensions) => void;
+  onConfirm: (cropConfig: CropConfig, outputDimensions: OutputDimensions, maxSizeBytes: number) => void;
   onCancel: () => void;
 }
 
@@ -27,6 +28,7 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [targetSizeMB, setTargetSizeMB] = useState(2.0); // Default 2MB
   
   // Initialize image
   useEffect(() => {
@@ -117,6 +119,10 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
     updatePosition(position.x, position.y, newScale);
   };
 
+  const handleSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTargetSizeMB(parseFloat(e.target.value));
+  };
+
   const handleConfirm = () => {
     if (!containerRef.current || imageSize.width === 0) return;
     
@@ -135,8 +141,8 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
        baseRenderWidth = containerW;
     }
     
+    // const currentRenderWidth = baseRenderWidth * scale;
     const currentRenderWidth = baseRenderWidth * scale;
-    // const currentRenderHeight = baseRenderHeight * scale;
     
     // Ratio between Original Image Pixels and Rendered Pixels
     const imagePixelToRenderPixel = imageSize.width / currentRenderWidth;
@@ -151,7 +157,8 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
     
     onConfirm(
       { sx, sy, sWidth, sHeight },
-      { width: selectedRatio.width, height: selectedRatio.height }
+      { width: selectedRatio.width, height: selectedRatio.height },
+      targetSizeMB * 1024 * 1024 // Convert MB to Bytes
     );
   };
 
@@ -273,7 +280,7 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
               {/* Zoom Control */}
               <div>
                 <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 block">
-                  缩放
+                  缩放 / 裁剪
                 </label>
                 <div className="flex items-center space-x-3 bg-black/20 p-3 rounded-xl border border-white/5">
                   <ZoomIn className="w-5 h-5 text-indigo-400" />
@@ -284,6 +291,30 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
                     step="0.01" 
                     value={scale}
                     onChange={handleScaleChange}
+                    className="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                  />
+                </div>
+              </div>
+
+              {/* Output Size Control */}
+              <div>
+                <div className="flex justify-between items-center mb-3">
+                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                    输出大小 (最大)
+                  </label>
+                  <span className="text-xs font-mono font-bold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">
+                    {targetSizeMB.toFixed(1)} MB
+                  </span>
+                </div>
+                <div className="flex items-center space-x-3 bg-black/20 p-3 rounded-xl border border-white/5">
+                  <HardDrive className="w-5 h-5 text-indigo-400" />
+                  <input 
+                    type="range" 
+                    min="0.1" 
+                    max="5" 
+                    step="0.1" 
+                    value={targetSizeMB}
+                    onChange={handleSizeChange}
                     className="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
                   />
                 </div>
@@ -317,4 +348,3 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
 };
 
 export default ManualCropper;
-
