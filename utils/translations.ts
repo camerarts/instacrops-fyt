@@ -69,6 +69,7 @@ export const translations = {
     // Manual Cropper
     mcTitle: '调整裁剪区域',
     mcHint: '提示：按住图片拖动可调整位置',
+    mcTipsTitle: '温馨提示',
     mcKeyTips: [
       '允许方向键微调裁剪框位置',
       '+/- 键细微缩放画面'
@@ -136,6 +137,7 @@ export const translations = {
 
     mcTitle: 'Adjust Crop Area',
     mcHint: 'Hint: Drag image to adjust position',
+    mcTipsTitle: 'Tips',
     mcKeyTips: [
       'Arrow keys to fine-tune position',
       '+/- keys to fine-zoom'
@@ -203,6 +205,7 @@ export const translations = {
 
     mcTitle: 'クロップ範囲の調整',
     mcHint: 'ヒント: 画像をドラッグして位置を調整',
+    mcTipsTitle: 'ヒント',
     mcKeyTips: [
       '矢印キーで位置を微調整',
       '+/- キーでズーム'
@@ -270,6 +273,7 @@ export const translations = {
 
     mcTitle: '크롭 영역 조정',
     mcHint: '팁: 이미지를 드래그하여 위치 조정',
+    mcTipsTitle: '팁',
     mcKeyTips: [
       '방향키로 위치 미세 조정',
       '+/- 키로 화면 확대/축소'
@@ -337,6 +341,7 @@ export const translations = {
 
     mcTitle: 'Ajustar Área de Recorte',
     mcHint: 'Pista: Arrastra la imagen para ajustar',
+    mcTipsTitle: 'Consejos',
     mcKeyTips: [
       'Teclas de flecha para ajustar',
       '+/- para zoom'
@@ -404,6 +409,7 @@ export const translations = {
 
     mcTitle: 'Ajuster le recadrage',
     mcHint: 'Astuce: Glissez l\'image pour ajuster',
+    mcTipsTitle: 'Conseils',
     mcKeyTips: [
       'Flèches pour ajuster',
       '+/- pour zoom'
@@ -471,6 +477,7 @@ export const translations = {
 
     mcTitle: 'Zuschnitt anpassen',
     mcHint: 'Tipp: Ziehe das Bild zum Positionieren',
+    mcTipsTitle: 'Tipps',
     mcKeyTips: [
       'Pfeiltasten zum Anpassen',
       '+/- zum Zoomen'
