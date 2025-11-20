@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect } from 'react';
 import Header from './components/Header';
 import UploadArea from './components/UploadArea';
@@ -185,33 +186,21 @@ const App: React.FC = () => {
                 <span className="text-xs font-semibold text-indigo-200 tracking-wide uppercase">Pro Image Tools</span>
               </div>
               
-              <h2 className="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight leading-tight">
+              <h2 className="text-5xl md:text-7xl font-extrabold text-white mb-4 tracking-tight leading-tight">
                 {t.heroTitleStart}
                 <span className="text-transparent bg-clip-text bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400"> {t.heroTitleEnd}</span>
               </h2>
+
+              {/* Moved 'Forever Free' Text here with Gradient Style matching the title */}
+              <h3 className="text-2xl md:text-4xl font-bold mb-8 tracking-tight animate-fade-in" style={{ animationDelay: '0.1s' }}>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300">
+                  {t.freeService}
+                </span>
+              </h3>
               
-              <p className="text-lg md:text-xl text-gray-400 leading-relaxed max-w-2xl mx-auto mb-10 font-light">
+              <p className="text-lg md:text-xl text-gray-400 leading-relaxed max-w-2xl mx-auto mb-12 font-light">
                 {t.heroDesc}<span className="text-gray-200 font-medium">{t.heroDescHighlight1}</span> {lang === 'en-US' ? 'and' : '与'} <span className="text-gray-200 font-medium">{t.heroDescHighlight2}</span>。
               </p>
-
-              {/* Forever Free Badge - Redesigned (High-End) */}
-              <div className="flex justify-center mb-12 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                <div className="relative group cursor-default">
-                   {/* Soft Outer Glow */}
-                   <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500/30 to-purple-600/30 rounded-xl blur-sm opacity-50 group-hover:opacity-75 transition duration-500"></div>
-                   
-                   {/* Content */}
-                   <div className="relative flex items-center gap-4 px-8 py-3 bg-[#0f111a] border border-white/10 rounded-xl shadow-2xl backdrop-blur-sm">
-                      <div className="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-500/10 shadow-[0_0_10px_rgba(99,102,241,0.2)]">
-                        <Infinity className="w-3.5 h-3.5 text-indigo-400" />
-                      </div>
-                      <div className="h-4 w-px bg-white/10"></div>
-                      <span className="bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent font-medium tracking-wide text-sm md:text-base group-hover:text-white transition-colors">
-                        {t.freeService}
-                      </span>
-                   </div>
-                </div>
-              </div>
 
               {/* REDESIGNED Mode Switcher - Large Cards */}
               <div className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-4 relative z-20 mb-8">
