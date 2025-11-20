@@ -186,12 +186,17 @@ const App: React.FC = () => {
                 {/* Auto Mode Button */}
                 <button
                   onClick={() => setMode('auto')}
-                  className={`relative group flex items-center p-5 rounded-2xl transition-all duration-300 text-left border-2
+                  className={`relative group flex items-center p-5 rounded-2xl transition-all duration-300 text-left border-2 cursor-pointer overflow-hidden
                     ${mode === 'auto' 
-                      ? 'bg-[#1A1F2E] border-indigo-500 shadow-[0_0_30px_rgba(79,70,229,0.2)] scale-[1.02]' 
+                      ? 'bg-indigo-600/20 border-indigo-500 shadow-[0_0_40px_rgba(79,70,229,0.3)] scale-[1.02] ring-1 ring-indigo-500/50' 
                       : 'bg-[#131725]/50 border-white/5 hover:bg-[#1A1F2E] hover:border-indigo-500/30 hover:scale-[1.01]'
                     }`}
                 >
+                  {/* Highlight Background Gradient (Active only) */}
+                  {mode === 'auto' && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/20 to-transparent opacity-50 pointer-events-none" />
+                  )}
+
                   {/* Highlight Indicator */}
                   {mode === 'auto' && (
                     <div className="absolute top-3 right-3 text-indigo-500">
@@ -199,15 +204,15 @@ const App: React.FC = () => {
                     </div>
                   )}
 
-                  <div className={`p-3 rounded-xl mr-4 transition-colors duration-300 ${mode === 'auto' ? 'bg-indigo-500/20 text-indigo-400' : 'bg-white/5 text-gray-400 group-hover:text-indigo-400'}`}>
+                  <div className={`p-3 rounded-xl mr-4 transition-colors duration-300 relative z-10 ${mode === 'auto' ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/40' : 'bg-white/5 text-gray-400 group-hover:text-indigo-400'}`}>
                     <Wand2 className="w-6 h-6" />
                   </div>
                   
-                  <div>
+                  <div className="relative z-10">
                     <h3 className={`font-bold text-lg mb-0.5 transition-colors ${mode === 'auto' ? 'text-white' : 'text-gray-300 group-hover:text-white'}`}>
                       自动模式 (16:9)
                     </h3>
-                    <p className="text-sm text-gray-500 font-medium">
+                    <p className={`text-sm font-medium ${mode === 'auto' ? 'text-indigo-200' : 'text-gray-500'}`}>
                       智能识别，一键生成
                     </p>
                   </div>
@@ -216,12 +221,17 @@ const App: React.FC = () => {
                 {/* Manual Mode Button */}
                 <button
                   onClick={() => setMode('manual')}
-                  className={`relative group flex items-center p-5 rounded-2xl transition-all duration-300 text-left border-2
+                  className={`relative group flex items-center p-5 rounded-2xl transition-all duration-300 text-left border-2 cursor-pointer overflow-hidden
                     ${mode === 'manual' 
-                      ? 'bg-[#1A1F2E] border-pink-500 shadow-[0_0_30px_rgba(236,72,153,0.2)] scale-[1.02]' 
+                      ? 'bg-pink-600/20 border-pink-500 shadow-[0_0_40px_rgba(236,72,153,0.3)] scale-[1.02] ring-1 ring-pink-500/50' 
                       : 'bg-[#131725]/50 border-white/5 hover:bg-[#1A1F2E] hover:border-pink-500/30 hover:scale-[1.01]'
                     }`}
                 >
+                   {/* Highlight Background Gradient (Active only) */}
+                   {mode === 'manual' && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-pink-600/20 to-transparent opacity-50 pointer-events-none" />
+                  )}
+
                    {/* Highlight Indicator */}
                    {mode === 'manual' && (
                     <div className="absolute top-3 right-3 text-pink-500">
@@ -229,15 +239,15 @@ const App: React.FC = () => {
                     </div>
                   )}
 
-                  <div className={`p-3 rounded-xl mr-4 transition-colors duration-300 ${mode === 'manual' ? 'bg-pink-500/20 text-pink-400' : 'bg-white/5 text-gray-400 group-hover:text-pink-400'}`}>
+                  <div className={`p-3 rounded-xl mr-4 transition-colors duration-300 relative z-10 ${mode === 'manual' ? 'bg-pink-500 text-white shadow-lg shadow-pink-500/40' : 'bg-white/5 text-gray-400 group-hover:text-pink-400'}`}>
                     <CropIcon className="w-6 h-6" />
                   </div>
                   
-                  <div>
+                  <div className="relative z-10">
                     <h3 className={`font-bold text-lg mb-0.5 transition-colors ${mode === 'manual' ? 'text-white' : 'text-gray-300 group-hover:text-white'}`}>
                       手动裁剪
                     </h3>
-                    <p className="text-sm text-gray-500 font-medium">
+                    <p className={`text-sm font-medium ${mode === 'manual' ? 'text-pink-200' : 'text-gray-500'}`}>
                       自定义区域与大小
                     </p>
                   </div>
