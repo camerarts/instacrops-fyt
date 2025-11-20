@@ -1,5 +1,5 @@
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Check, X, ZoomIn, Move, Smartphone, Monitor, Square, LayoutTemplate, HardDrive, Hand } from 'lucide-react';
 import { CropConfig, OutputDimensions } from '../utils/imageProcessor';
 
@@ -62,8 +62,6 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
     if (!wrapperRef.current) return;
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        // Use contentRect to get size excluding padding/border if box-sizing is content-box, 
-        // but typically we want the available space inside the padding.
         setWrapperSize({
           width: entry.contentRect.width,
           height: entry.contentRect.height,
@@ -112,7 +110,7 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
   };
 
   // Handle drag constraints
-  const updatePosition = (newX: number, newY: number, currentScale: number) => {
+  const updatePosition = useCallback((newX: number, newY: number, currentScale: number) => {
     if (!containerRef.current || imageSize.width === 0) return;
     
     const container = containerRef.current;
@@ -148,7 +146,7 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
     const clampedY = Math.min(Math.max(newY, minY), maxY);
     
     setPosition({ x: clampedX, y: clampedY });
-  };
+  }, [imageSize]);
 
   const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
     setIsDragging(true);
@@ -180,6 +178,40 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
     setScale(s);
     updatePosition(position.x, position.y, s);
   };
+  
+  // Keyboard Navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+        // Avoid conflicting with inputs
+        if (e.target instanceof HTMLInputElement) return;
+
+        const STEP_MOVE = e.shiftKey ? 20 : 5; 
+        const STEP_ZOOM = 0.05;
+        let handled = false;
+
+        if (e.key.startsWith('Arrow')) {
+            let { x, y } = position;
+            if (e.key === 'ArrowLeft') x -= STEP_MOVE;
+            if (e.key === 'ArrowRight') x += STEP_MOVE;
+            if (e.key === 'ArrowUp') y -= STEP_MOVE;
+            if (e.key === 'ArrowDown') y += STEP_MOVE;
+            
+            updatePosition(x, y, scale);
+            handled = true;
+        } else if (e.key === '+' || e.key === '=') {
+            updateScale(scale + STEP_ZOOM);
+            handled = true;
+        } else if (e.key === '-' || e.key === '_') {
+            updateScale(scale - STEP_ZOOM);
+            handled = true;
+        }
+
+        if (handled) e.preventDefault();
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [position, scale, updatePosition]);
 
   const updateSize = (newSize: number) => {
     // Clamp between 0.1 and original file size
@@ -257,11 +289,18 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
           {/* Canvas Area (Left) */}
           <div 
             ref={wrapperRef}
-            className="flex-1 bg-[#090b10] relative flex items-center justify-center p-4 md:p-8 overflow-hidden select-none group"
+            className="flex-1 bg-[#090b10] relative flex items-center justify-center p-4 md:p-8 overflow-hidden select-none group cursor-move"
+            onMouseDown={handleMouseDown}
+            onTouchStart={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onTouchMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onTouchEnd={handleMouseUp}
+            onMouseLeave={handleMouseUp}
           >
-            {/* Hint Overlay - Shows when ratio changes */}
+            {/* Hint Overlay */}
             {showHint && (
-              <div className="absolute top-6 left-0 right-0 z-30 flex justify-center pointer-events-none animate-fade-in-up">
+              <div className="absolute top-6 left-0 right-0 z-40 flex justify-center pointer-events-none animate-fade-in-up">
                 <div className="bg-black/60 backdrop-blur-xl border border-indigo-500/30 px-5 py-2.5 rounded-full flex items-center gap-3 text-sm font-medium text-indigo-100 shadow-xl shadow-black/50">
                     <Hand className="w-4 h-4 text-indigo-400 animate-pulse" />
                     <span>{t.mcHint}</span>
@@ -277,16 +316,10 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
             {/* Crop Container */}
             <div 
               ref={containerRef}
-              className="relative bg-black border-2 border-indigo-500/50 shadow-[0_0_0_9999px_rgba(0,0,0,0.85)] cursor-move overflow-hidden rounded-sm touch-none transition-all duration-300 ease-in-out ring-4 ring-black/20"
+              className="relative z-10"
               style={getCropContainerStyle()}
-              onMouseDown={handleMouseDown}
-              onTouchStart={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onTouchMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              onTouchEnd={handleMouseUp}
-              onMouseLeave={handleMouseUp}
             >
+              {/* Image Layer - No max-w constraint to allow overflow */}
               {imageUrl && (
                 <img 
                   src={imageUrl} 
@@ -298,27 +331,39 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
                     transformOrigin: '0 0',
                     pointerEvents: 'none'
                   }}
-                  className="absolute top-0 left-0 user-select-none"
+                  className="absolute top-0 left-0 user-select-none max-w-none"
                 />
               )}
               
-              {/* Grid Overlay */}
-              <div className="absolute inset-0 grid grid-cols-3 grid-rows-3 pointer-events-none opacity-70">
-                <div className="border-r border-b border-white/30 shadow-sm"></div>
-                <div className="border-r border-b border-white/30 shadow-sm"></div>
-                <div className="border-b border-white/30 shadow-sm"></div>
-                <div className="border-r border-b border-white/30 shadow-sm"></div>
-                <div className="border-r border-b border-white/30 shadow-sm"></div>
-                <div className="border-b border-white/30 shadow-sm"></div>
-                <div className="border-r border-white/30 shadow-sm"></div>
-                <div className="border-r border-white/30 shadow-sm"></div>
-                <div></div>
+              {/* Dimmed Outside Overlay: A giant ring shadow */}
+              <div className="absolute inset-0 pointer-events-none z-10 shadow-[0_0_0_9999px_rgba(0,0,0,0.7)] rounded-sm"></div>
+
+              {/* Grid & Border Overlay */}
+              <div className="absolute inset-0 z-20 pointer-events-none border-2 border-white/60">
+                <div className="absolute inset-0 grid grid-cols-3 grid-rows-3">
+                    <div className="border-r border-b border-white/30 shadow-sm"></div>
+                    <div className="border-r border-b border-white/30 shadow-sm"></div>
+                    <div className="border-b border-white/30 shadow-sm"></div>
+                    <div className="border-r border-b border-white/30 shadow-sm"></div>
+                    <div className="border-r border-b border-white/30 shadow-sm"></div>
+                    <div className="border-b border-white/30 shadow-sm"></div>
+                    <div className="border-r border-white/30 shadow-sm"></div>
+                    <div className="border-r border-white/30 shadow-sm"></div>
+                    <div></div>
+                </div>
               </div>
+
+              {/* Corner Anchors */}
+              <div className="absolute -top-1 -left-1 w-4 h-4 border-t-[3px] border-l-[3px] border-indigo-500 z-30 rounded-tl-sm pointer-events-none shadow-sm"></div>
+              <div className="absolute -top-1 -right-1 w-4 h-4 border-t-[3px] border-r-[3px] border-indigo-500 z-30 rounded-tr-sm pointer-events-none shadow-sm"></div>
+              <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-[3px] border-l-[3px] border-indigo-500 z-30 rounded-bl-sm pointer-events-none shadow-sm"></div>
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-[3px] border-r-[3px] border-indigo-500 z-30 rounded-br-sm pointer-events-none shadow-sm"></div>
+
             </div>
           </div>
 
           {/* Ratio Sidebar (Right) */}
-          <div className="w-24 bg-[#131620] border-l border-white/5 flex flex-col items-center py-6 gap-3 overflow-y-auto scrollbar-hide z-10">
+          <div className="w-24 bg-[#131620] border-l border-white/5 flex flex-col items-center py-6 gap-3 overflow-y-auto scrollbar-hide z-10 shrink-0">
             <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">{t.mcRatio}</span>
             {RATIOS.map((ratio) => {
               const Icon = ratio.icon;
