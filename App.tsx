@@ -1,12 +1,12 @@
 
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import Header from './components/Header';
 import UploadArea from './components/UploadArea';
 import ResultCard from './components/ResultCard';
 import ManualCropper from './components/ManualCropper';
 import { ProcessedImage, ProcessingStatus, processImage, CropConfig, OutputDimensions } from './utils/imageProcessor';
-import { Loader2, Wand2, Crop as CropIcon, Zap, Lock, Maximize2, UploadCloud, Download, MoveRight } from 'lucide-react';
+import { Loader2, Wand2, Crop as CropIcon, Zap, Lock, Maximize2, UploadCloud, Download, MoveRight, Layout } from 'lucide-react';
 import { translations, Language } from './utils/translations';
 
 type ProcessMode = 'auto' | 'manual';
@@ -65,6 +65,8 @@ const App: React.FC = () => {
   const [tempFile, setTempFile] = useState<File | null>(null);
   const [showManualCropper, setShowManualCropper] = useState(false);
 
+  const heroInputRef = useRef<HTMLInputElement>(null);
+
   const handleFileSelect = useCallback((file: File) => {
     if (mode === 'manual') {
       setTempFile(file);
@@ -74,6 +76,12 @@ const App: React.FC = () => {
       processSelectedFile(file);
     }
   }, [mode]);
+
+  const handleHeroFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      handleFileSelect(e.target.files[0]);
+    }
+  };
 
   const handleManualConfirm = async (crop: CropConfig, dim: OutputDimensions, maxBytes: number) => {
     setShowManualCropper(false);
@@ -168,17 +176,48 @@ const App: React.FC = () => {
                   </span>
                 </h1>
                 
-                {/* Free Service Tagline - Now styled similarly to main title */}
-                <h2 className="text-2xl lg:text-3xl font-bold tracking-tight animate-fade-in-up delay-100 flex items-center gap-3">
-                  <Zap className="w-6 h-6 lg:w-8 lg:h-8 text-yellow-400 fill-yellow-400/20" />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 to-purple-200">
-                    {t.freeService}
+                {/* New Subtitle */}
+                <h2 className="text-2xl lg:text-3xl font-bold tracking-tight animate-fade-in-up delay-100">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200">
+                    {t.heroSubtitle}
                   </span>
                 </h2>
                 
+                {/* Free Service Tagline - Updated Text */}
+                <h3 className="text-xl font-medium text-gray-300 tracking-tight animate-fade-in-up delay-100 flex items-center gap-3">
+                  <Zap className="w-6 h-6 text-yellow-400 fill-yellow-400/20" />
+                  <span className="text-indigo-100">
+                    {t.freeService}
+                  </span>
+                </h3>
+                
                 <p className="text-lg text-gray-400 leading-relaxed max-w-xl animate-fade-in-up delay-100">
-                  {t.heroDesc} <span className="text-gray-200 font-medium border-b border-indigo-500/30 pb-0.5">{t.heroDescHighlight1}</span> & <span className="text-gray-200 font-medium border-b border-pink-500/30 pb-0.5">{t.heroDescHighlight2}</span>.
+                  {t.heroDesc}
                 </p>
+                
+                 {/* Main CTA Button */}
+                <div className="pt-2 animate-fade-in-up delay-200">
+                    <button 
+                        onClick={() => heroInputRef.current?.click()}
+                        className="group relative flex items-center gap-4 px-8 py-4 bg-gradient-to-r from-indigo-600 to-pink-600 rounded-2xl hover:from-indigo-500 hover:to-pink-500 transition-all duration-300 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-1 ring-1 ring-white/10"
+                    >
+                        <div className="flex flex-col items-start text-left">
+                             <span className="text-xl font-bold text-white">{t.ctaMain}</span>
+                             <span className="text-xs text-indigo-100/80 font-medium">{t.ctaSub}</span>
+                        </div>
+                        <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 transition-colors border border-white/10">
+                             <UploadCloud className="w-6 h-6 text-white" />
+                        </div>
+                    </button>
+                    <input 
+                        type="file" 
+                        ref={heroInputRef} 
+                        className="hidden" 
+                        accept="image/*"
+                        onChange={handleHeroFileInput}
+                    />
+                </div>
+
               </div>
 
               {/* Redesigned Workflow Steps (Visual Stepper) */}
@@ -200,10 +239,10 @@ const App: React.FC = () => {
                    {/* Arrow 1 */}
                    <MoveRight className="w-5 h-5 text-gray-600" />
 
-                  {/* Step 2 */}
+                  {/* Step 2 - Layout Icon for Ratio */}
                   <div className="flex flex-col items-center gap-3 group cursor-default">
                      <div className="w-14 h-14 rounded-full bg-[#131725] border border-white/10 shadow-lg flex items-center justify-center group-hover:border-pink-500/50 group-hover:shadow-pink-500/20 transition-all duration-500">
-                       <Wand2 className="w-6 h-6 text-pink-400 group-hover:scale-110 transition-transform" />
+                       <Layout className="w-6 h-6 text-pink-400 group-hover:scale-110 transition-transform" />
                     </div>
                     <span className="text-xs font-bold text-gray-400 tracking-wider uppercase">{t.step2}</span>
                   </div>
@@ -211,7 +250,7 @@ const App: React.FC = () => {
                   {/* Arrow 2 */}
                   <MoveRight className="w-5 h-5 text-gray-600" />
 
-                  {/* Step 3 */}
+                  {/* Step 3 - Download Icon */}
                   <div className="flex flex-col items-center gap-3 group cursor-default">
                     <div className="w-14 h-14 rounded-full bg-[#131725] border border-white/10 shadow-lg flex items-center justify-center group-hover:border-indigo-500/50 group-hover:shadow-indigo-500/20 transition-all duration-500">
                        <Download className="w-6 h-6 text-indigo-400 group-hover:scale-110 transition-transform" />
