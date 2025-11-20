@@ -1,150 +1,402 @@
 
-export interface ProcessedImage {
-  originalUrl: string;
-  processedUrl: string;
-  originalSize: number;
-  processedSize: number;
-  width: number;
-  height: number;
-}
+export type Language = 'zh-CN' | 'en-US' | 'ja-JP' | 'ko-KR' | 'es-ES' | 'fr-FR' | 'de-DE';
 
-export enum ProcessingStatus {
-  IDLE = 'IDLE',
-  PROCESSING = 'PROCESSING',
-  SUCCESS = 'SUCCESS',
-  ERROR = 'ERROR'
-}
+export const languages: { code: Language; label: string }[] = [
+  { code: 'zh-CN', label: '简体中文' },
+  { code: 'en-US', label: 'English' },
+  { code: 'ja-JP', label: '日本語' },
+  { code: 'ko-KR', label: '한국어' },
+  { code: 'es-ES', label: 'Español' },
+  { code: 'fr-FR', label: 'Français' },
+  { code: 'de-DE', label: 'Deutsch' },
+];
 
-export interface CropConfig {
-  sx: number;
-  sy: number;
-  sWidth: number;
-  sHeight: number;
-}
-
-export interface OutputDimensions {
-  width: number;
-  height: number;
-}
-
-/**
- * Calculates the cropping coordinates to center the image in a 16:9 aspect ratio.
- */
-const getAutoCropDimensions = (imgWidth: number, imgHeight: number): CropConfig => {
-  const targetRatio = 16 / 9;
-  const currentRatio = imgWidth / imgHeight;
-
-  let renderWidth = imgWidth;
-  let renderHeight = imgHeight;
-  let offsetX = 0;
-  let offsetY = 0;
-
-  // If image is wider than 16:9 (e.g. 21:9 or just wide), we need to crop the sides (width)
-  if (currentRatio > targetRatio) {
-    renderWidth = imgHeight * targetRatio;
-    renderHeight = imgHeight;
-    offsetX = (imgWidth - renderWidth) / 2;
-    offsetY = 0;
-  } 
-  // If image is taller than 16:9 (e.g. 4:3, 1:1, 9:16), we need to crop top/bottom
-  else {
-    renderWidth = imgWidth;
-    renderHeight = imgWidth / targetRatio;
-    offsetX = 0;
-    offsetY = (imgHeight - renderHeight) / 2;
-  }
-
-  return { sx: offsetX, sy: offsetY, sWidth: renderWidth, sHeight: renderHeight };
-};
-
-/**
- * Processes the image: Crops, Resizes to target dimensions, and Compresses to < 2MB.
- * Default target is 1920x1080 (16:9).
- */
-export const processImage = async (
-  file: File, 
-  cropConfig?: CropConfig,
-  targetDimensions: OutputDimensions = { width: 1920, height: 1080 }
-): Promise<{ blob: Blob; width: number; height: number }> => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    const url = URL.createObjectURL(file);
+export const translations = {
+  'zh-CN': {
+    title: 'InstaCrops - 智能 16:9 图片转换器',
+    headerTitle: 'InstaCrops',
+    proStudio: 'Pro Studio',
+    completed: '已完成',
+    converted: '张转换',
+    heroTitleStart: '智能构建',
+    heroTitleEnd: '极致视觉',
+    heroDesc: '专为创作者打造的图像处理引擎。无论是社交媒体封面还是高清展示图，一键实现',
+    heroDescHighlight1: '完美裁剪',
+    heroDescHighlight2: '无损压缩',
+    autoModeTitle: '自动模式 (16:9)',
+    autoModeDesc: '智能识别，一键生成',
+    manualModeTitle: '手动裁剪',
+    manualModeDesc: '自定义区域与大小',
+    uploadRelease: '释放以上传',
+    uploadClick: '点击或拖拽图片',
+    uploadSupport: '支持 JPG, PNG, WebP。无论原图尺寸如何，我们都将其转化为高清标准比例。',
+    hdOutput: '高清输出',
+    processingTitle: '正在处理...',
+    processingAuto: '智能分析主体',
+    processingManual: '应用您的裁剪',
+    processingDesc: '并生成高清图像。',
+    featRatio: '多比例支持',
+    featRatioDesc: '支持 16:9, 4:3, 1:1 等多种常用社交媒体比例。',
+    featCompress: '智能压缩引擎',
+    featCompressDesc: '自动将体积控制在 2MB 以内，同时保持画质。',
+    featPrivacy: '隐私安全',
+    featPrivacyDesc: '所有处理均在浏览器本地完成，图片无需上传服务器。',
+    footer: 'InstaCrops Pro. Designed for 宁波大学 Camerart',
     
-    img.onload = async () => {
-      URL.revokeObjectURL(url);
-      
-      const TARGET_WIDTH = targetDimensions.width;
-      const TARGET_HEIGHT = targetDimensions.height;
-      const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024; // 2MB
+    // Result Card
+    rcReady: '处理完成',
+    rcTitle: '准备下载',
+    rcDesc: '您的优化图片已就绪。',
+    rcRes: '分辨率',
+    rcSize: '文件大小',
+    rcRate: '压缩率',
+    rcDownload: '下载图片',
+    rcNext: '处理下一张',
+    rcOriginal: '原图',
+    rcPreview: '结果预览',
 
-      const canvas = document.createElement('canvas');
-      canvas.width = TARGET_WIDTH;
-      canvas.height = TARGET_HEIGHT;
-      const ctx = canvas.getContext('2d');
+    // Manual Cropper
+    mcTitle: '调整裁剪区域',
+    mcHint: '提示：按住图片拖动可调整位置',
+    mcRatio: '画布比例',
+    mcZoomTitle: '画面缩放',
+    mcZoomDesc: '调整裁剪范围',
+    mcLimitTitle: '输出限制',
+    mcLimitDesc: '压缩至指定大小',
+    mcCancel: '取消',
+    mcConfirm: '确认生成',
+    
+    alertError: '处理图片时出错，请重试。',
+    alertType: '请上传图片文件',
+  },
+  'en-US': {
+    title: 'InstaCrops - Smart 16:9 Converter',
+    headerTitle: 'InstaCrops',
+    proStudio: 'Pro Studio',
+    completed: 'COMPLETED',
+    converted: 'CONVERTED',
+    heroTitleStart: 'Smart Build',
+    heroTitleEnd: 'Visual Excellence',
+    heroDesc: 'Image processing engine for creators. Achieve ',
+    heroDescHighlight1: 'perfect cropping',
+    heroDescHighlight2: 'lossless compression',
+    autoModeTitle: 'Auto Mode (16:9)',
+    autoModeDesc: 'Smart detection, one-click',
+    manualModeTitle: 'Manual Crop',
+    manualModeDesc: 'Custom area & size',
+    uploadRelease: 'Release to Upload',
+    uploadClick: 'Click or Drag Image',
+    uploadSupport: 'Supports JPG, PNG, WebP. Converts any size to HD standard ratio.',
+    hdOutput: 'HD Output',
+    processingTitle: 'Processing...',
+    processingAuto: 'analyzing subject',
+    processingManual: 'applying crop',
+    processingDesc: 'and generating HD image.',
+    featRatio: 'Multi-Ratio Support',
+    featRatioDesc: 'Supports 16:9, 4:3, 1:1 and other common social media ratios.',
+    featCompress: 'Smart Compression',
+    featCompressDesc: 'Automatically keeps size under 2MB while maintaining quality.',
+    featPrivacy: 'Privacy First',
+    featPrivacyDesc: 'All processing is done locally in browser. No uploads.',
+    footer: 'InstaCrops Pro. Designed for Ningbo University Camerart',
+    
+    rcReady: 'FINISHED',
+    rcTitle: 'Ready to Download',
+    rcDesc: 'Your optimized image is ready.',
+    rcRes: 'Resolution',
+    rcSize: 'File Size',
+    rcRate: 'Compression',
+    rcDownload: 'Download Image',
+    rcNext: 'Process Next',
+    rcOriginal: 'Original',
+    rcPreview: 'Result Preview',
 
-      if (!ctx) {
-        reject(new Error('Cannot get canvas context'));
-        return;
-      }
+    mcTitle: 'Adjust Crop Area',
+    mcHint: 'Hint: Drag image to adjust position',
+    mcRatio: 'ASPECT RATIO',
+    mcZoomTitle: 'Zoom Level',
+    mcZoomDesc: 'Adjust crop range',
+    mcLimitTitle: 'Output Limit',
+    mcLimitDesc: 'Compress to size',
+    mcCancel: 'Cancel',
+    mcConfirm: 'Confirm',
+    
+    alertError: 'Error processing image, please try again.',
+    alertType: 'Please upload an image file',
+  },
+  'ja-JP': {
+    title: 'InstaCrops - スマート画像変換',
+    headerTitle: 'InstaCrops',
+    proStudio: 'Pro Studio',
+    completed: '完了',
+    converted: '枚変換済',
+    heroTitleStart: 'スマートに構築',
+    heroTitleEnd: '究極のビジュアル',
+    heroDesc: 'クリエイターのための画像処理エンジン。',
+    heroDescHighlight1: '完璧なクロップ',
+    heroDescHighlight2: 'ロスレス圧縮',
+    autoModeTitle: '自動モード (16:9)',
+    autoModeDesc: 'スマート検出、ワンクリック生成',
+    manualModeTitle: '手動クロップ',
+    manualModeDesc: '範囲とサイズをカスタム',
+    uploadRelease: '放してアップロード',
+    uploadClick: 'クリックまたは画像をドラッグ',
+    uploadSupport: 'JPG, PNG, WebP対応。あらゆるサイズをHD標準比率に変換。',
+    hdOutput: 'HD出力',
+    processingTitle: '処理中...',
+    processingAuto: '被写体を分析',
+    processingManual: 'クロップを適用',
+    processingDesc: 'してHD画像を生成中。',
+    featRatio: 'マルチ比率対応',
+    featRatioDesc: '16:9, 4:3, 1:1 など、主要なSNS比率に対応。',
+    featCompress: 'スマート圧縮',
+    featCompressDesc: '画質を保ちながら自動的に2MB以下に圧縮。',
+    featPrivacy: 'プライバシー保護',
+    featPrivacyDesc: '処理はすべてブラウザ内で完結。サーバーへのアップロードはありません。',
+    footer: 'InstaCrops Pro. Designed for Ningbo University Camerart',
+    
+    rcReady: '完了',
+    rcTitle: 'ダウンロード準備完了',
+    rcDesc: '最適化された画像の準備ができました。',
+    rcRes: '解像度',
+    rcSize: 'ファイルサイズ',
+    rcRate: '圧縮率',
+    rcDownload: 'ダウンロード',
+    rcNext: '次の画像を処理',
+    rcOriginal: '元画像',
+    rcPreview: 'プレビュー',
 
-      // 2. Determine Crop Logic (Auto or Manual)
-      let crop: CropConfig;
-      
-      if (cropConfig) {
-        crop = cropConfig;
-      } else {
-        // Auto mode defaults to 16:9 behavior logic internally for now, 
-        // but effectively we should strictly follow the targetDimensions ratio if we were to make auto generic.
-        // For this specific app requirement: "Auto follows original function" which implies 16:9.
-        // So we keep the 16:9 calculation for auto mode.
-        crop = getAutoCropDimensions(img.width, img.height);
-      }
+    mcTitle: 'クロップ範囲の調整',
+    mcHint: 'ヒント: 画像をドラッグして位置を調整',
+    mcRatio: '比率',
+    mcZoomTitle: 'ズーム',
+    mcZoomDesc: '範囲を調整',
+    mcLimitTitle: '出力制限',
+    mcLimitDesc: '指定サイズに圧縮',
+    mcCancel: 'キャンセル',
+    mcConfirm: '確定する',
+    
+    alertError: '画像処理中にエラーが発生しました。再試行してください。',
+    alertType: '画像ファイルをアップロードしてください',
+  },
+  'ko-KR': {
+    title: 'InstaCrops - 스마트 이미지 변환기',
+    headerTitle: 'InstaCrops',
+    proStudio: 'Pro Studio',
+    completed: '완료됨',
+    converted: '장 변환',
+    heroTitleStart: '스마트 빌드',
+    heroTitleEnd: '최고의 비주얼',
+    heroDesc: '크리에이터를 위한 이미지 처리 엔진. ',
+    heroDescHighlight1: '완벽한 크롭',
+    heroDescHighlight2: '무손실 압축',
+    autoModeTitle: '자동 모드 (16:9)',
+    autoModeDesc: '스마트 감지, 원클릭 생성',
+    manualModeTitle: '수동 크롭',
+    manualModeDesc: '영역 및 크기 사용자 지정',
+    uploadRelease: '놓아서 업로드',
+    uploadClick: '이미지 클릭 또는 드래그',
+    uploadSupport: 'JPG, PNG, WebP 지원. 모든 크기를 HD 표준 비율로 변환.',
+    hdOutput: 'HD 출력',
+    processingTitle: '처리 중...',
+    processingAuto: '피사체 분석',
+    processingManual: '크롭 적용',
+    processingDesc: '및 HD 이미지 생성 중.',
+    featRatio: '다중 비율 지원',
+    featRatioDesc: '16:9, 4:3, 1:1 등 다양한 소셜 미디어 비율 지원.',
+    featCompress: '스마트 압축',
+    featCompressDesc: '화질을 유지하면서 자동으로 2MB 이하로 압축.',
+    featPrivacy: '개인정보 보호',
+    featPrivacyDesc: '모든 처리는 브라우저 로컬에서 완료됩니다. 서버 업로드 없음.',
+    footer: 'InstaCrops Pro. Designed for Ningbo University Camerart',
+    
+    rcReady: '처리 완료',
+    rcTitle: '다운로드 준비 완료',
+    rcDesc: '최적화된 이미지가 준비되었습니다.',
+    rcRes: '해상도',
+    rcSize: '파일 크기',
+    rcRate: '압축률',
+    rcDownload: '이미지 다운로드',
+    rcNext: '다음 이미지 처리',
+    rcOriginal: '원본',
+    rcPreview: '결과 미리보기',
 
-      // Draw the cropped portion of the source image onto the canvas
-      // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
-      // We use high quality smoothing
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
-      ctx.drawImage(img, crop.sx, crop.sy, crop.sWidth, crop.sHeight, 0, 0, TARGET_WIDTH, TARGET_HEIGHT);
+    mcTitle: '크롭 영역 조정',
+    mcHint: '팁: 이미지를 드래그하여 위치 조정',
+    mcRatio: '화면 비율',
+    mcZoomTitle: '화면 확대',
+    mcZoomDesc: '크롭 범위 조정',
+    mcLimitTitle: '출력 제한',
+    mcLimitDesc: '지정 크기로 압축',
+    mcCancel: '취소',
+    mcConfirm: '생성 확인',
+    
+    alertError: '이미지 처리 중 오류가 발생했습니다. 다시 시도해주세요.',
+    alertType: '이미지 파일을 업로드해주세요',
+  },
+   'es-ES': {
+    title: 'InstaCrops - Convertidor Inteligente 16:9',
+    headerTitle: 'InstaCrops',
+    proStudio: 'Pro Studio',
+    completed: 'COMPLETADO',
+    converted: 'CONVERTIDO',
+    heroTitleStart: 'Construcción',
+    heroTitleEnd: 'Visual Extrema',
+    heroDesc: 'Motor de procesamiento de imágenes para creadores. Logra ',
+    heroDescHighlight1: 'recorte perfecto',
+    heroDescHighlight2: 'compresión sin pérdidas',
+    autoModeTitle: 'Modo Auto (16:9)',
+    autoModeDesc: 'Detección inteligente',
+    manualModeTitle: 'Recorte Manual',
+    manualModeDesc: 'Área y tamaño personalizados',
+    uploadRelease: 'Sueltar para subir',
+    uploadClick: 'Clic o arrastrar imagen',
+    uploadSupport: 'Soporta JPG, PNG, WebP. Convierte cualquier tamaño a proporción HD.',
+    hdOutput: 'Salida HD',
+    processingTitle: 'Procesando...',
+    processingAuto: 'analizando sujeto',
+    processingManual: 'aplicando recorte',
+    processingDesc: 'y generando imagen HD.',
+    featRatio: 'Soporte Multi-Proporción',
+    featRatioDesc: 'Soporta 16:9, 4:3, 1:1 y otras proporciones comunes.',
+    featCompress: 'Compresión Inteligente',
+    featCompressDesc: 'Mantiene automáticamente el tamaño por debajo de 2MB con calidad.',
+    featPrivacy: 'Privacidad Primero',
+    featPrivacyDesc: 'Todo el procesamiento es local en el navegador. Sin subidas.',
+    footer: 'InstaCrops Pro. Diseñado para Ningbo University Camerart',
+    
+    rcReady: 'LISTO',
+    rcTitle: 'Listo para descargar',
+    rcDesc: 'Tu imagen optimizada está lista.',
+    rcRes: 'Resolución',
+    rcSize: 'Tamaño',
+    rcRate: 'Compresión',
+    rcDownload: 'Descargar',
+    rcNext: 'Procesar Siguiente',
+    rcOriginal: 'Original',
+    rcPreview: 'Vista Previa',
 
-      // 3. Compression Loop to ensure < 2MB
-      let quality = 0.95;
-      let blob: Blob | null = null;
-      
-      const tryCompress = async (q: number): Promise<Blob> => {
-        return new Promise((res) => {
-          canvas.toBlob((b) => {
-            res(b as Blob);
-          }, 'image/jpeg', q);
-        });
-      };
+    mcTitle: 'Ajustar Área de Recorte',
+    mcHint: 'Pista: Arrastra la imagen para ajustar',
+    mcRatio: 'PROPORCIÓN',
+    mcZoomTitle: 'Zoom',
+    mcZoomDesc: 'Ajustar rango',
+    mcLimitTitle: 'Límite Salida',
+    mcLimitDesc: 'Comprimir a tamaño',
+    mcCancel: 'Cancelar',
+    mcConfirm: 'Confirmar',
+    
+    alertError: 'Error al procesar la imagen, intenta de nuevo.',
+    alertType: 'Por favor sube un archivo de imagen',
+  },
+  'fr-FR': {
+    title: 'InstaCrops - Convertisseur Intelligent',
+    headerTitle: 'InstaCrops',
+    proStudio: 'Pro Studio',
+    completed: 'TERMINÉ',
+    converted: 'CONVERTIS',
+    heroTitleStart: 'Création',
+    heroTitleEnd: 'Visuelle Ultime',
+    heroDesc: 'Moteur de traitement d\'image pour créateurs. Obtenez ',
+    heroDescHighlight1: 'recadrage parfait',
+    heroDescHighlight2: 'compression sans perte',
+    autoModeTitle: 'Mode Auto (16:9)',
+    autoModeDesc: 'Détection intelligente',
+    manualModeTitle: 'Recadrage Manuel',
+    manualModeDesc: 'Zone et taille personnalisées',
+    uploadRelease: 'Relâcher pour téléverser',
+    uploadClick: 'Cliquer ou glisser une image',
+    uploadSupport: 'JPG, PNG, WebP. Convertit toute taille au format HD standard.',
+    hdOutput: 'Sortie HD',
+    processingTitle: 'Traitement...',
+    processingAuto: 'analyse du sujet',
+    processingManual: 'application du recadrage',
+    processingDesc: 'et génération de l\'image HD.',
+    featRatio: 'Multi-Formats',
+    featRatioDesc: 'Supporte 16:9, 4:3, 1:1 et autres formats sociaux.',
+    featCompress: 'Compression Intelligente',
+    featCompressDesc: 'Maintient automatiquement la taille sous 2Mo avec qualité.',
+    featPrivacy: 'Confidentialité',
+    featPrivacyDesc: 'Tout le traitement est local dans le navigateur. Aucun envoi.',
+    footer: 'InstaCrops Pro. Conçu pour Ningbo University Camerart',
+    
+    rcReady: 'TERMINÉ',
+    rcTitle: 'Prêt à télécharger',
+    rcDesc: 'Votre image optimisée est prête.',
+    rcRes: 'Résolution',
+    rcSize: 'Taille',
+    rcRate: 'Compression',
+    rcDownload: 'Télécharger',
+    rcNext: 'Suivant',
+    rcOriginal: 'Original',
+    rcPreview: 'Aperçu',
 
-      // Initial attempt
-      blob = await tryCompress(quality);
+    mcTitle: 'Ajuster le recadrage',
+    mcHint: 'Astuce: Glissez l\'image pour ajuster',
+    mcRatio: 'FORMAT',
+    mcZoomTitle: 'Zoom',
+    mcZoomDesc: 'Ajuster la zone',
+    mcLimitTitle: 'Limite Sortie',
+    mcLimitDesc: 'Compresser à la taille',
+    mcCancel: 'Annuler',
+    mcConfirm: 'Confirmer',
+    
+    alertError: 'Erreur lors du traitement, veuillez réessayer.',
+    alertType: 'Veuillez télécharger un fichier image',
+  },
+  'de-DE': {
+    title: 'InstaCrops - Smarter Konverter',
+    headerTitle: 'InstaCrops',
+    proStudio: 'Pro Studio',
+    completed: 'FERTIG',
+    converted: 'KONVERTIERT',
+    heroTitleStart: 'Smart Build',
+    heroTitleEnd: 'Visual Excellence',
+    heroDesc: 'Bildverarbeitungs-Engine für Creator. Erreiche ',
+    heroDescHighlight1: 'perfekten Zuschnitt',
+    heroDescHighlight2: 'verlustfreie Kompression',
+    autoModeTitle: 'Auto-Modus (16:9)',
+    autoModeDesc: 'Smarte Erkennung',
+    manualModeTitle: 'Manueller Zuschnitt',
+    manualModeDesc: 'Benutzerdefinierter Bereich',
+    uploadRelease: 'Loslassen zum Hochladen',
+    uploadClick: 'Klicken oder Bild ziehen',
+    uploadSupport: 'Unterstützt JPG, PNG, WebP. Konvertiert jede Größe in HD-Standard.',
+    hdOutput: 'HD Ausgabe',
+    processingTitle: 'Verarbeitung...',
+    processingAuto: 'Analysiere Motiv',
+    processingManual: 'Wende Zuschnitt an',
+    processingDesc: 'und generiere HD-Bild.',
+    featRatio: 'Multi-Format Support',
+    featRatioDesc: 'Unterstützt 16:9, 4:3, 1:1 und andere soziale Formate.',
+    featCompress: 'Smarte Kompression',
+    featCompressDesc: 'Hält die Größe automatisch unter 2MB bei hoher Qualität.',
+    featPrivacy: 'Datenschutz',
+    featPrivacyDesc: 'Alle Verarbeitungen erfolgen lokal im Browser. Kein Upload.',
+    footer: 'InstaCrops Pro. Entwickelt für Ningbo University Camerart',
+    
+    rcReady: 'FERTIG',
+    rcTitle: 'Bereit zum Download',
+    rcDesc: 'Dein optimiertes Bild ist bereit.',
+    rcRes: 'Auflösung',
+    rcSize: 'Dateigröße',
+    rcRate: 'Kompression',
+    rcDownload: 'Herunterladen',
+    rcNext: 'Nächstes Bild',
+    rcOriginal: 'Original',
+    rcPreview: 'Vorschau',
 
-      // Loop to reduce quality if too large
-      while (blob.size > MAX_FILE_SIZE_BYTES && quality > 0.5) {
-        quality -= 0.1;
-        blob = await tryCompress(quality);
-      }
-
-      resolve({ 
-        blob, 
-        width: TARGET_WIDTH, 
-        height: TARGET_HEIGHT 
-      });
-    };
-
-    img.onerror = () => reject(new Error('Failed to load image'));
-    img.src = url;
-  });
-};
-
-export const formatBytes = (bytes: number, decimals = 2) => {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    mcTitle: 'Zuschnitt anpassen',
+    mcHint: 'Tipp: Ziehe das Bild zum Positionieren',
+    mcRatio: 'FORMAT',
+    mcZoomTitle: 'Zoom',
+    mcZoomDesc: 'Bereich anpassen',
+    mcLimitTitle: 'Ausgabe Limit',
+    mcLimitDesc: 'Auf Größe komprimieren',
+    mcCancel: 'Abbrechen',
+    mcConfirm: 'Bestätigen',
+    
+    alertError: 'Fehler bei der Verarbeitung, bitte erneut versuchen.',
+    alertType: 'Bitte eine Bilddatei hochladen',
+  }
 };
