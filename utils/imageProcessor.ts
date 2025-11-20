@@ -58,13 +58,14 @@ const getAutoCropDimensions = (imgWidth: number, imgHeight: number): CropConfig 
 };
 
 /**
- * Processes the image: Crops, Resizes to target dimensions, and Compresses to < 2MB.
- * Default target is 1920x1080 (16:9).
+ * Processes the image: Crops, Resizes to target dimensions, and Compresses to target size.
+ * Default target is 1920x1080 (16:9) and under 2MB.
  */
 export const processImage = async (
   file: File, 
   cropConfig?: CropConfig,
-  targetDimensions: OutputDimensions = { width: 1920, height: 1080 }
+  targetDimensions: OutputDimensions = { width: 1920, height: 1080 },
+  maxSizeBytes: number = 2 * 1024 * 1024 // Default 2MB
 ): Promise<{ blob: Blob; width: number; height: number }> => {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -75,7 +76,6 @@ export const processImage = async (
       
       const TARGET_WIDTH = targetDimensions.width;
       const TARGET_HEIGHT = targetDimensions.height;
-      const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024; // 2MB
 
       const canvas = document.createElement('canvas');
       canvas.width = TARGET_WIDTH;
@@ -107,7 +107,7 @@ export const processImage = async (
       ctx.imageSmoothingQuality = 'high';
       ctx.drawImage(img, crop.sx, crop.sy, crop.sWidth, crop.sHeight, 0, 0, TARGET_WIDTH, TARGET_HEIGHT);
 
-      // 3. Compression Loop to ensure < 2MB
+      // 3. Compression Loop to ensure < maxSizeBytes
       let quality = 0.95;
       let blob: Blob | null = null;
       
@@ -123,7 +123,9 @@ export const processImage = async (
       blob = await tryCompress(quality);
 
       // Loop to reduce quality if too large
-      while (blob.size > MAX_FILE_SIZE_BYTES && quality > 0.5) {
+      // We stop at quality 0.5 to avoid image looking terrible, unless user set a really small limit
+      const minQuality = 0.5;
+      while (blob.size > maxSizeBytes && quality > minQuality) {
         quality -= 0.1;
         blob = await tryCompress(quality);
       }
