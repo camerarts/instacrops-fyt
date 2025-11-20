@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>InstaCrops - 智能 16:9 图片转换器</title>
+    <meta name="description" content="InstaCrops 是一款在线 16:9 图片转换工具，支持自动识别主体、批量裁剪，一键生成适配 B 站、抖音、YouTube 的高清封面" />
     <!-- 使用 CDN 引入 Tailwind，简化配置 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -18,6 +19,7 @@
               'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
               'fade-in': 'fadeIn 0.5s ease-out forwards',
               'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+              'bounce-x': 'bounceX 1s infinite',
             },
             keyframes: {
               fadeIn: {
@@ -27,6 +29,10 @@
               fadeInUp: {
                 '0%': { opacity: '0', transform: 'translateY(10px)' },
                 '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              bounceX: {
+                '0%, 100%': { transform: 'translateX(-25%)', animationTimingFunction: 'cubic-bezier(0.8, 0, 1, 1)' },
+                '50%': { transform: 'translateX(0)', animationTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)' },
               }
             }
           },
@@ -41,7 +47,19 @@
         color: #f8fafc;
       }
     </style>
-  </head>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0",
+    "vite": "https://aistudiocdn.com/vite@^7.2.2",
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.1"
+  }
+}
+</script>
+</head>
   <body>
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
