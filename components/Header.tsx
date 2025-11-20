@@ -47,12 +47,12 @@ const Header: React.FC<HeaderProps> = ({ totalConverted, lang, setLang, t }) => 
         <div className="flex items-center gap-3 md:gap-4">
           {/* Enhanced Conversion Counter Badge - Aligned Height */}
           <div className="hidden md:flex items-center justify-center">
-            <div className="flex items-center gap-3 px-4 h-10 rounded-xl bg-[#131725]/80 border border-indigo-500/30 shadow-[0_0_20px_rgba(79,70,229,0.15)] backdrop-blur-xl group hover:border-indigo-500/50 hover:shadow-[0_0_25px_rgba(79,70,229,0.25)] transition-all duration-300">
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t.completed}</span>
+            <div className="flex items-center gap-2 px-4 h-10 rounded-xl bg-[#131725]/80 border border-indigo-500/30 shadow-[0_0_20px_rgba(79,70,229,0.15)] backdrop-blur-xl group hover:border-indigo-500/50 hover:shadow-[0_0_25px_rgba(79,70,229,0.25)] transition-all duration-300">
+              <span className="text-[11px] font-bold text-gray-400 tracking-wide">{t.completed}</span>
               <span key={totalConverted} className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-pink-400 font-mono tabular-nums leading-none tracking-tighter drop-shadow-[0_2px_10px_rgba(168,85,247,0.5)] animate-fade-in-up pt-0.5">
-                {totalConverted}
+                {totalConverted}+
               </span>
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t.converted}</span>
+              <span className="text-[11px] font-bold text-gray-400 tracking-wide">{t.converted}</span>
             </div>
           </div>
 
