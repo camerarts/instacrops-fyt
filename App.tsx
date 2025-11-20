@@ -160,17 +160,20 @@ const App: React.FC = () => {
             <div className="space-y-10 relative z-20">
               {/* Hero Text */}
               <div className="space-y-6">
-                <div className="inline-flex items-center space-x-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 backdrop-blur-sm animate-fade-in">
-                   <Zap className="w-4 h-4 text-yellow-400 fill-yellow-400/20" />
-                   <span className="text-xs font-semibold tracking-wider text-gray-300 uppercase">{t.freeService}</span>
-                </div>
-                
                 <h1 className="text-5xl lg:text-7xl font-bold tracking-tight leading-[1.1] animate-fade-in-up">
                   {t.heroTitleStart} <br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
                     {t.heroTitleEnd}
                   </span>
                 </h1>
+                
+                {/* Free Service Tagline - Now styled similarly to main title */}
+                <h2 className="text-2xl lg:text-3xl font-bold tracking-tight animate-fade-in-up delay-100 flex items-center gap-3">
+                  <Zap className="w-6 h-6 lg:w-8 lg:h-8 text-yellow-400 fill-yellow-400/20" />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 to-purple-200">
+                    {t.freeService}
+                  </span>
+                </h2>
                 
                 <p className="text-lg text-gray-400 leading-relaxed max-w-xl animate-fade-in-up delay-100">
                   {t.heroDesc} <span className="text-gray-200 font-medium border-b border-indigo-500/30 pb-0.5">{t.heroDescHighlight1}</span> & <span className="text-gray-200 font-medium border-b border-pink-500/30 pb-0.5">{t.heroDescHighlight2}</span>.
@@ -275,32 +278,33 @@ const App: React.FC = () => {
               {/* Card Container */}
               <div className="bg-[#131725]/60 backdrop-blur-xl border border-white/10 rounded-3xl p-1 shadow-2xl ring-1 ring-white/5 relative group">
                 
-                {/* Mode Switcher Tabs */}
-                <div className="absolute -top-12 left-6 flex items-center gap-1 p-1 bg-[#0B0F19]/80 backdrop-blur border border-white/10 rounded-xl">
-                  <button
-                    onClick={() => setMode('auto')}
-                    className={`
-                      px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-2
-                      ${mode === 'auto' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}
-                    `}
-                  >
-                    <Wand2 className="w-3 h-3" />
-                    {t.autoModeTitle}
-                  </button>
-                  <button
-                    onClick={() => setMode('manual')}
-                    className={`
-                      px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-2
-                      ${mode === 'manual' ? 'bg-pink-600 text-white shadow-lg shadow-pink-500/20' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}
-                    `}
-                  >
-                    <CropIcon className="w-3 h-3" />
-                    {t.manualModeTitle}
-                  </button>
-                </div>
-                
-                {/* Main Upload Area */}
+                {/* Main Upload Area & Toggles */}
                 <div className="bg-[#0B0F19] rounded-[20px] p-6 md:p-8 border border-white/5">
+                  
+                  {/* Mode Switcher Tabs - Now inside the card, full width, equal size */}
+                  <div className="flex p-1 mb-6 bg-[#131725] rounded-xl border border-white/5">
+                    <button
+                      onClick={() => setMode('auto')}
+                      className={`
+                        flex-1 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2
+                        ${mode === 'auto' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}
+                      `}
+                    >
+                      <Wand2 className="w-3 h-3" />
+                      {t.autoModeTitle}
+                    </button>
+                    <button
+                      onClick={() => setMode('manual')}
+                      className={`
+                        flex-1 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2
+                        ${mode === 'manual' ? 'bg-pink-600 text-white shadow-lg shadow-pink-500/20' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}
+                      `}
+                    >
+                      <CropIcon className="w-3 h-3" />
+                      {t.manualModeTitle}
+                    </button>
+                  </div>
+
                   <UploadArea 
                     onFileSelect={handleFileSelect} 
                     isProcessing={status === ProcessingStatus.PROCESSING} 
