@@ -61,307 +61,291 @@ const App: React.FC = () => {
   
   // Manual Crop State
   const [tempFile, setTempFile] = useState<File | null>(null);
-  const [showCropper, setShowCropper] = useState(false);
+  const [showManualCropper, setShowManualCropper] = useState(false);
 
-  const handleFileSelect = useCallback(async (file: File) => {
+  const handleFileSelect = useCallback((file: File) => {
     if (mode === 'manual') {
       setTempFile(file);
-      setShowCropper(true);
+      setShowManualCropper(true);
     } else {
-      processFile(file);
+      // Auto mode default
+      processSelectedFile(file);
     }
   }, [mode]);
 
-  const processFile = async (
-    file: File, 
-    cropConfig?: CropConfig, 
-    outputDim?: OutputDimensions,
-    maxSizeBytes?: number
+  const handleManualConfirm = async (crop: CropConfig, dim: OutputDimensions, maxBytes: number) => {
+    setShowManualCropper(false);
+    if (tempFile) {
+        await processSelectedFile(tempFile, crop, dim, maxBytes);
+        setTempFile(null);
+    }
+  };
+
+  const handleManualCancel = () => {
+    setShowManualCropper(false);
+    setTempFile(null);
+  }
+
+  const processSelectedFile = async (
+      file: File, 
+      crop?: CropConfig, 
+      dim?: OutputDimensions, 
+      maxBytes?: number
   ) => {
     setStatus(ProcessingStatus.PROCESSING);
+    
+    // Determine effective dimensions (auto default to 1920x1080)
+    // If dim is passed (from manual), use it. If not, use defaults.
+    const targetDim = dim || { width: 1920, height: 1080 };
+
     try {
-      if (!cropConfig) await new Promise(resolve => setTimeout(resolve, 800));
-
-      const { blob, width, height } = await processImage(file, cropConfig, outputDim, maxSizeBytes);
+      // Artificial delay for UX so the loader is visible for a moment
+      await new Promise(r => setTimeout(r, 800));
       
-      const processedUrl = URL.createObjectURL(blob);
+      const res = await processImage(file, crop, targetDim, maxBytes);
+      
+      const processedUrl = URL.createObjectURL(res.blob);
       const originalUrl = URL.createObjectURL(file);
-
+      
       setResult({
         originalUrl,
         processedUrl,
         originalSize: file.size,
-        processedSize: blob.size,
-        width,
-        height
+        processedSize: res.blob.size,
+        width: res.width,
+        height: res.height
       });
       
       setStatus(ProcessingStatus.SUCCESS);
       
-      try {
-        const response = await fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}/up`);
-        if (response.ok) {
-          const data = await response.json();
-          setTotalConverted(data.count);
-          localStorage.setItem('instacrops_total_converted', data.count.toString());
-        } else {
-          setTotalConverted(prev => prev + 1);
-        }
-      } catch (err) {
-        setTotalConverted(prev => prev + 1);
-      }
+      // Optimistic update
+      const newCount = totalConverted + 1;
+      setTotalConverted(newCount);
+      localStorage.setItem('instacrops_total_converted', newCount.toString());
+      
+      // Fire and forget API update
+      fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}/up`)
+        .catch(e => console.error(e));
 
-    } catch (error) {
-      console.error("Error processing image:", error);
+    } catch (e) {
+      console.error(e);
       setStatus(ProcessingStatus.ERROR);
       alert(t.alertError);
-    } finally {
-      setTempFile(null);
-      setShowCropper(false);
     }
   };
 
-  const handleManualCropConfirm = (cropConfig: CropConfig, outputDim: OutputDimensions, maxSizeBytes: number) => {
-    if (tempFile) {
-      processFile(tempFile, cropConfig, outputDim, maxSizeBytes);
-    }
-  };
-
-  const handleManualCropCancel = () => {
-    setTempFile(null);
-    setShowCropper(false);
-  };
-
-  const handleReset = useCallback(() => {
-    if (result) {
-      URL.revokeObjectURL(result.originalUrl);
-      URL.revokeObjectURL(result.processedUrl);
-    }
+  const handleReset = () => {
     setResult(null);
     setStatus(ProcessingStatus.IDLE);
-  }, [result]);
+    setTempFile(null);
+  };
 
   return (
-    <div className="h-screen w-full flex flex-col relative bg-[#0B0F19] text-slate-200 overflow-hidden selection:bg-primary/30 selection:text-white font-sans">
-      
-      {/* Ambient Background Effects */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-primary/20 rounded-full blur-[120px] opacity-40 animate-pulse-slow" />
-        <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-secondary/15 rounded-full blur-[100px] opacity-40" />
-        <div className="absolute top-[20%] left-[50%] translate-x-[-50%] w-[800px] h-[800px] bg-blue-600/5 rounded-full blur-[100px]" />
-      </div>
+    <div className="min-h-screen bg-[#0f172a] text-white selection:bg-indigo-500/30 flex flex-col font-sans overflow-x-hidden">
+      <Header totalConverted={totalConverted} lang={lang} setLang={setLang} t={t} />
 
-      {/* Header (Fixed) */}
-      <Header 
-        totalConverted={totalConverted} 
-        lang={lang}
-        setLang={setLang}
-        t={t}
-      />
-
-      {/* Main Content (Flex/Grid for Compact Fit) */}
-      <main className="flex-1 w-full relative z-10 flex flex-col items-center justify-center px-4 lg:px-8 overflow-y-auto lg:overflow-hidden">
+      <main className="flex-1 container mx-auto px-4 py-12 lg:py-20 flex flex-col justify-center relative z-10">
         
-        <div className={`w-full transition-all duration-500 ease-in-out ${status === ProcessingStatus.SUCCESS ? 'max-w-6xl' : 'max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center'}`}>
-          
-          {/* LEFT COLUMN: Text & Info (Hidden in Success state to focus on result) */}
-          {status !== ProcessingStatus.SUCCESS && (
-            <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6 animate-fade-in-up relative group/left">
-               
-               {/* Visual Flowing Arrow Cue (Desktop Only) */}
-               <div className="hidden lg:block absolute -right-24 top-1/2 -translate-y-1/2 z-0 pointer-events-none opacity-60">
-                  <svg width="120" height="60" viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    {/* Glow effect path */}
+        {/* Background Blobs */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-indigo-500/20 rounded-full blur-[100px] pointer-events-none"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+        {status === ProcessingStatus.SUCCESS && result ? (
+          <ResultCard data={result} onReset={handleReset} t={t} />
+        ) : (
+          <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center relative">
+            
+            {/* Left Column: Hero Content */}
+            <div className="space-y-10 relative z-20">
+              {/* Hero Text */}
+              <div className="space-y-6">
+                <div className="inline-flex items-center space-x-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 backdrop-blur-sm animate-fade-in">
+                   <Zap className="w-4 h-4 text-yellow-400 fill-yellow-400/20" />
+                   <span className="text-xs font-semibold tracking-wider text-gray-300 uppercase">{t.freeService}</span>
+                </div>
+                
+                <h1 className="text-5xl lg:text-7xl font-bold tracking-tight leading-[1.1] animate-fade-in-up">
+                  {t.heroTitleStart} <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
+                    {t.heroTitleEnd}
+                  </span>
+                </h1>
+                
+                <p className="text-lg text-gray-400 leading-relaxed max-w-xl animate-fade-in-up delay-100">
+                  {t.heroDesc} <span className="text-gray-200 font-medium border-b border-indigo-500/30 pb-0.5">{t.heroDescHighlight1}</span> & <span className="text-gray-200 font-medium border-b border-pink-500/30 pb-0.5">{t.heroDescHighlight2}</span>.
+                </p>
+              </div>
+
+              {/* Redesigned Workflow Steps (Visual Stepper) */}
+              <div className="relative animate-fade-in-up delay-200">
+                {/* Connecting Line Layer */}
+                <div className="absolute top-1/2 left-0 w-full h-[2px] -translate-y-1/2 z-0">
+                   <div className="w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+                </div>
+
+                <div className="relative z-10 flex items-center justify-between max-w-md">
+                  {/* Step 1 */}
+                  <div className="flex flex-col items-center gap-3 group cursor-default">
+                    <div className="w-14 h-14 rounded-full bg-[#131725] border border-white/10 shadow-lg flex items-center justify-center group-hover:border-indigo-500/50 group-hover:shadow-indigo-500/20 transition-all duration-500">
+                       <UploadCloud className="w-6 h-6 text-indigo-400 group-hover:scale-110 transition-transform" />
+                    </div>
+                    <span className="text-xs font-bold text-gray-400 tracking-wider uppercase">{t.step1}</span>
+                  </div>
+
+                   {/* Arrow 1 */}
+                   <MoveRight className="w-5 h-5 text-gray-600" />
+
+                  {/* Step 2 */}
+                  <div className="flex flex-col items-center gap-3 group cursor-default">
+                     <div className="w-14 h-14 rounded-full bg-[#131725] border border-white/10 shadow-lg flex items-center justify-center group-hover:border-pink-500/50 group-hover:shadow-pink-500/20 transition-all duration-500">
+                       <Wand2 className="w-6 h-6 text-pink-400 group-hover:scale-110 transition-transform" />
+                    </div>
+                    <span className="text-xs font-bold text-gray-400 tracking-wider uppercase">{t.step2}</span>
+                  </div>
+
+                  {/* Arrow 2 */}
+                  <MoveRight className="w-5 h-5 text-gray-600" />
+
+                  {/* Step 3 */}
+                  <div className="flex flex-col items-center gap-3 group cursor-default">
+                    <div className="w-14 h-14 rounded-full bg-[#131725] border border-white/10 shadow-lg flex items-center justify-center group-hover:border-indigo-500/50 group-hover:shadow-indigo-500/20 transition-all duration-500">
+                       <Download className="w-6 h-6 text-indigo-400 group-hover:scale-110 transition-transform" />
+                    </div>
+                    <span className="text-xs font-bold text-gray-400 tracking-wider uppercase">{t.step3}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Small Feature Tags (Secondary Info) */}
+              <div className="flex flex-wrap gap-4 pt-4 animate-fade-in-up delay-300">
+                 <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <Maximize2 className="w-4 h-4 text-indigo-500/50" />
+                    <span>{t.featRatio}</span>
+                 </div>
+                 <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <Lock className="w-4 h-4 text-pink-500/50" />
+                    <span>{t.featPrivacy}</span>
+                 </div>
+              </div>
+            </div>
+
+             {/* OPTICAL FLOW ARROW (Desktop Only) */}
+             {/* Curves from the end of text section towards the upload card */}
+            <div className="hidden lg:block absolute left-[45%] top-1/2 -translate-y-1/2 w-[280px] h-[120px] pointer-events-none z-10 opacity-80">
+                 <svg width="100%" height="100%" viewBox="0 0 280 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="overflow-visible">
+                    <defs>
+                      <linearGradient id="flowGradient" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#6366f1" stopOpacity="0" />
+                        <stop offset="50%" stopColor="#818cf8" stopOpacity="1" />
+                        <stop offset="100%" stopColor="#ec4899" stopOpacity="0" />
+                      </linearGradient>
+                       <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                          <feGaussianBlur stdDeviation="3" result="blur" />
+                          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                       </filter>
+                    </defs>
+                    {/* The Path */}
                     <path 
-                      d="M0 30 C 40 30, 60 30, 100 30" 
-                      stroke="url(#gradient-arrow)" 
-                      strokeWidth="2" 
+                      d="M 0,80 C 100,80 120,40 280,40"
+                      stroke="url(#flowGradient)" 
+                      strokeWidth="3"
                       strokeLinecap="round"
                       fill="none"
-                      className="animate-dash" 
-                      strokeDasharray="10 10"
+                      className="animate-flow"
+                      strokeDasharray="120 300" 
+                      filter="url(#glow)"
                     />
                     {/* Arrow Head */}
-                    <path d="M95 25 L105 30 L95 35" fill="none" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-pulse" />
-                    <defs>
-                      <linearGradient id="gradient-arrow" x1="0" y1="0" x2="100" y2="0" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#6366f1" stopOpacity="0" />
-                        <stop offset="0.5" stopColor="#818cf8" />
-                        <stop offset="1" stopColor="#c084fc" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
-               </div>
-
-               {/* Main Title */}
-               <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1]">
-                  {t.heroTitleStart} <br className="hidden lg:block"/>
-                  <span className="text-transparent bg-clip-text bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400">{t.heroTitleEnd}</span>
-               </h2>
-
-               {/* Subtitle Gradient */}
-               <h3 className="text-xl md:text-2xl font-bold tracking-tight">
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300">
-                    {t.freeService}
-                  </span>
-               </h3>
-
-               {/* Description */}
-               <p className="text-gray-400 text-base md:text-lg leading-relaxed max-w-xl lg:max-w-2xl font-light">
-                  {t.heroDesc} <span className="text-gray-200 font-medium">{t.heroDescHighlight1}</span> {lang === 'en-US' ? 'and' : '与'} <span className="text-gray-200 font-medium">{t.heroDescHighlight2}</span>。
-               </p>
-
-               {/* REDESIGNED VISUAL WORKFLOW */}
-               <div className="w-full max-w-2xl py-4">
-                  <div className="relative flex items-center justify-between md:justify-start md:gap-16 text-sm font-medium">
-                    
-                    {/* Connecting Line */}
-                    <div className="absolute top-1/2 left-0 w-full h-[2px] bg-gradient-to-r from-indigo-500/0 via-indigo-500/20 to-indigo-500/0 -z-10"></div>
-                    
-                    {/* Step 1 */}
-                    <div className="flex flex-col items-center gap-2 bg-[#0B0F19] px-2 z-10">
-                       <div className="w-10 h-10 rounded-full bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.15)]">
-                         <UploadCloud className="w-5 h-5" />
-                       </div>
-                       <span className="text-gray-300 text-xs">{t.step1}</span>
-                    </div>
-
-                    {/* Arrow 1 */}
-                     <div className="hidden md:block text-indigo-500/30">
-                       <MoveRight className="w-4 h-4" />
-                     </div>
-
-                    {/* Step 2 */}
-                    <div className="flex flex-col items-center gap-2 bg-[#0B0F19] px-2 z-10">
-                       <div className="w-10 h-10 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.15)]">
-                         <Wand2 className="w-5 h-5" />
-                       </div>
-                       <span className="text-gray-300 text-xs">{t.step2}</span>
-                    </div>
-
-                    {/* Arrow 2 */}
-                     <div className="hidden md:block text-purple-500/30">
-                       <MoveRight className="w-4 h-4" />
-                     </div>
-
-                    {/* Step 3 */}
-                    <div className="flex flex-col items-center gap-2 bg-[#0B0F19] px-2 z-10">
-                       <div className="w-10 h-10 rounded-full bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400 shadow-[0_0_15px_rgba(236,72,153,0.15)]">
-                         <Download className="w-5 h-5" />
-                       </div>
-                       <span className="text-gray-300 text-xs">{t.step3}</span>
-                    </div>
-
-                  </div>
-               </div>
-
-               {/* Detailed Features List (Grid Layout) */}
-               <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 pt-2 opacity-90">
-                  {/* Feature 1 */}
-                  <div className="flex flex-col items-start bg-white/[0.03] p-4 rounded-xl border border-white/5 hover:bg-white/[0.05] transition-colors text-left group">
-                      <div className="flex items-center gap-2 text-sm font-bold text-indigo-200 mb-1.5">
-                        <Maximize2 className="w-4 h-4 text-indigo-400" />
-                        <span>{t.featRatio}</span>
-                      </div>
-                      <p className="text-xs text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">{t.featRatioDesc}</p>
-                  </div>
-                  
-                  {/* Feature 2 */}
-                  <div className="flex flex-col items-start bg-white/[0.03] p-4 rounded-xl border border-white/5 hover:bg-white/[0.05] transition-colors text-left group">
-                      <div className="flex items-center gap-2 text-sm font-bold text-indigo-200 mb-1.5">
-                        <Zap className="w-4 h-4 text-purple-400" />
-                        <span>{t.featCompress}</span>
-                      </div>
-                      <p className="text-xs text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">{t.featCompressDesc}</p>
-                  </div>
-
-                  {/* Feature 3 */}
-                  <div className="flex flex-col items-start bg-white/[0.03] p-4 rounded-xl border border-white/5 hover:bg-white/[0.05] transition-colors text-left group">
-                      <div className="flex items-center gap-2 text-sm font-bold text-indigo-200 mb-1.5">
-                        <Lock className="w-4 h-4 text-pink-400" />
-                        <span>{t.featPrivacy}</span>
-                      </div>
-                      <p className="text-xs text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">{t.featPrivacyDesc}</p>
-                  </div>
-               </div>
-
-               {/* Desktop Footer Copyright */}
-               <div className="text-xs text-gray-600 pt-2 hidden lg:block">
-                  &copy; {new Date().getFullYear()} {t.footer}
-               </div>
+                    <path d="M 270,35 L 280,40 L 270,45" stroke="#ec4899" strokeWidth="2" fill="none" className="opacity-80" />
+                 </svg>
             </div>
-          )}
 
-          {/* RIGHT COLUMN: Tool Area */}
-          <div className={`${status === ProcessingStatus.SUCCESS ? 'w-full' : 'lg:col-span-5 w-full max-w-md lg:max-w-full mx-auto'} animate-fade-in`}>
-            
-            {status === ProcessingStatus.SUCCESS && result ? (
-               <ResultCard data={result} onReset={handleReset} t={t} />
-            ) : (
-              <div className="bg-[#131725]/60 backdrop-blur-xl border border-white/10 p-5 rounded-[2rem] shadow-2xl ring-1 ring-white/5 relative overflow-hidden">
-                  
-                  {/* Compact Mode Switcher */}
-                  <div className="flex p-1 bg-black/40 rounded-xl mb-5 relative border border-white/5">
-                      <button
-                        onClick={() => setMode('auto')}
-                        className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 ${mode === 'auto' ? 'bg-[#1A1F2E] text-white shadow-lg ring-1 ring-indigo-500/50' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}`}
-                      >
-                        <Wand2 className={`w-4 h-4 ${mode === 'auto' ? 'text-indigo-400' : ''}`} />
-                        <span>{t.autoModeTitle}</span>
-                      </button>
-                      <button
-                        onClick={() => setMode('manual')}
-                        className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 ${mode === 'manual' ? 'bg-[#1A1F2E] text-white shadow-lg ring-1 ring-pink-500/50' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}`}
-                      >
-                        <CropIcon className={`w-4 h-4 ${mode === 'manual' ? 'text-pink-400' : ''}`} />
-                        <span>{t.manualModeTitle}</span>
-                      </button>
-                  </div>
+            {/* Right Column: Interactive Card */}
+            <div className="relative z-20 animate-fade-in-up delay-200">
+              
+              {/* Card Container */}
+              <div className="bg-[#131725]/60 backdrop-blur-xl border border-white/10 rounded-3xl p-1 shadow-2xl ring-1 ring-white/5 relative group">
+                
+                {/* Mode Switcher Tabs */}
+                <div className="absolute -top-12 left-6 flex items-center gap-1 p-1 bg-[#0B0F19]/80 backdrop-blur border border-white/10 rounded-xl">
+                  <button
+                    onClick={() => setMode('auto')}
+                    className={`
+                      px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-2
+                      ${mode === 'auto' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}
+                    `}
+                  >
+                    <Wand2 className="w-3 h-3" />
+                    {t.autoModeTitle}
+                  </button>
+                  <button
+                    onClick={() => setMode('manual')}
+                    className={`
+                      px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-2
+                      ${mode === 'manual' ? 'bg-pink-600 text-white shadow-lg shadow-pink-500/20' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}
+                    `}
+                  >
+                    <CropIcon className="w-3 h-3" />
+                    {t.manualModeTitle}
+                  </button>
+                </div>
+                
+                {/* Main Upload Area */}
+                <div className="bg-[#0B0F19] rounded-[20px] p-6 md:p-8 border border-white/5">
+                  <UploadArea 
+                    onFileSelect={handleFileSelect} 
+                    isProcessing={status === ProcessingStatus.PROCESSING} 
+                    t={t}
+                  />
 
-                  {/* Info Text based on mode */}
-                  <div className="mb-4 px-2 flex items-center gap-2">
-                       <div className={`w-1 h-1 rounded-full ${mode === 'auto' ? 'bg-indigo-500' : 'bg-pink-500'}`}></div>
-                       <p className="text-xs text-gray-400 font-medium tracking-wide uppercase opacity-80">
-                         {mode === 'auto' ? t.autoModeDesc : t.manualModeDesc}
-                       </p>
-                  </div>
+                  {/* Processing State Overlay */}
+                  {status === ProcessingStatus.PROCESSING && (
+                    <div className="absolute inset-0 z-50 bg-[#0B0F19]/90 backdrop-blur-sm rounded-[20px] flex flex-col items-center justify-center text-center p-8 border border-white/10">
+                      <div className="relative w-20 h-20 mb-6">
+                         <div className="absolute inset-0 border-4 border-indigo-500/20 rounded-full"></div>
+                         <div className="absolute inset-0 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                         <Loader2 className="absolute inset-0 m-auto w-8 h-8 text-indigo-400 animate-pulse" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-2 animate-pulse">{t.processingTitle}</h3>
+                      <p className="text-gray-400 text-sm">
+                        {mode === 'auto' ? t.processingAuto : t.processingManual} {t.processingDesc}
+                      </p>
+                    </div>
+                  )}
+                </div>
 
-                  {/* Upload Area */}
-                  <div className="relative">
-                      {status === ProcessingStatus.PROCESSING ? (
-                         <div className="h-60 flex flex-col items-center justify-center border-2 border-white/10 border-dashed rounded-2xl bg-white/5 animate-pulse">
-                            <Loader2 className="w-10 h-10 text-indigo-400 animate-spin mb-4" />
-                            <span className="text-sm text-gray-300 font-medium">{t.processingTitle}</span>
-                            <span className="text-xs text-gray-500 mt-1">{mode === 'manual' ? t.processingManual : t.processingAuto}</span>
-                         </div>
-                      ) : (
-                         <UploadArea onFileSelect={handleFileSelect} isProcessing={false} t={t} />
-                      )}
+                {/* Footer Info inside Card */}
+                <div className="px-6 py-4 flex items-center justify-between border-t border-white/5">
+                  <div className="flex items-center space-x-2">
+                     <div className="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_10px_rgba(74,222,128,0.5)] animate-pulse"></div>
+                     <span className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">System Online</span>
                   </div>
+                  <div className="text-[10px] text-gray-600 font-mono">v2.4.0</div>
+                </div>
+
               </div>
-            )}
-          </div>
+            </div>
 
-        </div>
-        
-        {/* Mobile Footer */}
-        {status !== ProcessingStatus.SUCCESS && (
-          <div className="text-[10px] text-gray-600 py-6 lg:hidden text-center">
-            &copy; {new Date().getFullYear()} {t.footer}
           </div>
+        )}
+        
+        {/* Manual Cropper Modal */}
+        {showManualCropper && tempFile && (
+           <ManualCropper 
+             file={tempFile} 
+             onConfirm={handleManualConfirm} 
+             onCancel={handleManualCancel} 
+             t={t}
+           />
         )}
 
       </main>
 
-      {/* Manual Cropper Overlay */}
-      {showCropper && tempFile && (
-        <ManualCropper 
-          file={tempFile} 
-          onConfirm={handleManualCropConfirm} 
-          onCancel={handleManualCropCancel} 
-          t={t}
-        />
-      )}
+      <footer className="py-8 text-center text-gray-600 text-sm relative z-10">
+        <p className="opacity-50 hover:opacity-100 transition-opacity duration-300 cursor-default">
+          {t.footer}
+        </p>
+      </footer>
     </div>
   );
 };
