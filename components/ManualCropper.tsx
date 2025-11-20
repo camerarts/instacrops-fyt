@@ -1,4 +1,5 @@
 
+
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Check, X, ZoomIn, Move, Smartphone, Monitor, Square, LayoutTemplate, HardDrive, Hand } from 'lucide-react';
 import { CropConfig, OutputDimensions } from '../utils/imageProcessor';
@@ -273,11 +274,22 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
       <div className="w-full max-w-6xl bg-[#0f1219] rounded-3xl border border-white/10 shadow-2xl overflow-hidden flex flex-col h-[90vh]">
         
         {/* Header */}
-        <div className="h-16 border-b border-white/5 flex justify-between items-center px-6 shrink-0 bg-[#131620] z-20">
-          <h3 className="text-white font-semibold flex items-center gap-2 text-lg">
-            <Move className="w-5 h-5 text-indigo-400" />
-            <span className="tracking-wide">{t.mcTitle}</span>
-          </h3>
+        <div className="min-h-16 py-3 border-b border-white/5 flex justify-between items-center px-6 shrink-0 bg-[#131620] z-20">
+          <div className="flex flex-col">
+            <h3 className="text-white font-semibold flex items-center gap-2 text-lg">
+              <Move className="w-5 h-5 text-indigo-400" />
+              <span className="tracking-wide">{t.mcTitle}</span>
+            </h3>
+            {/* Added Hints Below Title */}
+            {t.mcKeyTips && (
+              <div className="text-[10px] text-gray-400 mt-1 pl-7 space-y-0.5 font-mono opacity-80">
+                 {t.mcKeyTips.map((tip: string, idx: number) => (
+                   <p key={idx}>• {tip}</p>
+                 ))}
+              </div>
+            )}
+          </div>
+
           <button onClick={onCancel} className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-full">
             <X className="w-6 h-6" />
           </button>
