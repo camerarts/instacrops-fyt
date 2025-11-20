@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Crop, Layers, ChevronDown, Check } from 'lucide-react';
 import { languages, Language } from '../utils/translations';
@@ -15,7 +14,7 @@ const Header: React.FC<HeaderProps> = ({ totalConverted, lang, setLang, t }) => 
   const currentLang = languages.find(l => l.code === lang) || languages[0];
 
   return (
-    <header className="w-full h-24 flex items-center sticky top-0 z-50 transition-all duration-300">
+    <header className="w-full h-20 flex items-center sticky top-0 z-50 transition-all duration-300 shrink-0">
       {/* Glassmorphism Container */}
       <div className="absolute inset-0 bg-[#0B0F19]/80 backdrop-blur-md border-b border-white/[0.08]"></div>
       
@@ -23,23 +22,23 @@ const Header: React.FC<HeaderProps> = ({ totalConverted, lang, setLang, t }) => 
         {/* Left: Logo (Redesigned) */}
         <div className="flex items-center gap-4 group cursor-pointer select-none">
           {/* Icon Container */}
-          <div className="relative w-12 h-12 flex items-center justify-center">
+          <div className="relative w-10 h-10 flex items-center justify-center">
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-xl blur opacity-40 group-hover:opacity-70 transition-opacity duration-500"></div>
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-xl shadow-inner border border-white/10 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-              <Layers className="w-6 h-6 text-white/90 absolute" />
-              <Crop className="w-4 h-4 text-indigo-200 absolute translate-x-1 translate-y-1" />
+              <Layers className="w-5 h-5 text-white/90 absolute" />
+              <Crop className="w-3 h-3 text-indigo-200 absolute translate-x-1 translate-y-1" />
             </div>
           </div>
           
           {/* Text Logo */}
           <div className="flex flex-col justify-center">
-            <h1 className="text-2xl font-bold tracking-tight leading-none">
+            <h1 className="text-xl font-bold tracking-tight leading-none">
               <span className="text-white">Insta</span>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-400">Crops</span>
             </h1>
-            <div className="flex items-center gap-1.5 mt-1">
+            <div className="flex items-center gap-1.5 mt-0.5">
               <div className="h-[1px] w-3 bg-indigo-500/50"></div>
-              <span className="text-[10px] font-semibold text-indigo-300/80 tracking-[0.2em] uppercase">{t.proStudio}</span>
+              <span className="text-[9px] font-semibold text-indigo-300/80 tracking-[0.2em] uppercase">{t.proStudio}</span>
             </div>
           </div>
         </div>
@@ -48,9 +47,9 @@ const Header: React.FC<HeaderProps> = ({ totalConverted, lang, setLang, t }) => 
         <div className="flex items-center gap-3 md:gap-4">
           {/* Enhanced Conversion Counter Badge - Aligned Height */}
           <div className="hidden md:flex items-center justify-center">
-            <div className="flex items-center gap-3 px-4 h-11 rounded-xl bg-[#131725]/80 border border-indigo-500/30 shadow-[0_0_20px_rgba(79,70,229,0.15)] backdrop-blur-xl group hover:border-indigo-500/50 hover:shadow-[0_0_25px_rgba(79,70,229,0.25)] transition-all duration-300">
+            <div className="flex items-center gap-3 px-4 h-10 rounded-xl bg-[#131725]/80 border border-indigo-500/30 shadow-[0_0_20px_rgba(79,70,229,0.15)] backdrop-blur-xl group hover:border-indigo-500/50 hover:shadow-[0_0_25px_rgba(79,70,229,0.25)] transition-all duration-300">
               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t.completed}</span>
-              <span key={totalConverted} className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-pink-400 font-mono tabular-nums leading-none tracking-tighter drop-shadow-[0_2px_10px_rgba(168,85,247,0.5)] animate-fade-in-up pt-0.5">
+              <span key={totalConverted} className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-pink-400 font-mono tabular-nums leading-none tracking-tighter drop-shadow-[0_2px_10px_rgba(168,85,247,0.5)] animate-fade-in-up pt-0.5">
                 {totalConverted}
               </span>
               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t.converted}</span>
@@ -65,7 +64,7 @@ const Header: React.FC<HeaderProps> = ({ totalConverted, lang, setLang, t }) => 
             <button
               onClick={() => setIsLangOpen(!isLangOpen)}
               className={`
-                flex items-center gap-2 px-4 h-11 rounded-xl border transition-all duration-300 group
+                flex items-center gap-2 px-3 h-10 rounded-xl border transition-all duration-300 group
                 ${isLangOpen 
                   ? 'bg-[#1A1F2E] border-indigo-500/50 text-white shadow-[0_0_15px_rgba(79,70,229,0.15)]' 
                   : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-indigo-500/30 text-gray-300'
@@ -75,11 +74,11 @@ const Header: React.FC<HeaderProps> = ({ totalConverted, lang, setLang, t }) => 
               aria-expanded={isLangOpen}
             >
               <span className="text-lg leading-none filter drop-shadow-sm">{currentLang.flag}</span>
-              <span className="text-sm font-semibold hidden md:block group-hover:text-white transition-colors">
+              <span className="text-xs font-semibold hidden md:block group-hover:text-white transition-colors">
                 {currentLang.label}
               </span>
               <ChevronDown 
-                className={`w-4 h-4 text-gray-500 group-hover:text-indigo-300 transition-transform duration-300 ${isLangOpen ? 'rotate-180 text-indigo-400' : ''}`} 
+                className={`w-3 h-3 text-gray-500 group-hover:text-indigo-300 transition-transform duration-300 ${isLangOpen ? 'rotate-180 text-indigo-400' : ''}`} 
               />
             </button>
 
