@@ -5,7 +5,7 @@ import UploadArea from './components/UploadArea';
 import ResultCard from './components/ResultCard';
 import ManualCropper from './components/ManualCropper';
 import { ProcessedImage, ProcessingStatus, processImage, CropConfig, OutputDimensions } from './utils/imageProcessor';
-import { Loader2, Wand2, Crop as CropIcon, Zap } from 'lucide-react';
+import { Loader2, Wand2, Crop as CropIcon, Zap, CheckCircle2 } from 'lucide-react';
 
 type ProcessMode = 'auto' | 'manual';
 
@@ -165,7 +165,7 @@ const App: React.FC = () => {
           
           {/* Hero Text */}
           {status === ProcessingStatus.IDLE && (
-            <div className="text-center mb-12 max-w-4xl animate-fade-in relative">
+            <div className="text-center mb-10 max-w-4xl animate-fade-in relative w-full flex flex-col items-center">
                <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 backdrop-blur-md mb-8 shadow-[0_0_20px_rgba(79,70,229,0.15)]">
                 <Zap className="w-3.5 h-3.5 text-indigo-400 fill-indigo-400" />
                 <span className="text-xs font-semibold text-indigo-200 tracking-wide uppercase">Pro Image Tools</span>
@@ -176,34 +176,73 @@ const App: React.FC = () => {
                 <span className="text-transparent bg-clip-text bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400"> 极致视觉</span>
               </h2>
               
-              <p className="text-lg md:text-xl text-gray-400 leading-relaxed max-w-2xl mx-auto mb-10 font-light">
+              <p className="text-lg md:text-xl text-gray-400 leading-relaxed max-w-2xl mx-auto mb-12 font-light">
                 专为创作者打造的图像处理引擎。无论是社交媒体封面还是高清展示图，一键实现<span className="text-gray-200 font-medium">完美裁剪</span>与<span className="text-gray-200 font-medium">无损压缩</span>。
               </p>
 
-              {/* Mode Switcher */}
-              <div className="inline-flex bg-[#131725] border border-white/10 p-1.5 rounded-2xl shadow-2xl relative z-20">
+              {/* REDESIGNED Mode Switcher - Large Cards */}
+              <div className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-4 relative z-20 mb-8">
+                
+                {/* Auto Mode Button */}
                 <button
                   onClick={() => setMode('auto')}
-                  className={`flex items-center px-8 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
-                    mode === 'auto' 
-                      ? 'bg-gradient-to-br from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-900/40 scale-[1.02]' 
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
+                  className={`relative group flex items-center p-5 rounded-2xl transition-all duration-300 text-left border-2
+                    ${mode === 'auto' 
+                      ? 'bg-[#1A1F2E] border-indigo-500 shadow-[0_0_30px_rgba(79,70,229,0.2)] scale-[1.02]' 
+                      : 'bg-[#131725]/50 border-white/5 hover:bg-[#1A1F2E] hover:border-indigo-500/30 hover:scale-[1.01]'
+                    }`}
                 >
-                  <Wand2 className="w-4 h-4 mr-2" />
-                  自动模式 (16:9)
+                  {/* Highlight Indicator */}
+                  {mode === 'auto' && (
+                    <div className="absolute top-3 right-3 text-indigo-500">
+                      <CheckCircle2 className="w-5 h-5 fill-indigo-500/20" />
+                    </div>
+                  )}
+
+                  <div className={`p-3 rounded-xl mr-4 transition-colors duration-300 ${mode === 'auto' ? 'bg-indigo-500/20 text-indigo-400' : 'bg-white/5 text-gray-400 group-hover:text-indigo-400'}`}>
+                    <Wand2 className="w-6 h-6" />
+                  </div>
+                  
+                  <div>
+                    <h3 className={`font-bold text-lg mb-0.5 transition-colors ${mode === 'auto' ? 'text-white' : 'text-gray-300 group-hover:text-white'}`}>
+                      自动模式 (16:9)
+                    </h3>
+                    <p className="text-sm text-gray-500 font-medium">
+                      智能识别，一键生成
+                    </p>
+                  </div>
                 </button>
+
+                {/* Manual Mode Button */}
                 <button
                   onClick={() => setMode('manual')}
-                  className={`flex items-center px-8 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
-                    mode === 'manual' 
-                      ? 'bg-gradient-to-br from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-900/40 scale-[1.02]' 
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
+                  className={`relative group flex items-center p-5 rounded-2xl transition-all duration-300 text-left border-2
+                    ${mode === 'manual' 
+                      ? 'bg-[#1A1F2E] border-pink-500 shadow-[0_0_30px_rgba(236,72,153,0.2)] scale-[1.02]' 
+                      : 'bg-[#131725]/50 border-white/5 hover:bg-[#1A1F2E] hover:border-pink-500/30 hover:scale-[1.01]'
+                    }`}
                 >
-                  <CropIcon className="w-4 h-4 mr-2" />
-                  手动裁剪
+                   {/* Highlight Indicator */}
+                   {mode === 'manual' && (
+                    <div className="absolute top-3 right-3 text-pink-500">
+                      <CheckCircle2 className="w-5 h-5 fill-pink-500/20" />
+                    </div>
+                  )}
+
+                  <div className={`p-3 rounded-xl mr-4 transition-colors duration-300 ${mode === 'manual' ? 'bg-pink-500/20 text-pink-400' : 'bg-white/5 text-gray-400 group-hover:text-pink-400'}`}>
+                    <CropIcon className="w-6 h-6" />
+                  </div>
+                  
+                  <div>
+                    <h3 className={`font-bold text-lg mb-0.5 transition-colors ${mode === 'manual' ? 'text-white' : 'text-gray-300 group-hover:text-white'}`}>
+                      手动裁剪
+                    </h3>
+                    <p className="text-sm text-gray-500 font-medium">
+                      自定义区域与大小
+                    </p>
+                  </div>
                 </button>
+                
               </div>
             </div>
           )}
