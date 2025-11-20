@@ -50,7 +50,7 @@ const Header: React.FC<HeaderProps> = ({ totalConverted, lang, setLang, t }) => 
             <div className="flex items-center gap-2 px-4 h-10 rounded-xl bg-[#131725]/80 border border-indigo-500/30 shadow-[0_0_20px_rgba(79,70,229,0.15)] backdrop-blur-xl group hover:border-indigo-500/50 hover:shadow-[0_0_25px_rgba(79,70,229,0.25)] transition-all duration-300">
               <span className="text-[11px] font-bold text-gray-400 tracking-wide">{t.completed}</span>
               <span key={totalConverted} className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-pink-400 font-mono tabular-nums leading-none tracking-tighter drop-shadow-[0_2px_10px_rgba(168,85,247,0.5)] animate-fade-in-up pt-0.5">
-                {totalConverted}+
+                {totalConverted}
               </span>
               <span className="text-[11px] font-bold text-gray-400 tracking-wide">{t.converted}</span>
             </div>
@@ -86,8 +86,8 @@ const Header: React.FC<HeaderProps> = ({ totalConverted, lang, setLang, t }) => 
             <div className={`
               absolute right-0 mt-2 w-48 bg-[#131725] border border-white/10 rounded-xl shadow-2xl overflow-hidden origin-top-right transition-all duration-200 ring-1 ring-black/50 backdrop-blur-xl
               ${isLangOpen 
-                ? 'opacity-100 scale-100 translate-y-0 visible' 
-                : 'opacity-0 scale-95 -translate-y-2 invisible pointer-events-none'
+                  ? 'opacity-100 scale-100 translate-y-0 visible' 
+                  : 'opacity-0 scale-95 -translate-y-2 invisible pointer-events-none'
               }
             `}>
                <div className="py-1 max-h-[320px] overflow-y-auto custom-scrollbar">
