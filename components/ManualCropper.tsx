@@ -38,9 +38,6 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [wrapperSize, setWrapperSize] = useState({ width: 0, height: 0 });
-  
-  // Hint State
-  const [showHint, setShowHint] = useState(true);
 
   // Default target size is 2MB, or original size if original is smaller than 2MB
   const [targetSizeMB, setTargetSizeMB] = useState(() => Math.min(2.0, maxSliderValue));
@@ -72,15 +69,10 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
     return () => resizeObserver.disconnect();
   }, []);
 
-  // Reset view and trigger hint when ratio changes
+  // Reset view when ratio changes
   useEffect(() => {
     setScale(1);
     setPosition({ x: 0, y: 0 });
-    
-    // Re-trigger animation for the hint
-    setShowHint(false);
-    const timer = setTimeout(() => setShowHint(true), 100);
-    return () => clearTimeout(timer);
   }, [selectedRatio]);
 
   // Calculate dynamic style for the crop container based on available space vs target ratio
@@ -301,37 +293,6 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
             onTouchEnd={handleMouseUp}
             onMouseLeave={handleMouseUp}
           >
-            
-            {/* Merged Tips Overlay - Hidden while dragging for better visibility */}
-            {showHint && !isDragging && (
-              <div className="absolute bottom-6 left-0 right-0 z-30 flex justify-center pointer-events-none animate-fade-in-up">
-                <div className="bg-[#0f1219]/80 backdrop-blur-xl border border-white/10 px-6 py-3 rounded-full flex items-center gap-6 shadow-[0_8px_30px_rgba(0,0,0,0.5)] ring-1 ring-white/5">
-                  
-                  {/* Drag Hint */}
-                  <div className="flex items-center gap-2">
-                      <div className="p-1.5 rounded-full bg-indigo-500/20 text-indigo-400">
-                          <Hand className="w-3.5 h-3.5" />
-                      </div>
-                      <span className="text-xs font-medium text-indigo-100 tracking-wide">{t.mcHint}</span>
-                  </div>
-
-                  {/* Divider */}
-                  <div className="w-px h-4 bg-white/10 hidden md:block"></div>
-
-                  {/* Keyboard Tips */}
-                  <div className="hidden md:flex items-center gap-4">
-                    {t.mcKeyTips && t.mcKeyTips.map((tip: string, idx: number) => (
-                      <span key={idx} className="flex items-center gap-2 text-[11px] text-gray-400 font-mono">
-                        <span className="w-1 h-1 rounded-full bg-gray-600"></span>
-                        {tip}
-                      </span>
-                    ))}
-                  </div>
-
-                </div>
-              </div>
-            )}
-
             {/* Pattern Background */}
             <div className="absolute inset-0 opacity-10 pointer-events-none" 
                  style={{ backgroundImage: 'radial-gradient(#4F46E5 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
@@ -413,94 +374,120 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
           </div>
         </div>
 
-        {/* Bottom Footer: Sliders & Actions */}
-        <div className="bg-[#131620] border-t border-white/5 p-6 z-20 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
-          <div className="flex flex-col lg:flex-row gap-8 items-center">
-            
-            {/* Sliders Group */}
-            <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 px-2">
+        {/* Bottom Footer: Hints + Sliders & Actions */}
+        <div className="bg-[#131620] border-t border-white/5 z-20 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+          
+          {/* Unified Hint Bar */}
+          <div className="w-full flex items-center justify-center py-2 bg-[#0B0F19] border-b border-white/5 select-none">
+              <div className="flex items-center gap-6">
+                   {/* Drag Hint */}
+                   <div className="flex items-center gap-2">
+                       <Hand className="w-3.5 h-3.5 text-indigo-400" />
+                       <span className="text-xs text-gray-400 font-medium tracking-wide">{t.mcHint}</span>
+                   </div>
+                   
+                   {/* Separator */}
+                   <div className="w-px h-3 bg-white/10 hidden md:block"></div>
+
+                   {/* Keyboard Tips */}
+                   <div className="hidden md:flex items-center gap-4">
+                     {t.mcKeyTips && t.mcKeyTips.map((tip: string, idx: number) => (
+                       <span key={idx} className="flex items-center gap-1.5">
+                         <div className="w-1 h-1 rounded-full bg-gray-600"></div>
+                         <span className="text-xs text-gray-400 font-mono">{tip}</span>
+                       </span>
+                     ))}
+                   </div>
+              </div>
+          </div>
+
+          <div className="p-6">
+            <div className="flex flex-col lg:flex-row gap-8 items-center">
               
-              {/* Zoom Control */}
-              <div className="flex flex-col gap-4 group">
-                <div className="flex justify-between items-end">
-                  <div className="flex items-center gap-2.5">
-                    <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400 ring-1 ring-indigo-500/20">
-                      <ZoomIn className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <span className="text-sm font-semibold text-gray-200 block">{t.mcZoomTitle}</span>
-                      <span className="text-xs text-gray-500">{t.mcZoomDesc}</span>
-                    </div>
-                  </div>
-                  <div className="font-mono text-sm font-bold text-indigo-300 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">
-                    {scale.toFixed(2)}x
-                  </div>
-                </div>
+              {/* Sliders Group */}
+              <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 px-2">
                 
-                <div className="relative flex items-center h-6">
-                   <input 
+                {/* Zoom Control */}
+                <div className="flex flex-col gap-4 group">
+                  <div className="flex justify-between items-end">
+                    <div className="flex items-center gap-2.5">
+                      <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400 ring-1 ring-indigo-500/20">
+                        <ZoomIn className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="text-sm font-semibold text-gray-200 block">{t.mcZoomTitle}</span>
+                        <span className="text-xs text-gray-500">{t.mcZoomDesc}</span>
+                      </div>
+                    </div>
+                    <div className="font-mono text-sm font-bold text-indigo-300 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">
+                      {scale.toFixed(2)}x
+                    </div>
+                  </div>
+                  
+                  <div className="relative flex items-center h-6">
+                    <input 
+                        type="range" 
+                        min="1" 
+                        max="3" 
+                        step="0.01" 
+                        value={scale}
+                        onChange={(e) => updateScale(parseFloat(e.target.value))}
+                        className="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-indigo-500 hover:accent-indigo-400 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+                      />
+                  </div>
+                </div>
+
+                {/* Output Size Control */}
+                <div className="flex flex-col gap-4 group">
+                  <div className="flex justify-between items-end">
+                    <div className="flex items-center gap-2.5">
+                      <div className="p-2 rounded-lg bg-pink-500/10 text-pink-400 ring-1 ring-pink-500/20">
+                        <HardDrive className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="text-sm font-semibold text-gray-200 block">{t.mcLimitTitle}</span>
+                        <span className="text-xs text-gray-500">{t.mcLimitDesc} (Max: {originalSizeMB.toFixed(1)}MB)</span>
+                      </div>
+                    </div>
+                    <div className="font-mono text-sm font-bold text-pink-300 bg-pink-500/10 px-2 py-0.5 rounded border border-pink-500/20">
+                      {targetSizeMB.toFixed(1)} MB
+                    </div>
+                  </div>
+
+                  <div className="relative flex items-center h-6">
+                    <input 
                       type="range" 
-                      min="1" 
-                      max="3" 
-                      step="0.01" 
-                      value={scale}
-                      onChange={(e) => updateScale(parseFloat(e.target.value))}
-                      className="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-indigo-500 hover:accent-indigo-400 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+                      min="0.1" 
+                      max={maxSliderValue}
+                      step="0.1" 
+                      value={targetSizeMB}
+                      onChange={(e) => updateSize(parseFloat(e.target.value))}
+                      className="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-pink-500 hover:accent-pink-400 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-500/30"
                     />
+                  </div>
                 </div>
               </div>
 
-              {/* Output Size Control */}
-              <div className="flex flex-col gap-4 group">
-                <div className="flex justify-between items-end">
-                  <div className="flex items-center gap-2.5">
-                    <div className="p-2 rounded-lg bg-pink-500/10 text-pink-400 ring-1 ring-pink-500/20">
-                      <HardDrive className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <span className="text-sm font-semibold text-gray-200 block">{t.mcLimitTitle}</span>
-                      <span className="text-xs text-gray-500">{t.mcLimitDesc} (Max: {originalSizeMB.toFixed(1)}MB)</span>
-                    </div>
-                  </div>
-                  <div className="font-mono text-sm font-bold text-pink-300 bg-pink-500/10 px-2 py-0.5 rounded border border-pink-500/20">
-                    {targetSizeMB.toFixed(1)} MB
-                  </div>
-                </div>
+              {/* Divider for desktop */}
+              <div className="hidden lg:block w-px h-16 bg-white/10"></div>
 
-                <div className="relative flex items-center h-6">
-                  <input 
-                    type="range" 
-                    min="0.1" 
-                    max={maxSliderValue}
-                    step="0.1" 
-                    value={targetSizeMB}
-                    onChange={(e) => updateSize(parseFloat(e.target.value))}
-                    className="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-pink-500 hover:accent-pink-400 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-500/30"
-                  />
-                </div>
+              {/* Action Buttons */}
+              <div className="flex items-center gap-3 w-full lg:w-auto shrink-0">
+                  <button 
+                    onClick={onCancel}
+                    className="px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors font-medium text-sm border border-white/5 hover:border-white/10"
+                  >
+                    {t.mcCancel}
+                  </button>
+                  <button 
+                    onClick={handleConfirm}
+                    className="flex-1 lg:flex-none px-8 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 transition-transform active:scale-95 ring-1 ring-white/20"
+                  >
+                    <Check className="w-4 h-4" />
+                    <span>{t.mcConfirm}</span>
+                  </button>
               </div>
             </div>
-
-            {/* Divider for desktop */}
-            <div className="hidden lg:block w-px h-16 bg-white/10"></div>
-
-            {/* Action Buttons */}
-            <div className="flex items-center gap-3 w-full lg:w-auto shrink-0">
-                <button 
-                  onClick={onCancel}
-                  className="px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors font-medium text-sm border border-white/5 hover:border-white/10"
-                >
-                  {t.mcCancel}
-                </button>
-                <button 
-                  onClick={handleConfirm}
-                  className="flex-1 lg:flex-none px-8 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 transition-transform active:scale-95 ring-1 ring-white/20"
-                >
-                  <Check className="w-4 h-4" />
-                  <span>{t.mcConfirm}</span>
-                </button>
-            </div>
-
           </div>
         </div>
 
