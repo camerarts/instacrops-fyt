@@ -45,19 +45,19 @@ const Header: React.FC<HeaderProps> = ({ totalConverted, lang, setLang, t }) => 
         </div>
 
         {/* Right: Actions */}
-        <div className="flex items-center space-x-4">
-          {/* Enhanced Conversion Counter Badge */}
-          <div className="hidden md:flex items-center justify-center mr-2">
-            <div className="flex items-baseline gap-2 px-6 py-2.5 rounded-2xl bg-[#131725]/80 border border-indigo-500/30 shadow-[0_0_20px_rgba(79,70,229,0.15)] backdrop-blur-xl group hover:border-indigo-500/50 hover:shadow-[0_0_25px_rgba(79,70,229,0.25)] transition-all duration-300">
-              <span className="text-xs font-bold text-gray-400 self-center uppercase tracking-wider">{t.completed}</span>
-              <span key={totalConverted} className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-pink-400 font-mono tabular-nums leading-none tracking-tighter drop-shadow-[0_2px_10px_rgba(168,85,247,0.5)] animate-fade-in-up">
+        <div className="flex items-center gap-3 md:gap-4">
+          {/* Enhanced Conversion Counter Badge - Aligned Height */}
+          <div className="hidden md:flex items-center justify-center">
+            <div className="flex items-center gap-3 px-4 h-11 rounded-xl bg-[#131725]/80 border border-indigo-500/30 shadow-[0_0_20px_rgba(79,70,229,0.15)] backdrop-blur-xl group hover:border-indigo-500/50 hover:shadow-[0_0_25px_rgba(79,70,229,0.25)] transition-all duration-300">
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t.completed}</span>
+              <span key={totalConverted} className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-pink-400 font-mono tabular-nums leading-none tracking-tighter drop-shadow-[0_2px_10px_rgba(168,85,247,0.5)] animate-fade-in-up pt-0.5">
                 {totalConverted}
               </span>
-              <span className="text-xs font-bold text-gray-400 self-center uppercase tracking-wider">{t.converted}</span>
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t.converted}</span>
             </div>
           </div>
 
-          {/* Custom Language Selector */}
+          {/* Custom Language Selector - Aligned Height */}
           {isLangOpen && (
               <div className="fixed inset-0 z-40 bg-transparent" onClick={() => setIsLangOpen(false)} />
           )}
@@ -65,7 +65,7 @@ const Header: React.FC<HeaderProps> = ({ totalConverted, lang, setLang, t }) => 
             <button
               onClick={() => setIsLangOpen(!isLangOpen)}
               className={`
-                flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border transition-all duration-300 group
+                flex items-center gap-2 px-4 h-11 rounded-xl border transition-all duration-300 group
                 ${isLangOpen 
                   ? 'bg-[#1A1F2E] border-indigo-500/50 text-white shadow-[0_0_15px_rgba(79,70,229,0.15)]' 
                   : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-indigo-500/30 text-gray-300'
@@ -85,7 +85,7 @@ const Header: React.FC<HeaderProps> = ({ totalConverted, lang, setLang, t }) => 
 
             {/* Dropdown Menu */}
             <div className={`
-              absolute right-0 mt-3 w-48 bg-[#131725] border border-white/10 rounded-xl shadow-2xl overflow-hidden origin-top-right transition-all duration-200 ring-1 ring-black/50 backdrop-blur-xl
+              absolute right-0 mt-2 w-48 bg-[#131725] border border-white/10 rounded-xl shadow-2xl overflow-hidden origin-top-right transition-all duration-200 ring-1 ring-black/50 backdrop-blur-xl
               ${isLangOpen 
                 ? 'opacity-100 scale-100 translate-y-0 visible' 
                 : 'opacity-0 scale-95 -translate-y-2 invisible pointer-events-none'
