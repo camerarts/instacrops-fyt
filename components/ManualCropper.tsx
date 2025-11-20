@@ -1,6 +1,6 @@
 
 import React, { useRef, useState, useEffect } from 'react';
-import { Check, X, ZoomIn, Move, Smartphone, Monitor, Square, LayoutTemplate, HardDrive } from 'lucide-react';
+import { Check, X, ZoomIn, Move, Smartphone, Monitor, Square, LayoutTemplate, HardDrive, Minus, Plus } from 'lucide-react';
 import { CropConfig, OutputDimensions } from '../utils/imageProcessor';
 
 interface ManualCropperProps {
@@ -22,13 +22,20 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
   
+  // Calc original size details
+  const originalSizeMB = file.size / (1024 * 1024);
+  // Ensure max slider value is at least 0.1 to prevent input errors for tiny files, but logical max is original size
+  const maxSliderValue = Math.max(0.1, originalSizeMB);
+
   // State
   const [selectedRatio, setSelectedRatio] = useState(RATIOS[0]);
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const [targetSizeMB, setTargetSizeMB] = useState(2.0); // Default 2MB
+  
+  // Default target size is 2MB, or original size if original is smaller than 2MB
+  const [targetSizeMB, setTargetSizeMB] = useState(() => Math.min(2.0, maxSliderValue));
   
   // Initialize image
   useEffect(() => {
@@ -113,14 +120,16 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
     setIsDragging(false);
   };
 
-  const handleScaleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newScale = parseFloat(e.target.value);
-    setScale(newScale);
-    updatePosition(position.x, position.y, newScale);
+  const updateScale = (newScale: number) => {
+    const s = Math.min(Math.max(newScale, 1), 3);
+    setScale(s);
+    updatePosition(position.x, position.y, s);
   };
 
-  const handleSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTargetSizeMB(parseFloat(e.target.value));
+  const updateSize = (newSize: number) => {
+    // Clamp between 0.1 and original file size
+    const s = Math.min(Math.max(newSize, 0.1), maxSliderValue);
+    setTargetSizeMB(s);
   };
 
   const handleConfirm = () => {
@@ -141,7 +150,6 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
        baseRenderWidth = containerW;
     }
     
-    // const currentRenderWidth = baseRenderWidth * scale;
     const currentRenderWidth = baseRenderWidth * scale;
     
     // Ratio between Original Image Pixels and Rendered Pixels
@@ -253,8 +261,8 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
             <div className="space-y-6">
               {/* Aspect Ratio Selector */}
               <div>
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 block">
-                  常用比例
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 block ml-1">
+                  画布比例
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {RATIOS.map((ratio) => {
@@ -277,46 +285,90 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
                 </div>
               </div>
 
-              {/* Zoom Control */}
-              <div>
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 block">
-                  缩放 / 裁剪
-                </label>
-                <div className="flex items-center space-x-3 bg-black/20 p-3 rounded-xl border border-white/5">
-                  <ZoomIn className="w-5 h-5 text-indigo-400" />
-                  <input 
-                    type="range" 
-                    min="1" 
-                    max="3" 
-                    step="0.01" 
-                    value={scale}
-                    onChange={handleScaleChange}
-                    className="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
-                  />
+              {/* Divider */}
+              <div className="h-px bg-white/5 mx-1"></div>
+
+              {/* Enhanced Zoom Control */}
+              <div className="bg-[#0B0F19]/50 p-4 rounded-2xl border border-white/5 space-y-3">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2 text-gray-300">
+                    <ZoomIn className="w-4 h-4 text-indigo-400" />
+                    <span className="text-sm font-medium">画面缩放</span>
+                  </div>
+                  <span className="text-xs font-mono font-bold text-indigo-300 bg-indigo-500/10 px-2 py-1 rounded border border-indigo-500/20 min-w-[3.5rem] text-center">
+                    {scale.toFixed(2)}x
+                  </span>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  <button 
+                    onClick={() => updateScale(scale - 0.05)}
+                    className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors flex-shrink-0 active:scale-95"
+                    aria-label="Zoom Out"
+                  >
+                    <Minus className="w-4 h-4" />
+                  </button>
+                  <div className="relative flex-1 h-6 flex items-center">
+                    <input 
+                      type="range" 
+                      min="1" 
+                      max="3" 
+                      step="0.01" 
+                      value={scale}
+                      onChange={(e) => updateScale(parseFloat(e.target.value))}
+                      className="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-indigo-500 hover:accent-indigo-400 transition-colors"
+                    />
+                  </div>
+                  <button 
+                    onClick={() => updateScale(scale + 0.05)}
+                    className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors flex-shrink-0 active:scale-95"
+                    aria-label="Zoom In"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
 
-              {/* Output Size Control */}
-              <div>
-                <div className="flex justify-between items-center mb-3">
-                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                    输出大小 (最大)
-                  </label>
-                  <span className="text-xs font-mono font-bold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">
+              {/* Enhanced Output Size Control */}
+              <div className="bg-[#0B0F19]/50 p-4 rounded-2xl border border-white/5 space-y-3">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2 text-gray-300">
+                    <HardDrive className="w-4 h-4 text-pink-400" />
+                    <span className="text-sm font-medium">输出大小限制</span>
+                  </div>
+                  <span className="text-xs font-mono font-bold text-pink-300 bg-pink-500/10 px-2 py-1 rounded border border-pink-500/20 min-w-[4rem] text-center">
                     {targetSizeMB.toFixed(1)} MB
                   </span>
                 </div>
-                <div className="flex items-center space-x-3 bg-black/20 p-3 rounded-xl border border-white/5">
-                  <HardDrive className="w-5 h-5 text-indigo-400" />
-                  <input 
-                    type="range" 
-                    min="0.1" 
-                    max="5" 
-                    step="0.1" 
-                    value={targetSizeMB}
-                    onChange={handleSizeChange}
-                    className="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
-                  />
+
+                <div className="flex items-center gap-3">
+                   <button 
+                    onClick={() => updateSize(targetSizeMB - 0.1)}
+                    className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors flex-shrink-0 active:scale-95"
+                  >
+                    <Minus className="w-4 h-4" />
+                  </button>
+                  <div className="relative flex-1 h-6 flex items-center group">
+                    <input 
+                      type="range" 
+                      min="0.1" 
+                      max={maxSliderValue}
+                      step="0.1" 
+                      value={targetSizeMB}
+                      onChange={(e) => updateSize(parseFloat(e.target.value))}
+                      className="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-pink-500 hover:accent-pink-400 transition-colors"
+                    />
+                  </div>
+                  <button 
+                    onClick={() => updateSize(targetSizeMB + 0.1)}
+                    className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors flex-shrink-0 active:scale-95"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="flex justify-between text-[10px] text-gray-600 font-medium px-1">
+                  <span>0.1 MB</span>
+                  <span>{originalSizeMB.toFixed(1)} MB (原图)</span>
                 </div>
               </div>
 
