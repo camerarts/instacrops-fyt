@@ -1,5 +1,6 @@
 
 
+
 export type Language = 'zh-CN' | 'en-US' | 'ja-JP' | 'ko-KR' | 'es-ES' | 'fr-FR' | 'de-DE';
 
 export const languages: { code: Language; label: string; flag: string }[] = [
@@ -55,7 +56,7 @@ export const translations = {
     featPrivacy: '隐私安全',
     featPrivacyDesc: '所有处理均在浏览器本地完成，图片无需上传服务器。',
     
-    footer: 'InstaCrops Pro. Designed for 宁波大学 Camerart',
+    footer: 'InstaCrops Pro. Designed for fyt Camerart',
     
     // Result Card
     rcReady: '处理完成',
@@ -127,7 +128,7 @@ export const translations = {
     featPrivacy: 'Privacy Secure',
     featPrivacyDesc: 'All processing is done locally in the browser, no server uploads.',
     
-    footer: 'InstaCrops Pro. Designed for Ningbo University Camerart',
+    footer: 'InstaCrops Pro. Designed for fyt Camerart',
     
     rcReady: 'FINISHED',
     rcTitle: 'Ready to Download',
@@ -197,7 +198,7 @@ export const translations = {
     featPrivacy: 'プライバシー保護',
     featPrivacyDesc: 'すべての処理はブラウザ内でローカルに行われ、サーバーへのアップロードはありません。',
 
-    footer: 'InstaCrops Pro. Designed for Ningbo University Camerart',
+    footer: 'InstaCrops Pro. Designed for fyt Camerart',
     
     rcReady: '完了',
     rcTitle: 'ダウンロード準備完了',
@@ -267,7 +268,7 @@ export const translations = {
     featPrivacy: '개인정보 보호',
     featPrivacyDesc: '모든 처리는 브라우저 로컬에서 완료되며 서버로 업로드되지 않습니다.',
 
-    footer: 'InstaCrops Pro. Designed for Ningbo University Camerart',
+    footer: 'InstaCrops Pro. Designed for fyt Camerart',
     
     rcReady: '처리 완료',
     rcTitle: '다운로드 준비 완료',
@@ -337,7 +338,7 @@ export const translations = {
     featPrivacy: 'Privacidad Segura',
     featPrivacyDesc: 'Todo el procesamiento se realiza localmente en el navegador.',
 
-    footer: 'InstaCrops Pro. Diseñado para Ningbo University Camerart',
+    footer: 'InstaCrops Pro. Designed for fyt Camerart',
     
     rcReady: 'LISTO',
     rcTitle: 'Listo para descargar',
@@ -407,11 +408,11 @@ export const translations = {
     featPrivacy: 'Confidentialité',
     featPrivacyDesc: 'Tout le traitement est effectué localement dans le navigateur.',
 
-    footer: 'InstaCrops Pro. Conçu pour Ningbo University Camerart',
+    footer: 'InstaCrops Pro. Designed for fyt Camerart',
     
     rcReady: 'TERMINÉ',
     rcTitle: 'Prêt à télécharger',
-    rcDesc: 'Votre image optimisée est prête.',
+    rcDesc: 'Votre image optimizada est prête.',
     rcRes: 'Résolution',
     rcSize: 'Taille',
     rcRate: 'Compression',
@@ -477,7 +478,7 @@ export const translations = {
     featPrivacy: 'Datenschutz',
     featPrivacyDesc: 'Alle Verarbeitungen erfolgen lokal im Browser.',
 
-    footer: 'InstaCrops Pro. Entwickelt für Ningbo University Camerart',
+    footer: 'InstaCrops Pro. Designed for fyt Camerart',
     
     rcReady: 'FERTIG',
     rcTitle: 'Bereit zum Download',
