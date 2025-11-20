@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect } from 'react';
 import Header from './components/Header';
 import UploadArea from './components/UploadArea';
@@ -64,18 +65,23 @@ const App: React.FC = () => {
       setTempFile(file);
       setShowCropper(true);
     } else {
-      // Auto mode: Process immediately with default settings (16:9)
+      // Auto mode: Process immediately with default settings (16:9) and default size (2MB via default arg)
       processFile(file);
     }
   }, [mode]);
 
-  const processFile = async (file: File, cropConfig?: CropConfig, outputDim?: OutputDimensions) => {
+  const processFile = async (
+    file: File, 
+    cropConfig?: CropConfig, 
+    outputDim?: OutputDimensions,
+    maxSizeBytes?: number
+  ) => {
     setStatus(ProcessingStatus.PROCESSING);
     try {
       // Simulate a tiny delay for better UX
       if (!cropConfig) await new Promise(resolve => setTimeout(resolve, 800));
 
-      const { blob, width, height } = await processImage(file, cropConfig, outputDim);
+      const { blob, width, height } = await processImage(file, cropConfig, outputDim, maxSizeBytes);
       
       const processedUrl = URL.createObjectURL(blob);
       const originalUrl = URL.createObjectURL(file);
@@ -118,9 +124,9 @@ const App: React.FC = () => {
     }
   };
 
-  const handleManualCropConfirm = (cropConfig: CropConfig, outputDim: OutputDimensions) => {
+  const handleManualCropConfirm = (cropConfig: CropConfig, outputDim: OutputDimensions, maxSizeBytes: number) => {
     if (tempFile) {
-      processFile(tempFile, cropConfig, outputDim);
+      processFile(tempFile, cropConfig, outputDim, maxSizeBytes);
     }
   };
 
