@@ -6,6 +6,7 @@ import ResultCard from './components/ResultCard';
 import ManualCropper from './components/ManualCropper';
 import { ProcessedImage, ProcessingStatus, processImage, CropConfig, OutputDimensions } from './utils/imageProcessor';
 import { Loader2, Wand2, Crop as CropIcon, Zap, CheckCircle2 } from 'lucide-react';
+import { translations, Language } from './utils/translations';
 
 type ProcessMode = 'auto' | 'manual';
 
@@ -17,6 +18,15 @@ const App: React.FC = () => {
   const [status, setStatus] = useState<ProcessingStatus>(ProcessingStatus.IDLE);
   const [result, setResult] = useState<ProcessedImage | null>(null);
   
+  // --- Internationalization State ---
+  const [lang, setLang] = useState<Language>('zh-CN');
+  const t = translations[lang];
+
+  // Update document title when language changes
+  useEffect(() => {
+    document.title = t.title;
+  }, [lang, t.title]);
+
   // --- 真实云端计数器逻辑 ---
   
   // 默认先从本地取一个缓存值，避免刷新页面时数字闪烁为0
@@ -116,7 +126,7 @@ const App: React.FC = () => {
     } catch (error) {
       console.error("Error processing image:", error);
       setStatus(ProcessingStatus.ERROR);
-      alert("处理图片时出错，请重试。");
+      alert(t.alertError);
     } finally {
       // Cleanup manual state
       setTempFile(null);
@@ -159,7 +169,12 @@ const App: React.FC = () => {
 
       {/* Content Wrapper */}
       <div className="relative z-10 flex flex-col min-h-screen">
-        <Header totalConverted={totalConverted} />
+        <Header 
+          totalConverted={totalConverted} 
+          lang={lang}
+          setLang={setLang}
+          t={t}
+        />
         
         <main className="flex-1 container mx-auto px-4 py-12 md:py-20 flex flex-col items-center">
           
@@ -172,12 +187,12 @@ const App: React.FC = () => {
               </div>
               
               <h2 className="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight leading-tight">
-                智能构建
-                <span className="text-transparent bg-clip-text bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400"> 极致视觉</span>
+                {t.heroTitleStart}
+                <span className="text-transparent bg-clip-text bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400"> {t.heroTitleEnd}</span>
               </h2>
               
               <p className="text-lg md:text-xl text-gray-400 leading-relaxed max-w-2xl mx-auto mb-12 font-light">
-                专为创作者打造的图像处理引擎。无论是社交媒体封面还是高清展示图，一键实现<span className="text-gray-200 font-medium">完美裁剪</span>与<span className="text-gray-200 font-medium">无损压缩</span>。
+                {t.heroDesc}<span className="text-gray-200 font-medium">{t.heroDescHighlight1}</span> {lang === 'en-US' ? 'and' : '与'} <span className="text-gray-200 font-medium">{t.heroDescHighlight2}</span>。
               </p>
 
               {/* REDESIGNED Mode Switcher - Large Cards */}
@@ -210,10 +225,10 @@ const App: React.FC = () => {
                   
                   <div className="relative z-10">
                     <h3 className={`font-bold text-lg mb-0.5 transition-colors ${mode === 'auto' ? 'text-white' : 'text-gray-300 group-hover:text-white'}`}>
-                      自动模式 (16:9)
+                      {t.autoModeTitle}
                     </h3>
                     <p className={`text-sm font-medium ${mode === 'auto' ? 'text-indigo-200' : 'text-gray-500'}`}>
-                      智能识别，一键生成
+                      {t.autoModeDesc}
                     </p>
                   </div>
                 </button>
@@ -245,10 +260,10 @@ const App: React.FC = () => {
                   
                   <div className="relative z-10">
                     <h3 className={`font-bold text-lg mb-0.5 transition-colors ${mode === 'manual' ? 'text-white' : 'text-gray-300 group-hover:text-white'}`}>
-                      手动裁剪
+                      {t.manualModeTitle}
                     </h3>
                     <p className={`text-sm font-medium ${mode === 'manual' ? 'text-pink-200' : 'text-gray-500'}`}>
-                      自定义区域与大小
+                      {t.manualModeDesc}
                     </p>
                   </div>
                 </button>
@@ -261,7 +276,7 @@ const App: React.FC = () => {
           <div className="w-full flex flex-col items-center justify-center min-h-[320px] transition-all duration-500">
             
             {status === ProcessingStatus.IDLE && (
-              <UploadArea onFileSelect={handleFileSelect} isProcessing={false} />
+              <UploadArea onFileSelect={handleFileSelect} isProcessing={false} t={t} />
             )}
 
             {status === ProcessingStatus.PROCESSING && (
@@ -270,13 +285,13 @@ const App: React.FC = () => {
                   <div className="absolute inset-0 bg-primary/30 blur-xl rounded-full animate-pulse"></div>
                   <Loader2 className="w-14 h-14 text-indigo-400 animate-spin relative z-10" />
                 </div>
-                <h3 className="text-2xl font-semibold text-white mb-2">正在处理...</h3>
-                <p className="text-gray-400 text-center">正在{mode === 'manual' ? '应用您的裁剪' : '智能分析主体'}，并生成高清图像。</p>
+                <h3 className="text-2xl font-semibold text-white mb-2">{t.processingTitle}</h3>
+                <p className="text-gray-400 text-center">{lang === 'en-US' ? 'Currently' : '正在'} {mode === 'manual' ? t.processingManual : t.processingAuto} {t.processingDesc}</p>
               </div>
             )}
 
             {status === ProcessingStatus.SUCCESS && result && (
-              <ResultCard data={result} onReset={handleReset} />
+              <ResultCard data={result} onReset={handleReset} t={t} />
             )}
 
           </div>
@@ -285,9 +300,9 @@ const App: React.FC = () => {
           {status === ProcessingStatus.IDLE && (
             <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-6 text-center w-full max-w-5xl">
               {[
-                { title: "多比例支持", desc: "支持 16:9, 4:3, 1:1 等多种常用社交媒体比例。" },
-                { title: "智能压缩引擎", desc: "自动将体积控制在 2MB 以内，同时保持画质。" },
-                { title: "隐私安全", desc: "所有处理均在浏览器本地完成，图片无需上传服务器。" }
+                { title: t.featRatio, desc: t.featRatioDesc },
+                { title: t.featCompress, desc: t.featCompressDesc },
+                { title: t.featPrivacy, desc: t.featPrivacyDesc }
               ].map((item, idx) => (
                 <div key={idx} className="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.05] transition-all duration-300 group">
                   <h4 className="text-gray-200 font-semibold mb-2 group-hover:text-indigo-300 transition-colors">{item.title}</h4>
@@ -299,7 +314,7 @@ const App: React.FC = () => {
         </main>
         
         <footer className="py-8 text-center text-gray-600 text-sm border-t border-white/[0.05] bg-[#0B0F19]/50">
-          <p>&copy; {new Date().getFullYear()} InstaCrops Pro. Designed for 宁波大学 Camerart</p>
+          <p>&copy; {new Date().getFullYear()} {t.footer}</p>
         </footer>
       </div>
 
@@ -309,6 +324,7 @@ const App: React.FC = () => {
           file={tempFile} 
           onConfirm={handleManualCropConfirm} 
           onCancel={handleManualCropCancel} 
+          t={t}
         />
       )}
     </div>
