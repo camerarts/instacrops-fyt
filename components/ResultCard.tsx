@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Download, Check, RotateCcw, FileImage, LayoutTemplate, Sparkles, X } from 'lucide-react';
 import { ProcessedImage, formatBytes } from '../utils/imageProcessor';
@@ -27,8 +26,50 @@ const ResultCard: React.FC<ResultCardProps> = ({ data, onReset, t }) => {
 
         <div className="flex flex-col lg:flex-row">
           
-          {/* Control Sidebar / Header */}
-          <div className="lg:w-80 p-8 border-b lg:border-b-0 lg:border-r border-white/10 bg-white/[0.02] flex flex-col justify-center">
+          {/* Preview Area (Now on Left) */}
+          <div className="flex-1 p-8 bg-black/20 relative">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
+              
+              {/* Original */}
+              <div className="flex flex-col space-y-3">
+                <div className="flex items-center space-x-2 text-sm text-gray-400 font-medium">
+                  <FileImage className="w-4 h-4" />
+                  <span>{t.rcOriginal} ({formatBytes(data.originalSize)})</span>
+                </div>
+                <div className="flex-1 bg-[#0B0F19] rounded-xl border border-white/10 p-2 flex items-center justify-center overflow-hidden relative group">
+                  <img 
+                    src={data.originalUrl} 
+                    alt="Original" 
+                    className="max-w-full max-h-64 md:max-h-full object-contain opacity-60 grayscale transition-all duration-500 group-hover:opacity-100 group-hover:grayscale-0" 
+                  />
+                </div>
+              </div>
+
+              {/* Result */}
+              <div className="flex flex-col space-y-3">
+                <div className="flex items-center space-x-2 text-sm text-indigo-300 font-medium">
+                  <LayoutTemplate className="w-4 h-4" />
+                  <span>{t.rcPreview}</span>
+                </div>
+                <div className="flex-1 bg-black rounded-xl border-2 border-indigo-500/30 shadow-[0_0_30px_rgba(79,70,229,0.15)] overflow-hidden relative group flex items-center justify-center">
+                  <div className="absolute top-3 right-3 z-10">
+                    <span className="bg-black/60 backdrop-blur text-xs text-white px-2 py-1 rounded-md border border-white/10 flex items-center gap-1">
+                      <Sparkles className="w-3 h-3 text-yellow-400" /> HD
+                    </span>
+                  </div>
+                  <img 
+                    src={data.processedUrl} 
+                    alt="Processed" 
+                    className="max-w-full max-h-full object-contain" 
+                  />
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* Control Sidebar / Header (Now on Right) */}
+          <div className="lg:w-80 p-8 border-t lg:border-t-0 lg:border-l border-white/10 bg-white/[0.02] flex flex-col justify-center relative z-10">
             <div className="mb-6">
               <div className="inline-flex items-center space-x-2 text-green-400 bg-green-400/10 px-3 py-1 rounded-full text-sm font-medium mb-3">
                 <Check className="w-4 h-4" />
@@ -71,48 +112,6 @@ const ResultCard: React.FC<ResultCardProps> = ({ data, onReset, t }) => {
                 <RotateCcw className="w-4 h-4" />
                 <span>{t.rcNext}</span>
               </button>
-            </div>
-          </div>
-
-          {/* Preview Area */}
-          <div className="flex-1 p-8 bg-black/20 relative">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
-              
-              {/* Original */}
-              <div className="flex flex-col space-y-3">
-                <div className="flex items-center space-x-2 text-sm text-gray-400 font-medium">
-                  <FileImage className="w-4 h-4" />
-                  <span>{t.rcOriginal} ({formatBytes(data.originalSize)})</span>
-                </div>
-                <div className="flex-1 bg-[#0B0F19] rounded-xl border border-white/10 p-2 flex items-center justify-center overflow-hidden relative group">
-                  <img 
-                    src={data.originalUrl} 
-                    alt="Original" 
-                    className="max-w-full max-h-64 md:max-h-full object-contain opacity-60 grayscale transition-all duration-500 group-hover:opacity-100 group-hover:grayscale-0" 
-                  />
-                </div>
-              </div>
-
-              {/* Result */}
-              <div className="flex flex-col space-y-3">
-                <div className="flex items-center space-x-2 text-sm text-indigo-300 font-medium">
-                  <LayoutTemplate className="w-4 h-4" />
-                  <span>{t.rcPreview}</span>
-                </div>
-                <div className="flex-1 bg-black rounded-xl border-2 border-indigo-500/30 shadow-[0_0_30px_rgba(79,70,229,0.15)] overflow-hidden relative group flex items-center justify-center">
-                  <div className="absolute top-3 right-3 z-10">
-                    <span className="bg-black/60 backdrop-blur text-xs text-white px-2 py-1 rounded-md border border-white/10 flex items-center gap-1">
-                      <Sparkles className="w-3 h-3 text-yellow-400" /> HD
-                    </span>
-                  </div>
-                  <img 
-                    src={data.processedUrl} 
-                    alt="Processed" 
-                    className="max-w-full max-h-full object-contain" 
-                  />
-                </div>
-              </div>
-
             </div>
           </div>
 
