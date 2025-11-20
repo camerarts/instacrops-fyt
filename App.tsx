@@ -1,4 +1,5 @@
 
+
 import React, { useState, useCallback, useEffect } from 'react';
 import Header from './components/Header';
 import UploadArea from './components/UploadArea';
@@ -240,8 +241,8 @@ const App: React.FC = () => {
 
              {/* OPTICAL FLOW ARROW (Desktop Only) */}
              {/* Curves from the end of text section towards the upload card */}
-            <div className="hidden lg:block absolute left-[45%] top-1/2 -translate-y-1/2 w-[300px] h-[120px] pointer-events-none z-10 opacity-80">
-                 <svg width="100%" height="100%" viewBox="0 0 300 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="overflow-visible">
+            <div className="hidden lg:block absolute left-[45%] top-1/2 -translate-y-1/2 w-[300px] h-[240px] pointer-events-none z-10 opacity-80">
+                 <svg width="100%" height="100%" viewBox="0 0 300 240" fill="none" xmlns="http://www.w3.org/2000/svg" className="overflow-visible">
                     <defs>
                       <linearGradient id="flowGradient" x1="0" y1="0" x2="1" y2="0">
                         <stop offset="0%" stopColor="#6366f1" stopOpacity="0" />
@@ -257,14 +258,43 @@ const App: React.FC = () => {
                          <path d="M2,2 L10,6 L2,10" fill="none" stroke="#ec4899" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                        </marker>
                     </defs>
-                    {/* The Path */}
+                    
+                    {/* Path 1: Up */}
                     <path 
-                      d="M 0,80 C 100,80 120,40 280,40"
+                      d="M 0,120 C 100,120 150,40 280,40"
                       stroke="url(#flowGradient)" 
                       strokeWidth="3"
                       strokeLinecap="round"
                       fill="none"
                       className="animate-flow"
+                      strokeDasharray="120 300" 
+                      filter="url(#glow)"
+                      markerEnd="url(#arrowhead)"
+                    />
+                    
+                    {/* Path 2: Right (Middle) */}
+                    <path 
+                      d="M 0,120 C 120,120 180,120 280,120"
+                      stroke="url(#flowGradient)" 
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      fill="none"
+                      className="animate-flow"
+                      style={{animationDelay: '0.5s'}}
+                      strokeDasharray="120 300" 
+                      filter="url(#glow)"
+                      markerEnd="url(#arrowhead)"
+                    />
+
+                    {/* Path 3: Down */}
+                    <path 
+                      d="M 0,120 C 100,120 150,200 280,200"
+                      stroke="url(#flowGradient)" 
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      fill="none"
+                      className="animate-flow"
+                      style={{animationDelay: '1s'}}
                       strokeDasharray="120 300" 
                       filter="url(#glow)"
                       markerEnd="url(#arrowhead)"
@@ -275,35 +305,35 @@ const App: React.FC = () => {
             {/* Right Column: Interactive Card */}
             <div className="relative z-20 animate-fade-in-up delay-200">
               
+              {/* Mode Switcher Tabs - MOVED OUTSIDE */}
+              <div className="flex p-1 mb-4 bg-[#131725]/80 backdrop-blur-sm border border-white/10 rounded-xl shadow-xl">
+                  <button
+                    onClick={() => setMode('auto')}
+                    className={`
+                      flex-1 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2
+                      ${mode === 'auto' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}
+                    `}
+                  >
+                    <Wand2 className="w-3 h-3" />
+                    {t.autoModeTitle}
+                  </button>
+                  <button
+                    onClick={() => setMode('manual')}
+                    className={`
+                      flex-1 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2
+                      ${mode === 'manual' ? 'bg-pink-600 text-white shadow-lg shadow-pink-500/20' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}
+                    `}
+                  >
+                    <CropIcon className="w-3 h-3" />
+                    {t.manualModeTitle}
+                  </button>
+              </div>
+
               {/* Card Container */}
               <div className="bg-[#131725]/60 backdrop-blur-xl border border-white/10 rounded-3xl p-1 shadow-2xl ring-1 ring-white/5 relative group">
                 
                 {/* Main Upload Area & Toggles */}
                 <div className="bg-[#0B0F19] rounded-[20px] p-6 md:p-8 border border-white/5">
-                  
-                  {/* Mode Switcher Tabs - Now inside the card, full width, equal size */}
-                  <div className="flex p-1 mb-6 bg-[#131725] rounded-xl border border-white/5">
-                    <button
-                      onClick={() => setMode('auto')}
-                      className={`
-                        flex-1 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2
-                        ${mode === 'auto' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}
-                      `}
-                    >
-                      <Wand2 className="w-3 h-3" />
-                      {t.autoModeTitle}
-                    </button>
-                    <button
-                      onClick={() => setMode('manual')}
-                      className={`
-                        flex-1 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2
-                        ${mode === 'manual' ? 'bg-pink-600 text-white shadow-lg shadow-pink-500/20' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}
-                      `}
-                    >
-                      <CropIcon className="w-3 h-3" />
-                      {t.manualModeTitle}
-                    </button>
-                  </div>
 
                   <UploadArea 
                     onFileSelect={handleFileSelect} 
