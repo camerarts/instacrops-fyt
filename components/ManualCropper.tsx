@@ -38,6 +38,9 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [wrapperSize, setWrapperSize] = useState({ width: 0, height: 0 });
   
+  // Hint State
+  const [showHint, setShowHint] = useState(true);
+
   // Default target size is 2MB, or original size if original is smaller than 2MB
   const [targetSizeMB, setTargetSizeMB] = useState(() => Math.min(2.0, maxSliderValue));
   
@@ -70,10 +73,15 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
     return () => resizeObserver.disconnect();
   }, []);
 
-  // Reset view when ratio changes
+  // Reset view and trigger hint when ratio changes
   useEffect(() => {
     setScale(1);
     setPosition({ x: 0, y: 0 });
+    
+    // Re-trigger animation for the hint
+    setShowHint(false);
+    const timer = setTimeout(() => setShowHint(true), 100);
+    return () => clearTimeout(timer);
   }, [selectedRatio]);
 
   // Calculate dynamic style for the crop container based on available space vs target ratio
@@ -250,13 +258,15 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
             ref={wrapperRef}
             className="flex-1 bg-[#090b10] relative flex items-center justify-center p-4 md:p-8 overflow-hidden select-none group"
           >
-            {/* Hint Overlay */}
-            <div className="absolute top-4 left-0 right-0 z-30 flex justify-center pointer-events-none animate-fade-in-up">
-               <div className="bg-black/40 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full flex items-center gap-2 text-xs text-gray-300 shadow-lg">
-                  <Hand className="w-3.5 h-3.5 text-indigo-400" />
-                  <span>提示：切换比例后，可按住图片拖动调整位置</span>
-               </div>
-            </div>
+            {/* Hint Overlay - Shows when ratio changes */}
+            {showHint && (
+              <div className="absolute top-6 left-0 right-0 z-30 flex justify-center pointer-events-none animate-fade-in-up">
+                <div className="bg-black/60 backdrop-blur-xl border border-indigo-500/30 px-5 py-2.5 rounded-full flex items-center gap-3 text-sm font-medium text-indigo-100 shadow-xl shadow-black/50">
+                    <Hand className="w-4 h-4 text-indigo-400 animate-pulse" />
+                    <span>提示：按住图片拖动可调整位置</span>
+                </div>
+              </div>
+            )}
 
             {/* Pattern Background */}
             <div className="absolute inset-0 opacity-10 pointer-events-none" 
