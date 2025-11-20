@@ -4,7 +4,7 @@ import UploadArea from './components/UploadArea';
 import ResultCard from './components/ResultCard';
 import ManualCropper from './components/ManualCropper';
 import { ProcessedImage, ProcessingStatus, processImage, CropConfig, OutputDimensions } from './utils/imageProcessor';
-import { Loader2, Wand2, Crop as CropIcon, Zap, CheckCircle2, Lock, Maximize2, Layers } from 'lucide-react';
+import { Loader2, Wand2, Crop as CropIcon, Zap, Lock, Maximize2, ArrowRight, MoveRight } from 'lucide-react';
 import { translations, Language } from './utils/translations';
 
 type ProcessMode = 'auto' | 'manual';
@@ -166,12 +166,20 @@ const App: React.FC = () => {
           
           {/* LEFT COLUMN: Text & Info (Hidden in Success state to focus on result) */}
           {status !== ProcessingStatus.SUCCESS && (
-            <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left space-y-5 animate-fade-in-up">
+            <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left space-y-5 animate-fade-in-up relative">
                
-               {/* Pro Badge */}
-               <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 backdrop-blur-md shadow-[0_0_15px_rgba(79,70,229,0.1)]">
-                  <Zap className="w-3 h-3 text-indigo-400 fill-indigo-400" />
-                  <span className="text-[10px] font-bold text-indigo-200 uppercase tracking-wider">Pro Image Tools</span>
+               {/* Visual Arrow Cue (Desktop Only) */}
+               <div className="hidden lg:flex absolute -right-12 top-1/2 -translate-y-1/2 z-20 text-indigo-500/30 animate-bounce-x">
+                  <MoveRight className="w-12 h-12" />
+               </div>
+
+               {/* Minimalist Workflow Indicator */}
+               <div className="flex items-center gap-2 md:gap-3 text-[11px] md:text-xs font-semibold text-indigo-300/90 uppercase tracking-wider bg-indigo-900/20 px-4 py-2 rounded-full border border-indigo-500/20 mb-2">
+                 <span>{t.step1}</span>
+                 <ArrowRight className="w-3 h-3 text-indigo-500" />
+                 <span>{t.step2}</span>
+                 <ArrowRight className="w-3 h-3 text-indigo-500" />
+                 <span>{t.step3}</span>
                </div>
 
                {/* Main Title */}
@@ -192,24 +200,38 @@ const App: React.FC = () => {
                   {t.heroDesc} <span className="text-gray-200 font-medium">{t.heroDescHighlight1}</span> {lang === 'en-US' ? 'and' : '与'} <span className="text-gray-200 font-medium">{t.heroDescHighlight2}</span>。
                </p>
 
-               {/* Compact Features List */}
-               <div className="flex flex-wrap justify-center lg:justify-start gap-3 md:gap-5 pt-2 opacity-80">
-                  <div className="flex items-center gap-2 text-sm font-medium text-gray-400 bg-white/[0.03] px-3 py-2 rounded-lg border border-white/5">
-                      <Maximize2 className="w-4 h-4 text-indigo-400" />
-                      <span>{t.featRatio}</span>
+               {/* Detailed Features List (Grid Layout) */}
+               <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 pt-4 opacity-90">
+                  {/* Feature 1 */}
+                  <div className="flex flex-col items-start bg-white/[0.03] p-4 rounded-xl border border-white/5 hover:bg-white/[0.05] transition-colors text-left">
+                      <div className="flex items-center gap-2 text-sm font-bold text-indigo-200 mb-1.5">
+                        <Maximize2 className="w-4 h-4 text-indigo-400" />
+                        <span>{t.featRatio}</span>
+                      </div>
+                      <p className="text-xs text-gray-400 leading-relaxed">{t.featRatioDesc}</p>
                   </div>
-                  <div className="flex items-center gap-2 text-sm font-medium text-gray-400 bg-white/[0.03] px-3 py-2 rounded-lg border border-white/5">
-                      <Zap className="w-4 h-4 text-purple-400" />
-                      <span>{t.featCompress}</span>
+                  
+                  {/* Feature 2 */}
+                  <div className="flex flex-col items-start bg-white/[0.03] p-4 rounded-xl border border-white/5 hover:bg-white/[0.05] transition-colors text-left">
+                      <div className="flex items-center gap-2 text-sm font-bold text-indigo-200 mb-1.5">
+                        <Zap className="w-4 h-4 text-purple-400" />
+                        <span>{t.featCompress}</span>
+                      </div>
+                      <p className="text-xs text-gray-400 leading-relaxed">{t.featCompressDesc}</p>
                   </div>
-                  <div className="flex items-center gap-2 text-sm font-medium text-gray-400 bg-white/[0.03] px-3 py-2 rounded-lg border border-white/5">
-                      <Lock className="w-4 h-4 text-pink-400" />
-                      <span>{t.featPrivacy}</span>
+
+                  {/* Feature 3 */}
+                  <div className="flex flex-col items-start bg-white/[0.03] p-4 rounded-xl border border-white/5 hover:bg-white/[0.05] transition-colors text-left">
+                      <div className="flex items-center gap-2 text-sm font-bold text-indigo-200 mb-1.5">
+                        <Lock className="w-4 h-4 text-pink-400" />
+                        <span>{t.featPrivacy}</span>
+                      </div>
+                      <p className="text-xs text-gray-400 leading-relaxed">{t.featPrivacyDesc}</p>
                   </div>
                </div>
 
                {/* Desktop Footer Copyright */}
-               <div className="text-xs text-gray-600 pt-6 hidden lg:block">
+               <div className="text-xs text-gray-600 pt-2 hidden lg:block">
                   &copy; {new Date().getFullYear()} {t.footer}
                </div>
             </div>
