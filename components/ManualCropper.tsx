@@ -106,7 +106,6 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
 
   const handleMouseMove = (e: React.MouseEvent | React.TouchEvent) => {
     if (!isDragging) return;
-    // e.preventDefault(); // Sometimes prevents scrolling on mobile, use carefully
     const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
     const clientY = 'touches' in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
     
@@ -183,24 +182,24 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 animate-fade-in">
-      <div className="w-full max-w-5xl bg-[#131725] rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col h-[90vh]">
+      <div className="w-full max-w-6xl bg-[#131725] rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col h-[90vh]">
         
         {/* Header */}
-        <div className="p-4 border-b border-white/10 flex justify-between items-center shrink-0">
-          <h3 className="text-white font-semibold flex items-center gap-2">
-            <Move className="w-4 h-4 text-indigo-400" />
+        <div className="h-16 border-b border-white/10 flex justify-between items-center px-6 shrink-0 bg-[#131725] z-20">
+          <h3 className="text-white font-semibold flex items-center gap-2 text-lg">
+            <Move className="w-5 h-5 text-indigo-400" />
             调整裁剪区域
           </h3>
           <button onClick={onCancel} className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-full">
-            <X className="w-5 h-5" />
+            <X className="w-6 h-6" />
           </button>
         </div>
 
-        {/* Main Content: Canvas + Controls */}
-        <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        {/* Main Body: Canvas + Right Sidebar */}
+        <div className="flex-1 flex overflow-hidden relative">
           
-          {/* Left: Canvas Area */}
-          <div className="flex-1 bg-[#0B0F19] relative flex items-center justify-center p-8 overflow-hidden select-none">
+          {/* Canvas Area (Left) */}
+          <div className="flex-1 bg-[#0B0F19] relative flex items-center justify-center p-4 md:p-8 overflow-hidden select-none">
             {/* Pattern Background */}
             <div className="absolute inset-0 opacity-20 pointer-events-none" 
                  style={{ backgroundImage: 'radial-gradient(#4F46E5 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
@@ -255,41 +254,47 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
             </div>
           </div>
 
-          {/* Right/Bottom: Tools Panel */}
-          <div className="lg:w-72 bg-[#1A1F2E] border-t lg:border-t-0 lg:border-l border-white/10 p-6 flex flex-col shrink-0 overflow-y-auto">
+          {/* Ratio Sidebar (Right) */}
+          <div className="w-20 md:w-24 bg-[#1A1F2E] border-l border-white/10 flex flex-col items-center py-6 gap-4 overflow-y-auto scrollbar-hide z-10 shadow-xl">
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">比例</span>
+            {RATIOS.map((ratio) => {
+              const Icon = ratio.icon;
+              const isSelected = selectedRatio.id === ratio.id;
+              return (
+                <button
+                  key={ratio.id}
+                  onClick={() => setSelectedRatio(ratio)}
+                  className={`
+                    flex flex-col items-center justify-center w-14 h-14 rounded-xl transition-all duration-200 group relative
+                    ${isSelected 
+                      ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30 ring-1 ring-indigo-400 scale-105' 
+                      : 'bg-[#0B0F19] text-gray-400 hover:bg-[#252b3d] hover:text-gray-200 border border-white/5 hover:border-white/10'
+                    }
+                  `}
+                  title={ratio.label}
+                >
+                  <Icon className={`w-5 h-5 mb-1.5 ${isSelected ? 'text-white' : 'text-gray-500 group-hover:text-indigo-400'}`} />
+                  <span className="text-[10px] font-bold tracking-tight">{ratio.label}</span>
+                  
+                  {/* Active Indicator Dot */}
+                  {isSelected && (
+                     <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-1 h-6 bg-indigo-400 rounded-l-full shadow-[0_0_10px_rgba(129,140,248,0.5)]"></div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Bottom Footer: Sliders & Actions */}
+        <div className="bg-[#1A1F2E] border-t border-white/10 p-6 z-20 shadow-[0_-10px_40px_rgba(0,0,0,0.3)]">
+          <div className="flex flex-col lg:flex-row gap-6">
             
-            <div className="space-y-6">
-              {/* Aspect Ratio Selector */}
-              <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 block ml-1">
-                  画布比例
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  {RATIOS.map((ratio) => {
-                    const Icon = ratio.icon;
-                    return (
-                      <button
-                        key={ratio.id}
-                        onClick={() => setSelectedRatio(ratio)}
-                        className={`flex items-center justify-center space-x-2 px-3 py-3 rounded-xl text-sm font-medium transition-all ${
-                          selectedRatio.id === ratio.id
-                            ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'
-                            : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
-                        }`}
-                      >
-                        <Icon className="w-4 h-4" />
-                        <span>{ratio.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Divider */}
-              <div className="h-px bg-white/5 mx-1"></div>
-
-              {/* Enhanced Zoom Control */}
-              <div className="bg-[#0B0F19]/50 p-4 rounded-2xl border border-white/5 space-y-3">
+            {/* Sliders Group */}
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              {/* Zoom Control */}
+              <div className="bg-[#0B0F19]/60 p-4 rounded-2xl border border-white/5 flex flex-col justify-center gap-3 hover:border-white/10 transition-colors">
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2 text-gray-300">
                     <ZoomIn className="w-4 h-4 text-indigo-400" />
@@ -304,7 +309,6 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
                   <button 
                     onClick={() => updateScale(scale - 0.05)}
                     className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors flex-shrink-0 active:scale-95"
-                    aria-label="Zoom Out"
                   >
                     <Minus className="w-4 h-4" />
                   </button>
@@ -322,19 +326,18 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
                   <button 
                     onClick={() => updateScale(scale + 0.05)}
                     className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors flex-shrink-0 active:scale-95"
-                    aria-label="Zoom In"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
                 </div>
               </div>
 
-              {/* Enhanced Output Size Control */}
-              <div className="bg-[#0B0F19]/50 p-4 rounded-2xl border border-white/5 space-y-3">
+              {/* Output Size Control */}
+              <div className="bg-[#0B0F19]/60 p-4 rounded-2xl border border-white/5 flex flex-col justify-center gap-3 hover:border-white/10 transition-colors">
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2 text-gray-300">
                     <HardDrive className="w-4 h-4 text-pink-400" />
-                    <span className="text-sm font-medium">输出大小限制</span>
+                    <span className="text-sm font-medium">输出限制</span>
                   </div>
                   <span className="text-xs font-mono font-bold text-pink-300 bg-pink-500/10 px-2 py-1 rounded border border-pink-500/20 min-w-[4rem] text-center">
                     {targetSizeMB.toFixed(1)} MB
@@ -366,29 +369,29 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
                     <Plus className="w-4 h-4" />
                   </button>
                 </div>
-                <div className="flex justify-between text-[10px] text-gray-600 font-medium px-1">
+                 <div className="flex justify-between text-[10px] text-gray-600 font-medium px-1">
                   <span>0.1 MB</span>
                   <span>{originalSizeMB.toFixed(1)} MB (原图)</span>
                 </div>
               </div>
+            </div>
 
-              <div className="pt-4 mt-auto border-t border-white/10">
-                <div className="flex flex-col gap-3">
-                  <button 
-                    onClick={handleConfirm}
-                    className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 transition-transform active:scale-95"
-                  >
-                    <Check className="w-4 h-4" />
-                    确认并生成
-                  </button>
-                  <button 
-                    onClick={onCancel}
-                    className="w-full py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors font-medium"
-                  >
-                    取消
-                  </button>
-                </div>
-              </div>
+            {/* Action Buttons */}
+            <div className="flex flex-row lg:flex-col gap-3 lg:w-48 shrink-0 lg:border-l border-white/10 lg:pl-6 justify-center">
+              <button 
+                onClick={handleConfirm}
+                className="flex-1 lg:flex-auto py-3 lg:py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 transition-transform active:scale-95"
+              >
+                <Check className="w-5 h-5" />
+                <span className="lg:hidden xl:inline">确认生成</span>
+                <span className="hidden lg:inline xl:hidden">生成</span>
+              </button>
+              <button 
+                onClick={onCancel}
+                className="flex-1 lg:flex-auto py-3 lg:py-4 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors font-medium border border-white/5 hover:border-white/10"
+              >
+                取消
+              </button>
             </div>
 
           </div>
