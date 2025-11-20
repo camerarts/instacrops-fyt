@@ -6,9 +6,10 @@ import { ProcessedImage, formatBytes } from '../utils/imageProcessor';
 interface ResultCardProps {
   data: ProcessedImage;
   onReset: () => void;
+  t: any;
 }
 
-const ResultCard: React.FC<ResultCardProps> = ({ data, onReset }) => {
+const ResultCard: React.FC<ResultCardProps> = ({ data, onReset, t }) => {
   return (
     <div className="w-full max-w-6xl mx-auto mt-8 animate-fade-in-up">
       
@@ -31,23 +32,23 @@ const ResultCard: React.FC<ResultCardProps> = ({ data, onReset }) => {
             <div className="mb-6">
               <div className="inline-flex items-center space-x-2 text-green-400 bg-green-400/10 px-3 py-1 rounded-full text-sm font-medium mb-3">
                 <Check className="w-4 h-4" />
-                <span>处理完成</span>
+                <span>{t.rcReady}</span>
               </div>
-              <h3 className="text-2xl font-bold text-white mb-1">准备下载</h3>
-              <p className="text-gray-400 text-center">您的优化图片已就绪。</p>
+              <h3 className="text-2xl font-bold text-white mb-1">{t.rcTitle}</h3>
+              <p className="text-gray-400 text-sm">{t.rcDesc}</p>
             </div>
 
             <div className="space-y-4 mb-8">
               <div className="flex justify-between items-center text-sm border-b border-white/5 pb-2">
-                <span className="text-gray-500">分辨率</span>
+                <span className="text-gray-500">{t.rcRes}</span>
                 <span className="text-gray-200 font-mono">{data.width} x {data.height}</span>
               </div>
               <div className="flex justify-between items-center text-sm border-b border-white/5 pb-2">
-                <span className="text-gray-500">文件大小</span>
+                <span className="text-gray-500">{t.rcSize}</span>
                 <span className="text-green-400 font-mono">{formatBytes(data.processedSize)}</span>
               </div>
                <div className="flex justify-between items-center text-sm border-b border-white/5 pb-2">
-                <span className="text-gray-500">压缩率</span>
+                <span className="text-gray-500">{t.rcRate}</span>
                 <span className="text-indigo-400 font-mono">
                   {Math.round((1 - data.processedSize / data.originalSize) * 100)}% OFF
                 </span>
@@ -61,14 +62,14 @@ const ResultCard: React.FC<ResultCardProps> = ({ data, onReset }) => {
                 className="w-full flex items-center justify-center space-x-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold shadow-lg shadow-indigo-500/25 transition-all active:scale-95"
               >
                 <Download className="w-5 h-5" />
-                <span>下载图片</span>
+                <span>{t.rcDownload}</span>
               </a>
               <button
                 onClick={onReset}
                 className="w-full flex items-center justify-center space-x-2 px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 font-medium transition-colors border border-white/5"
               >
                 <RotateCcw className="w-4 h-4" />
-                <span>处理下一张</span>
+                <span>{t.rcNext}</span>
               </button>
             </div>
           </div>
@@ -81,7 +82,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ data, onReset }) => {
               <div className="flex flex-col space-y-3">
                 <div className="flex items-center space-x-2 text-sm text-gray-400 font-medium">
                   <FileImage className="w-4 h-4" />
-                  <span>原图 ({formatBytes(data.originalSize)})</span>
+                  <span>{t.rcOriginal} ({formatBytes(data.originalSize)})</span>
                 </div>
                 <div className="flex-1 bg-[#0B0F19] rounded-xl border border-white/10 p-2 flex items-center justify-center overflow-hidden relative group">
                   <img 
@@ -96,7 +97,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ data, onReset }) => {
               <div className="flex flex-col space-y-3">
                 <div className="flex items-center space-x-2 text-sm text-indigo-300 font-medium">
                   <LayoutTemplate className="w-4 h-4" />
-                  <span>结果预览</span>
+                  <span>{t.rcPreview}</span>
                 </div>
                 <div className="flex-1 bg-black rounded-xl border-2 border-indigo-500/30 shadow-[0_0_30px_rgba(79,70,229,0.15)] overflow-hidden relative group flex items-center justify-center">
                   <div className="absolute top-3 right-3 z-10">
