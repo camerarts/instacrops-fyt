@@ -1,4 +1,5 @@
 
+
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import Header from './components/Header';
 import UploadArea from './components/UploadArea';
@@ -199,34 +200,33 @@ const App: React.FC = () => {
                 <p className="text-lg text-gray-400 leading-relaxed max-w-xl animate-fade-in-up delay-100">
                   {t.heroDesc}
                 </p>
-                
-                 {/* Main CTA Button */}
-                <div className="pt-2 animate-fade-in-up delay-200">
-                    <button 
-                        onClick={() => heroInputRef.current?.click()}
-                        className="group relative flex items-center gap-4 px-8 py-4 bg-gradient-to-r from-indigo-600 to-pink-600 rounded-2xl hover:from-indigo-500 hover:to-pink-500 transition-all duration-300 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-1 ring-1 ring-white/10"
-                    >
-                        <div className="flex flex-col items-start text-left">
-                             <span className="text-xl font-bold text-white">{t.ctaMain}</span>
-                             <span className="text-xs text-indigo-100/80 font-medium">{t.ctaSub}</span>
-                        </div>
-                        <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 transition-colors border border-white/10">
-                             <UploadCloud className="w-6 h-6 text-white" />
-                        </div>
-                    </button>
-                    <input 
-                        type="file" 
-                        ref={heroInputRef} 
-                        className="hidden" 
-                        accept="image/*"
-                        onChange={handleHeroFileInput}
-                    />
-                </div>
-
               </div>
 
-              {/* Redesigned Workflow Steps (Visual Stepper) */}
-              <div className="relative animate-fade-in-up delay-200">
+              {/* Main CTA Button - Moved Here (Above Workflow Steps) */}
+              <div className="pt-2 animate-fade-in-up delay-200">
+                  <button 
+                      onClick={() => heroInputRef.current?.click()}
+                      className="group relative flex items-center gap-4 px-8 py-4 bg-gradient-to-r from-indigo-600 to-pink-600 rounded-2xl hover:from-indigo-500 hover:to-pink-500 transition-all duration-300 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-1 ring-1 ring-white/10"
+                  >
+                      <div className="flex flex-col items-start text-left">
+                           <span className="text-xl font-bold text-white">{t.ctaMain}</span>
+                           <span className="text-xs text-indigo-100/80 font-medium">{t.ctaSub}</span>
+                      </div>
+                      <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 transition-colors border border-white/10">
+                           <UploadCloud className="w-6 h-6 text-white" />
+                      </div>
+                  </button>
+                  <input 
+                      type="file" 
+                      ref={heroInputRef} 
+                      className="hidden" 
+                      accept="image/*"
+                      onChange={handleHeroFileInput}
+                  />
+              </div>
+
+              {/* Redesigned Workflow Steps (Visual Stepper) - Moved Below CTA */}
+              <div className="relative animate-fade-in-up delay-200 pt-8">
                 {/* Connecting Line Layer */}
                 <div className="absolute top-1/2 left-0 w-full h-[2px] -translate-y-1/2 z-0">
                    <div className="w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
