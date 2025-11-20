@@ -46,11 +46,11 @@ export const translations = {
     
     // Features (Updated descriptions)
     featRatio: '多比例支持',
-    featRatioDesc: '一张图同时导出多种比例',
+    featRatioDesc: '支持 16:9, 4:3, 1:1 等多种常用社交媒体比例。',
     featCompress: '智能压缩引擎',
-    featCompressDesc: '控制文件体积，画质保持清晰',
+    featCompressDesc: '自动将体积控制在 2MB 以内，同时保持画质。',
     featPrivacy: '隐私安全',
-    featPrivacyDesc: '图片仅在浏览器本地处理',
+    featPrivacyDesc: '所有处理均在浏览器本地完成，图片无需上传服务器。',
     
     footer: 'InstaCrops Pro. Designed for 宁波大学 Camerart',
     
@@ -69,6 +69,10 @@ export const translations = {
     // Manual Cropper
     mcTitle: '调整裁剪区域',
     mcHint: '提示：按住图片拖动可调整位置',
+    mcKeyTips: [
+      '允许方向键微调裁剪框位置',
+      '+/- 键细微缩放画面'
+    ],
     mcRatio: '画布比例',
     mcZoomTitle: '画面缩放',
     mcZoomDesc: '调整裁剪范围',
@@ -111,11 +115,11 @@ export const translations = {
     processingDesc: 'and generating HD image.',
     
     featRatio: 'Multi-Ratio Support',
-    featRatioDesc: 'Export multiple ratios from one image.',
-    featCompress: 'Smart Compression',
-    featCompressDesc: 'Control file size, keep quality clear.',
-    featPrivacy: 'Privacy First',
-    featPrivacyDesc: 'Processed locally in browser.',
+    featRatioDesc: 'Supports 16:9, 4:3, 1:1 and other common social media ratios.',
+    featCompress: 'Smart Compression Engine',
+    featCompressDesc: 'Automatically controls size under 2MB while maintaining quality.',
+    featPrivacy: 'Privacy Secure',
+    featPrivacyDesc: 'All processing is done locally in the browser, no server uploads.',
     
     footer: 'InstaCrops Pro. Designed for Ningbo University Camerart',
     
@@ -132,6 +136,10 @@ export const translations = {
 
     mcTitle: 'Adjust Crop Area',
     mcHint: 'Hint: Drag image to adjust position',
+    mcKeyTips: [
+      'Arrow keys to fine-tune position',
+      '+/- keys to fine-zoom'
+    ],
     mcRatio: 'ASPECT RATIO',
     mcZoomTitle: 'Zoom Level',
     mcZoomDesc: 'Adjust crop range',
@@ -174,11 +182,11 @@ export const translations = {
     processingDesc: 'してHD画像を生成中。',
 
     featRatio: 'マルチ比率対応',
-    featRatioDesc: '1枚の画像から複数の比率を書き出し',
+    featRatioDesc: '16:9、4:3、1:1など、一般的なソーシャルメディアの比率をサポート。',
     featCompress: 'スマート圧縮',
-    featCompressDesc: '画質を維持しつつファイルサイズを制御',
+    featCompressDesc: '画質を維持しながら自動的に2MB以下にサイズを制御します。',
     featPrivacy: 'プライバシー保護',
-    featPrivacyDesc: 'ブラウザ内でローカル処理されます',
+    featPrivacyDesc: 'すべての処理はブラウザ内でローカルに行われ、サーバーへのアップロードはありません。',
 
     footer: 'InstaCrops Pro. Designed for Ningbo University Camerart',
     
@@ -195,6 +203,10 @@ export const translations = {
 
     mcTitle: 'クロップ範囲の調整',
     mcHint: 'ヒント: 画像をドラッグして位置を調整',
+    mcKeyTips: [
+      '矢印キーで位置を微調整',
+      '+/- キーでズーム'
+    ],
     mcRatio: '比率',
     mcZoomTitle: 'ズーム',
     mcZoomDesc: '範囲を調整',
@@ -237,11 +249,11 @@ export const translations = {
     processingDesc: '및 HD 이미지 생성 중.',
 
     featRatio: '다중 비율 지원',
-    featRatioDesc: '하나의 이미지로 다양한 비율 내보내기',
-    featCompress: '스마트 압축',
-    featCompressDesc: '화질을 유지하며 파일 크기 제어',
+    featRatioDesc: '16:9, 4:3, 1:1 등 다양한 소셜 미디어 비율 지원.',
+    featCompress: '스마트 압축 엔진',
+    featCompressDesc: '화질을 유지하면서 자동으로 2MB 이하로 용량 제어.',
     featPrivacy: '개인정보 보호',
-    featPrivacyDesc: '이미지는 브라우저 로컬에서만 처리됨',
+    featPrivacyDesc: '모든 처리는 브라우저 로컬에서 완료되며 서버로 업로드되지 않습니다.',
 
     footer: 'InstaCrops Pro. Designed for Ningbo University Camerart',
     
@@ -258,6 +270,10 @@ export const translations = {
 
     mcTitle: '크롭 영역 조정',
     mcHint: '팁: 이미지를 드래그하여 위치 조정',
+    mcKeyTips: [
+      '방향키로 위치 미세 조정',
+      '+/- 키로 화면 확대/축소'
+    ],
     mcRatio: '화면 비율',
     mcZoomTitle: '화면 확대',
     mcZoomDesc: '크롭 범위 조정',
@@ -300,11 +316,11 @@ export const translations = {
     processingDesc: 'y generando imagen HD.',
 
     featRatio: 'Soporte Multi-Proporción',
-    featRatioDesc: 'Exportar múltiples proporciones.',
-    featCompress: 'Compresión Inteligente',
-    featCompressDesc: 'Control de tamaño, calidad clara.',
-    featPrivacy: 'Privacidad Primero',
-    featPrivacyDesc: 'Procesamiento local en navegador.',
+    featRatioDesc: 'Soporta 16:9, 4:3, 1:1 y otras proporciones comunes.',
+    featCompress: 'Motor de Compresión',
+    featCompressDesc: 'Controla automáticamente el tamaño por debajo de 2MB manteniendo la calidad.',
+    featPrivacy: 'Privacidad Segura',
+    featPrivacyDesc: 'Todo el procesamiento se realiza localmente en el navegador.',
 
     footer: 'InstaCrops Pro. Diseñado para Ningbo University Camerart',
     
@@ -321,6 +337,10 @@ export const translations = {
 
     mcTitle: 'Ajustar Área de Recorte',
     mcHint: 'Pista: Arrastra la imagen para ajustar',
+    mcKeyTips: [
+      'Teclas de flecha para ajustar',
+      '+/- para zoom'
+    ],
     mcRatio: 'PROPORCIÓN',
     mcZoomTitle: 'Zoom',
     mcZoomDesc: 'Ajustar rango',
@@ -363,11 +383,11 @@ export const translations = {
     processingDesc: 'et génération de l\'image HD.',
 
     featRatio: 'Multi-Formats',
-    featRatioDesc: 'Exportez plusieurs formats.',
+    featRatioDesc: 'Supporte 16:9, 4:3, 1:1 et autres formats courants.',
     featCompress: 'Compression Intelligente',
-    featCompressDesc: 'Contrôle de taille, qualité claire.',
+    featCompressDesc: 'Contrôle automatique de la taille sous 2MB tout en maintenant la qualité.',
     featPrivacy: 'Confidentialité',
-    featPrivacyDesc: 'Traitement local dans le navigateur.',
+    featPrivacyDesc: 'Tout le traitement est effectué localement dans le navigateur.',
 
     footer: 'InstaCrops Pro. Conçu pour Ningbo University Camerart',
     
@@ -384,6 +404,10 @@ export const translations = {
 
     mcTitle: 'Ajuster le recadrage',
     mcHint: 'Astuce: Glissez l\'image pour ajuster',
+    mcKeyTips: [
+      'Flèches pour ajuster',
+      '+/- pour zoom'
+    ],
     mcRatio: 'FORMAT',
     mcZoomTitle: 'Zoom',
     mcZoomDesc: 'Ajuster la zone',
@@ -426,11 +450,11 @@ export const translations = {
     processingDesc: 'und generiere HD-Bild.',
 
     featRatio: 'Multi-Format Support',
-    featRatioDesc: 'Mehrere Formate exportieren.',
+    featRatioDesc: 'Unterstützt 16:9, 4:3, 1:1 und andere gängige Formate.',
     featCompress: 'Smarte Kompression',
-    featCompressDesc: 'Dateigröße kontrollieren, Qualität erhalten.',
+    featCompressDesc: 'Automatische Kontrolle der Größe unter 2MB bei gleichbleibender Qualität.',
     featPrivacy: 'Datenschutz',
-    featPrivacyDesc: 'Verarbeitung lokal im Browser.',
+    featPrivacyDesc: 'Alle Verarbeitungen erfolgen lokal im Browser.',
 
     footer: 'InstaCrops Pro. Entwickelt für Ningbo University Camerart',
     
@@ -447,6 +471,10 @@ export const translations = {
 
     mcTitle: 'Zuschnitt anpassen',
     mcHint: 'Tipp: Ziehe das Bild zum Positionieren',
+    mcKeyTips: [
+      'Pfeiltasten zum Anpassen',
+      '+/- zum Zoomen'
+    ],
     mcRatio: 'FORMAT',
     mcZoomTitle: 'Zoom',
     mcZoomDesc: 'Bereich anpassen',
