@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { Crop, Github } from 'lucide-react';
+import { Crop, Layers, Github } from 'lucide-react';
 
 interface HeaderProps {
   totalConverted: number;
@@ -7,24 +8,32 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ totalConverted }) => {
   return (
-    <header className="w-full h-20 flex items-center sticky top-0 z-50 transition-all duration-300">
+    <header className="w-full h-24 flex items-center sticky top-0 z-50 transition-all duration-300">
       {/* Glassmorphism Container */}
       <div className="absolute inset-0 bg-[#0B0F19]/80 backdrop-blur-md border-b border-white/[0.08]"></div>
       
       <div className="relative container mx-auto px-4 flex items-center justify-between">
-        {/* Left: Logo */}
-        <div className="flex items-center space-x-3">
-          <div className="relative group cursor-pointer">
-            <div className="absolute -inset-2 bg-gradient-to-r from-indigo-500 to-pink-500 rounded-full blur opacity-25 group-hover:opacity-50 transition-opacity duration-500"></div>
-            <div className="relative bg-[#131725] p-2 rounded-xl border border-white/10 shadow-lg group-hover:scale-105 transition-transform duration-300">
-              <Crop className="w-5 h-5 text-indigo-400" />
+        {/* Left: Logo (Redesigned) */}
+        <div className="flex items-center gap-4 group cursor-pointer select-none">
+          {/* Icon Container */}
+          <div className="relative w-12 h-12 flex items-center justify-center">
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-xl blur opacity-40 group-hover:opacity-70 transition-opacity duration-500"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-xl shadow-inner border border-white/10 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+              <Layers className="w-6 h-6 text-white/90 absolute" />
+              <Crop className="w-4 h-4 text-indigo-200 absolute translate-x-1 translate-y-1" />
             </div>
           </div>
-          <div className="flex flex-col">
-            <h1 className="text-xl font-bold text-white tracking-tight leading-none">
-              InstaCrops
+          
+          {/* Text Logo */}
+          <div className="flex flex-col justify-center">
+            <h1 className="text-2xl font-bold tracking-tight leading-none">
+              <span className="text-white">Insta</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-400">Crops</span>
             </h1>
-            <span className="text-[10px] font-medium text-indigo-400/80 tracking-wider uppercase mt-0.5">Pro Studio</span>
+            <div className="flex items-center gap-1.5 mt-1">
+              <div className="h-[1px] w-3 bg-indigo-500/50"></div>
+              <span className="text-[10px] font-semibold text-indigo-300/80 tracking-[0.2em] uppercase">Pro Studio</span>
+            </div>
           </div>
         </div>
 
