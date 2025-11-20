@@ -1,7 +1,7 @@
 
 
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { Check, X, ZoomIn, Move, Smartphone, Monitor, Square, LayoutTemplate, HardDrive, Hand } from 'lucide-react';
+import { Check, X, ZoomIn, Move, Smartphone, Monitor, Square, LayoutTemplate, HardDrive, Hand, Sparkles } from 'lucide-react';
 import { CropConfig, OutputDimensions } from '../utils/imageProcessor';
 
 interface ManualCropperProps {
@@ -280,14 +280,6 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
               <Move className="w-5 h-5 text-indigo-400" />
               <span className="tracking-wide">{t.mcTitle}</span>
             </h3>
-            {/* Added Hints Below Title */}
-            {t.mcKeyTips && (
-              <div className="text-[10px] text-gray-400 mt-1 pl-7 space-y-0.5 font-mono opacity-80">
-                 {t.mcKeyTips.map((tip: string, idx: number) => (
-                   <p key={idx}>• {tip}</p>
-                 ))}
-              </div>
-            )}
           </div>
 
           <button onClick={onCancel} className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-full">
@@ -319,6 +311,24 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
                 </div>
               </div>
             )}
+            
+            {/* New Tips Overlay at bottom */}
+            <div className="absolute bottom-8 left-0 right-0 z-30 flex justify-center pointer-events-none">
+              <div className="bg-black/50 backdrop-blur-md border border-white/5 px-6 py-3 rounded-2xl flex flex-col items-center gap-2 shadow-2xl">
+                <div className="flex items-center gap-2 text-indigo-300 font-bold text-xs uppercase tracking-wider">
+                  <Sparkles className="w-3 h-3" />
+                  {t.mcTipsTitle}
+                </div>
+                <div className="flex gap-4 text-[11px] text-gray-400 font-mono">
+                  {t.mcKeyTips && t.mcKeyTips.map((tip: string, idx: number) => (
+                    <span key={idx} className="flex items-center gap-1">
+                      <div className="w-1 h-1 rounded-full bg-gray-500"></div>
+                      {tip}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
 
             {/* Pattern Background */}
             <div className="absolute inset-0 opacity-10 pointer-events-none" 
