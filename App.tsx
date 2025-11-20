@@ -8,11 +8,17 @@ import { Loader2, Wand2, Crop as CropIcon, Zap } from 'lucide-react';
 
 type ProcessMode = 'auto' | 'manual';
 
+// Unique namespace for this specific project instance
+const COUNTER_NAMESPACE = 'instacrops-project-fyt';
+const COUNTER_KEY = 'conversions';
+
 const App: React.FC = () => {
   const [status, setStatus] = useState<ProcessingStatus>(ProcessingStatus.IDLE);
   const [result, setResult] = useState<ProcessedImage | null>(null);
   
-  // Counter State with Persistence
+  // --- 真实云端计数器逻辑 ---
+  
+  // 默认先从本地取一个缓存值，避免刷新页面时数字闪烁为0
   const [totalConverted, setTotalConverted] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('instacrops_total_converted');
@@ -21,10 +27,30 @@ const App: React.FC = () => {
     return 0;
   });
 
-  // Persist count whenever it changes
+  // 1. 初始化：获取云端真实数据
   useEffect(() => {
-    localStorage.setItem('instacrops_total_converted', totalConverted.toString());
-  }, [totalConverted]);
+    const fetchGlobalCount = async () => {
+      try {
+        // 使用 counterapi.dev 免费服务
+        const response = await fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}/`);
+        if (response.ok) {
+          const data = await response.json();
+          // 如果云端数据大于本地数据，更新本地状态
+          if (data.count > totalConverted) {
+            setTotalConverted(data.count);
+            localStorage.setItem('instacrops_total_converted', data.count.toString());
+          }
+        }
+      } catch (error) {
+        console.warn("Failed to fetch global stats, using local cache:", error);
+      }
+    };
+
+    fetchGlobalCount();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 仅在组件加载时执行一次
+
+  // --- 计数器逻辑结束 ---
 
   // Mode State
   const [mode, setMode] = useState<ProcessMode>('auto');
@@ -64,7 +90,23 @@ const App: React.FC = () => {
       });
       
       setStatus(ProcessingStatus.SUCCESS);
-      setTotalConverted(prev => prev + 1);
+      
+      // 2. 成功处理后：向云端发送 +1 请求
+      try {
+        const response = await fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}/up`);
+        if (response.ok) {
+          const data = await response.json();
+          setTotalConverted(data.count);
+          localStorage.setItem('instacrops_total_converted', data.count.toString());
+        } else {
+          // 如果API挂了，至少本地先+1，保证用户体验
+          setTotalConverted(prev => prev + 1);
+        }
+      } catch (err) {
+        // 网络错误，本地+1
+        setTotalConverted(prev => prev + 1);
+      }
+
     } catch (error) {
       console.error("Error processing image:", error);
       setStatus(ProcessingStatus.ERROR);
