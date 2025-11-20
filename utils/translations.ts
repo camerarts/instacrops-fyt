@@ -1,6 +1,8 @@
 
 
 
+
+
 export type Language = 'zh-CN' | 'en-US' | 'ja-JP' | 'ko-KR' | 'es-ES' | 'fr-FR' | 'de-DE';
 
 export const languages: { code: Language; label: string; flag: string }[] = [
@@ -24,7 +26,7 @@ export const translations = {
     heroTitleEnd: '极致视觉',
     heroSubtitle: '专为内容创作者设计的 在线图片裁剪与压缩工具',
     heroDesc: '专为创作者打造的在线图片裁剪与压缩工具。无论是社交媒体封面还是高清展示图，都能一键完成构图裁剪与无损压缩。',
-    freeService: '永久免费的在线图片裁剪与压缩工具，专为内容创作者设计',
+    freeService: '永久免费，一键生成适配 YouTube / B站/抖音 / 小红书等平台的标准封面比例',
     
     // Workflow
     step1: '上传图片',
@@ -40,8 +42,8 @@ export const translations = {
     manualModeTitle: '手动裁剪',
     manualModeDesc: '自定义区域与大小',
     uploadRelease: '释放以上传',
-    uploadClick: '点击或拖拽图片',
-    uploadSupport: '支持 JPG, PNG, WebP。无论原图尺寸如何，我们都将其转化为高清标准比例。',
+    uploadClick: '点击或拖拽图片上传',
+    uploadSupport: '支持 JPG、PNG、WebP，推荐原图尺寸越大效果越好',
     hdOutput: '高清输出',
     processingTitle: '正在处理...',
     processingAuto: '智能分析主体',
