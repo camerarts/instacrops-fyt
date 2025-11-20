@@ -1,5 +1,4 @@
 
-
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import Header from './components/Header';
 import UploadArea from './components/UploadArea';
@@ -79,7 +78,13 @@ const App: React.FC = () => {
 
   const handleHeroFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      handleFileSelect(e.target.files[0]);
+      // Force manual mode for Hero CTA button
+      setMode('manual');
+      setTempFile(e.target.files[0]);
+      setShowManualCropper(true);
+      
+      // Reset input so same file can be selected again if needed
+      e.target.value = '';
     }
   };
 
@@ -260,19 +265,21 @@ const App: React.FC = () => {
                 </div>
               </div>
 
-              {/* Feature Tags List */}
-              <div className="grid gap-4 pt-6 animate-fade-in-up delay-300">
+              {/* Feature Tags List (Horizontal Compact) */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 animate-fade-in-up delay-300">
                 {[
                     { icon: Maximize2, title: t.featRatio, desc: t.featRatioDesc, color: 'text-indigo-400' },
                     { icon: Zap, title: t.featCompress, desc: t.featCompressDesc, color: 'text-yellow-400' },
                     { icon: Lock, title: t.featPrivacy, desc: t.featPrivacyDesc, color: 'text-pink-400' }
                 ].map((item, i) => (
-                    <div key={i} className="flex items-start gap-3 group">
-                        <div className={`mt-0.5 ${item.color} group-hover:scale-110 transition-transform duration-300`}><item.icon className="w-5 h-5" /></div>
-                        <div>
+                    <div key={i} className="flex flex-col gap-2 group">
+                        <div className="flex items-center gap-2">
+                            <div className={`${item.color} group-hover:scale-110 transition-transform duration-300`}>
+                                <item.icon className="w-4 h-4" />
+                            </div>
                             <h4 className="text-sm font-bold text-gray-200 group-hover:text-white transition-colors">{item.title}</h4>
-                            <p className="text-xs text-gray-500 leading-relaxed max-w-sm mt-0.5">{item.desc}</p>
                         </div>
+                        <p className="text-xs text-gray-500 leading-relaxed opacity-80">{item.desc}</p>
                     </div>
                 ))}
               </div>
