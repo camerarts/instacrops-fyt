@@ -1,6 +1,6 @@
 
 import React, { useRef, useState, useEffect } from 'react';
-import { Check, X, ZoomIn, Move, Smartphone, Monitor, Square, LayoutTemplate, HardDrive } from 'lucide-react';
+import { Check, X, ZoomIn, Move, Smartphone, Monitor, Square, LayoutTemplate, HardDrive, Hand } from 'lucide-react';
 import { CropConfig, OutputDimensions } from '../utils/imageProcessor';
 
 interface ManualCropperProps {
@@ -250,6 +250,14 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
             ref={wrapperRef}
             className="flex-1 bg-[#090b10] relative flex items-center justify-center p-4 md:p-8 overflow-hidden select-none group"
           >
+            {/* Hint Overlay */}
+            <div className="absolute top-4 left-0 right-0 z-30 flex justify-center pointer-events-none animate-fade-in-up">
+               <div className="bg-black/40 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full flex items-center gap-2 text-xs text-gray-300 shadow-lg">
+                  <Hand className="w-3.5 h-3.5 text-indigo-400" />
+                  <span>提示：切换比例后，可按住图片拖动调整位置</span>
+               </div>
+            </div>
+
             {/* Pattern Background */}
             <div className="absolute inset-0 opacity-10 pointer-events-none" 
                  style={{ backgroundImage: 'radial-gradient(#4F46E5 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
