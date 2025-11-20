@@ -5,9 +5,10 @@ import { UploadCloud, Image as ImageIcon, Maximize2 } from 'lucide-react';
 interface UploadAreaProps {
   onFileSelect: (file: File) => void;
   isProcessing: boolean;
+  t: any;
 }
 
-const UploadArea: React.FC<UploadAreaProps> = ({ onFileSelect, isProcessing }) => {
+const UploadArea: React.FC<UploadAreaProps> = ({ onFileSelect, isProcessing, t }) => {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -37,7 +38,7 @@ const UploadArea: React.FC<UploadAreaProps> = ({ onFileSelect, isProcessing }) =
 
   const validateAndProcess = (file: File) => {
     if (!file.type.startsWith('image/')) {
-      alert('请上传图片文件');
+      alert(t.alertType);
       return;
     }
     onFileSelect(file);
@@ -81,16 +82,16 @@ const UploadArea: React.FC<UploadAreaProps> = ({ onFileSelect, isProcessing }) =
         </div>
 
         <h3 className={`text-2xl font-bold mb-3 transition-colors duration-300 ${isDragging ? 'text-indigo-200' : 'text-white'}`}>
-          {isDragging ? '释放以上传' : '点击或拖拽图片'}
+          {isDragging ? t.uploadRelease : t.uploadClick}
         </h3>
         
         <p className="text-gray-400 text-sm mb-6 max-w-sm">
-          支持 JPG, PNG, WebP。无论原图尺寸如何，我们都将其转化为高清标准比例。
+          {t.uploadSupport}
         </p>
 
         <div className="flex items-center space-x-2 text-xs font-medium text-indigo-300/80 bg-indigo-500/10 px-4 py-1.5 rounded-full border border-indigo-500/20">
           <Maximize2 className="w-3 h-3" />
-          <span>高清输出</span>
+          <span>{t.hdOutput}</span>
         </div>
       </div>
     </div>
