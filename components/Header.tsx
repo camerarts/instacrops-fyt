@@ -14,49 +14,49 @@ const Header: React.FC<HeaderProps> = ({ totalConverted, lang, setLang, t }) => 
   const currentLang = languages.find(l => l.code === lang) || languages[0];
 
   return (
-    <header className="w-full h-20 flex items-center sticky top-0 z-50 transition-all duration-300 shrink-0">
-      {/* Glassmorphism Container */}
-      <div className="absolute inset-0 bg-[#0B0F19]/80 backdrop-blur-md border-b border-white/[0.08]"></div>
+    <header className="w-full h-24 flex items-center sticky top-0 z-50 transition-all duration-300 shrink-0">
+      {/* Liquid Glass Background */}
+      <div className="absolute inset-0 bg-[#0B0F19]/60 backdrop-blur-xl border-b border-white/[0.08] shadow-lg"></div>
       
-      <div className="relative container mx-auto px-4 flex items-center justify-between">
-        {/* Left: Logo (Redesigned) */}
-        <div className="flex items-center gap-4 group cursor-pointer select-none">
-          {/* Icon Container */}
-          <div className="relative w-10 h-10 flex items-center justify-center">
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-xl blur opacity-40 group-hover:opacity-70 transition-opacity duration-500"></div>
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-xl shadow-inner border border-white/10 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-              <Layers className="w-5 h-5 text-white/90 absolute" />
-              <Crop className="w-3 h-3 text-indigo-200 absolute translate-x-1 translate-y-1" />
+      <div className="relative container mx-auto px-6 flex items-center justify-between">
+        {/* Left: Logo */}
+        <div className="flex items-center gap-5 group cursor-pointer select-none transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-105">
+          {/* Icon Container - Glassy */}
+          <div className="relative w-12 h-12 flex items-center justify-center">
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl blur opacity-40 group-hover:opacity-70 transition-opacity duration-500"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/80 to-purple-700/80 backdrop-blur-md rounded-2xl shadow-inner border border-white/20 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+              <Layers className="w-6 h-6 text-white/90 absolute" />
+              <Crop className="w-3.5 h-3.5 text-indigo-200 absolute translate-x-1.5 translate-y-1.5" />
             </div>
           </div>
           
           {/* Text Logo */}
           <div className="flex flex-col justify-center">
-            <h1 className="text-xl font-bold tracking-tight leading-none">
+            <h1 className="text-2xl font-bold tracking-tight leading-none drop-shadow-sm">
               <span className="text-white">Insta</span>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-400">Crops</span>
             </h1>
-            <div className="flex items-center gap-1.5 mt-0.5">
+            <div className="flex items-center gap-1.5 mt-1">
               <div className="h-[1px] w-3 bg-indigo-500/50"></div>
-              <span className="text-[9px] font-semibold text-indigo-300/80 tracking-[0.2em] uppercase">{t.proStudio}</span>
+              <span className="text-[10px] font-bold text-indigo-300/80 tracking-[0.25em] uppercase">{t.proStudio}</span>
             </div>
           </div>
         </div>
 
         {/* Right: Actions */}
-        <div className="flex items-center gap-3 md:gap-4">
-          {/* Enhanced Conversion Counter Badge - Aligned Height */}
-          <div className="hidden md:flex items-center justify-center">
-            <div className="flex items-center gap-2 px-4 h-10 rounded-xl bg-[#131725]/80 border border-indigo-500/30 shadow-[0_0_20px_rgba(79,70,229,0.15)] backdrop-blur-xl group hover:border-indigo-500/50 hover:shadow-[0_0_25px_rgba(79,70,229,0.25)] transition-all duration-300">
-              <span className="text-[11px] font-bold text-gray-400 tracking-wide">{t.completed}</span>
-              <span key={totalConverted} className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-pink-400 font-mono tabular-nums leading-none tracking-tighter drop-shadow-[0_2px_10px_rgba(168,85,247,0.5)] animate-fade-in-up pt-0.5">
+        <div className="flex items-center gap-4 md:gap-6">
+          {/* Enhanced Conversion Counter Badge - Glass & Hover */}
+          <div className="hidden md:flex items-center justify-center group/counter">
+            <div className="flex items-center gap-3 px-5 h-12 rounded-2xl bg-white/5 border border-white/10 shadow-[0_0_20px_rgba(79,70,229,0.1)] backdrop-blur-xl transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-105 hover:bg-white/10 hover:border-indigo-500/30 hover:shadow-[0_0_25px_rgba(79,70,229,0.25)]">
+              <span className="text-xs font-bold text-gray-400 tracking-wide uppercase">{t.completed}</span>
+              <span key={totalConverted} className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-pink-400 font-mono tabular-nums leading-none tracking-tighter drop-shadow-[0_2px_10px_rgba(168,85,247,0.5)] animate-fade-in-up">
                 {totalConverted}
               </span>
-              <span className="text-[11px] font-bold text-gray-400 tracking-wide">{t.converted}</span>
+              <span className="text-xs font-bold text-gray-400 tracking-wide uppercase">{t.converted}</span>
             </div>
           </div>
 
-          {/* Custom Language Selector - Aligned Height */}
+          {/* Custom Language Selector - Glass & Hover */}
           {isLangOpen && (
               <div className="fixed inset-0 z-40 bg-transparent" onClick={() => setIsLangOpen(false)} />
           )}
@@ -64,33 +64,33 @@ const Header: React.FC<HeaderProps> = ({ totalConverted, lang, setLang, t }) => 
             <button
               onClick={() => setIsLangOpen(!isLangOpen)}
               className={`
-                flex items-center gap-2 px-3 h-10 rounded-xl border transition-all duration-300 group
+                flex items-center gap-3 px-4 h-12 rounded-2xl border transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-105 group
                 ${isLangOpen 
-                  ? 'bg-[#1A1F2E] border-indigo-500/50 text-white shadow-[0_0_15px_rgba(79,70,229,0.15)]' 
-                  : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-indigo-500/30 text-gray-300'
+                  ? 'bg-[#1A1F2E]/90 backdrop-blur-xl border-indigo-500/50 text-white shadow-[0_0_20px_rgba(79,70,229,0.2)]' 
+                  : 'bg-white/5 backdrop-blur-md border-white/10 hover:bg-white/10 hover:border-white/20 hover:shadow-lg text-gray-300'
                 }
               `}
               aria-label="Select Language"
               aria-expanded={isLangOpen}
             >
-              <span className="text-lg leading-none filter drop-shadow-sm">{currentLang.flag}</span>
-              <span className="text-xs font-semibold hidden md:block group-hover:text-white transition-colors">
+              <span className="text-xl leading-none filter drop-shadow-sm">{currentLang.flag}</span>
+              <span className="text-sm font-semibold hidden md:block group-hover:text-white transition-colors">
                 {currentLang.label}
               </span>
               <ChevronDown 
-                className={`w-3 h-3 text-gray-500 group-hover:text-indigo-300 transition-transform duration-300 ${isLangOpen ? 'rotate-180 text-indigo-400' : ''}`} 
+                className={`w-4 h-4 text-gray-500 group-hover:text-indigo-300 transition-transform duration-300 ${isLangOpen ? 'rotate-180 text-indigo-400' : ''}`} 
               />
             </button>
 
-            {/* Dropdown Menu */}
+            {/* Dropdown Menu - Glass */}
             <div className={`
-              absolute right-0 mt-2 w-48 bg-[#131725] border border-white/10 rounded-xl shadow-2xl overflow-hidden origin-top-right transition-all duration-200 ring-1 ring-black/50 backdrop-blur-xl
+              absolute right-0 mt-3 w-56 bg-[#0f131d]/90 border border-white/10 rounded-2xl shadow-2xl overflow-hidden origin-top-right transition-all duration-300 ring-1 ring-black/50 backdrop-blur-2xl
               ${isLangOpen 
                   ? 'opacity-100 scale-100 translate-y-0 visible' 
                   : 'opacity-0 scale-95 -translate-y-2 invisible pointer-events-none'
               }
             `}>
-               <div className="py-1 max-h-[320px] overflow-y-auto custom-scrollbar">
+               <div className="py-2 max-h-[360px] overflow-y-auto custom-scrollbar">
                   {languages.map((l) => (
                     <button
                       key={l.code}
@@ -98,16 +98,16 @@ const Header: React.FC<HeaderProps> = ({ totalConverted, lang, setLang, t }) => 
                         setLang(l.code);
                         setIsLangOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-3 text-sm flex items-center gap-3 transition-colors border-l-[3px]
+                      className={`w-full text-left px-5 py-3.5 text-sm flex items-center gap-4 transition-colors border-l-[3px]
                         ${lang === l.code 
-                          ? 'bg-indigo-500/10 text-white border-indigo-500 font-medium' 
+                          ? 'bg-indigo-500/10 text-white border-indigo-500 font-bold' 
                           : 'text-gray-400 hover:bg-white/5 hover:text-gray-200 border-transparent'
                         }
                       `}
                     >
                       <span className="text-xl leading-none">{l.flag}</span>
                       <span>{l.label}</span>
-                      {lang === l.code && <Check className="w-3.5 h-3.5 ml-auto text-indigo-400" />}
+                      {lang === l.code && <Check className="w-4 h-4 ml-auto text-indigo-400" />}
                     </button>
                   ))}
                </div>
