@@ -19,6 +19,13 @@ const App: React.FC = () => {
   
   // --- Internationalization State ---
   const [lang, setLang] = useState<Language>('zh-CN');
+  const [hasSelectedLang, setHasSelectedLang] = useState(false);
+  
+  const handleSetLang = (l: Language) => {
+    setLang(l);
+    setHasSelectedLang(true);
+  };
+
   const t = translations[lang];
 
   // Update document title when language changes
@@ -156,7 +163,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white selection:bg-indigo-500/30 flex flex-col font-sans overflow-x-hidden">
-      <Header lang={lang} setLang={setLang} t={t} />
+      <Header lang={lang} setLang={handleSetLang} t={t} hasSelectedLang={hasSelectedLang} />
 
       <main className="flex-1 container mx-auto px-4 py-12 lg:py-20 flex flex-col justify-center relative z-10">
         
