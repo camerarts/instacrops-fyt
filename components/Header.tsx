@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { Crop, Layers, ChevronDown, Check } from 'lucide-react';
+import { Crop, Layers, ChevronDown, Check, Globe } from 'lucide-react';
 import { languages, Language } from '../utils/translations';
 
 interface HeaderProps {
   lang: Language;
   setLang: (lang: Language) => void;
   t: any;
+  hasSelectedLang: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ lang, setLang, t }) => {
+const Header: React.FC<HeaderProps> = ({ lang, setLang, t, hasSelectedLang }) => {
   const [isLangOpen, setIsLangOpen] = useState(false);
   const currentLang = languages.find(l => l.code === lang) || languages[0];
 
@@ -44,8 +45,7 @@ const Header: React.FC<HeaderProps> = ({ lang, setLang, t }) => {
 
         {/* Right: Actions */}
         <div className="flex items-center gap-4 md:gap-6">
-          {/* Statistics Counter moved to App.tsx body */}
-
+          
           {/* Custom Language Selector - Glass & Hover */}
           {isLangOpen && (
               <div className="fixed inset-0 z-40 bg-transparent" onClick={() => setIsLangOpen(false)} />
@@ -63,10 +63,21 @@ const Header: React.FC<HeaderProps> = ({ lang, setLang, t }) => {
               aria-label="Select Language"
               aria-expanded={isLangOpen}
             >
-              <span className="text-xl leading-none filter drop-shadow-sm">{currentLang.flag}</span>
-              <span className="text-sm font-semibold hidden md:block group-hover:text-white transition-colors">
-                {currentLang.label}
-              </span>
+              {hasSelectedLang ? (
+                  <>
+                    <span className="text-xl leading-none filter drop-shadow-sm">{currentLang.flag}</span>
+                    <span className="text-sm font-semibold hidden md:block group-hover:text-white transition-colors">
+                        {currentLang.label}
+                    </span>
+                  </>
+              ) : (
+                  <>
+                     <Globe className="w-5 h-5 text-gray-400 group-hover:text-indigo-300 transition-colors" />
+                     <span className="text-sm font-semibold hidden md:block group-hover:text-white transition-colors">
+                        Language
+                     </span>
+                  </>
+              )}
               <ChevronDown 
                 className={`w-4 h-4 text-gray-500 group-hover:text-indigo-300 transition-transform duration-300 ${isLangOpen ? 'rotate-180 text-indigo-400' : ''}`} 
               />
@@ -89,7 +100,7 @@ const Header: React.FC<HeaderProps> = ({ lang, setLang, t }) => {
                         setIsLangOpen(false);
                       }}
                       className={`w-full text-left px-5 py-3.5 text-sm flex items-center gap-4 transition-colors border-l-[3px]
-                        ${lang === l.code 
+                        ${lang === l.code && hasSelectedLang
                           ? 'bg-indigo-500/10 text-white border-indigo-500 font-bold' 
                           : 'text-gray-400 hover:bg-white/5 hover:text-gray-200 border-transparent'
                         }
@@ -97,7 +108,7 @@ const Header: React.FC<HeaderProps> = ({ lang, setLang, t }) => {
                     >
                       <span className="text-xl leading-none">{l.flag}</span>
                       <span>{l.label}</span>
-                      {lang === l.code && <Check className="w-4 h-4 ml-auto text-indigo-400" />}
+                      {lang === l.code && hasSelectedLang && <Check className="w-4 h-4 ml-auto text-indigo-400" />}
                     </button>
                   ))}
                </div>
