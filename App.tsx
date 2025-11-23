@@ -204,40 +204,34 @@ const App: React.FC = () => {
 
               {/* Redesigned Workflow Steps (Visual Stepper) - Moved Above CTA */}
               <div className="relative animate-fade-in-up delay-200 pt-4">
-                {/* Connecting Line Layer */}
-                <div className="absolute top-1/2 left-0 w-full h-[2px] -translate-y-1/2 z-0">
-                   <div className="w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+                {/* Connecting Line Layer - Line positioned at top-[2.75rem] to align with center of 3.5rem icons + 1rem padding */}
+                <div className="absolute top-[2.75rem] left-0 w-full h-[2px] -translate-y-1/2 z-0">
+                   <div className="w-full h-full bg-white/10"></div>
                 </div>
 
-                <div className="relative z-10 flex items-center justify-between max-w-md">
+                <div className="relative z-10 flex items-center justify-between max-w-sm">
                   {/* Step 1 */}
-                  <div className="flex flex-col items-center gap-3 group cursor-default">
-                    <div className="w-14 h-14 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-lg flex items-center justify-center group-hover:scale-110 group-hover:bg-indigo-500/20 group-hover:border-indigo-500/50 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
+                  <div className="flex flex-col items-center gap-3 relative">
+                    <div className="w-14 h-14 rounded-2xl bg-[#0f172a] border border-white/10 flex items-center justify-center z-10">
                        <UploadCloud className="w-6 h-6 text-indigo-400" />
                     </div>
-                    <span className="text-xs font-bold text-gray-400 tracking-wider uppercase group-hover:text-white transition-colors">{t.step1}</span>
+                    <span className="text-xs font-bold text-gray-400 tracking-wider uppercase">{t.step1}</span>
                   </div>
-
-                   {/* Arrow 1 */}
-                   <MoveRight className="w-5 h-5 text-gray-600" />
 
                   {/* Step 2 - Layout Icon for Ratio */}
-                  <div className="flex flex-col items-center gap-3 group cursor-default">
-                     <div className="w-14 h-14 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-lg flex items-center justify-center group-hover:scale-110 group-hover:bg-pink-500/20 group-hover:border-pink-500/50 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
+                  <div className="flex flex-col items-center gap-3 relative">
+                     <div className="w-14 h-14 rounded-2xl bg-[#0f172a] border border-white/10 flex items-center justify-center z-10">
                        <Layout className="w-6 h-6 text-pink-400" />
                     </div>
-                    <span className="text-xs font-bold text-gray-400 tracking-wider uppercase group-hover:text-white transition-colors">{t.step2}</span>
+                    <span className="text-xs font-bold text-gray-400 tracking-wider uppercase">{t.step2}</span>
                   </div>
 
-                  {/* Arrow 2 */}
-                  <MoveRight className="w-5 h-5 text-gray-600" />
-
                   {/* Step 3 - Download Icon */}
-                  <div className="flex flex-col items-center gap-3 group cursor-default">
-                    <div className="w-14 h-14 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-lg flex items-center justify-center group-hover:scale-110 group-hover:bg-indigo-500/20 group-hover:border-indigo-500/50 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
+                  <div className="flex flex-col items-center gap-3 relative">
+                    <div className="w-14 h-14 rounded-2xl bg-[#0f172a] border border-white/10 flex items-center justify-center z-10">
                        <Download className="w-6 h-6 text-indigo-400" />
                     </div>
-                    <span className="text-xs font-bold text-gray-400 tracking-wider uppercase group-hover:text-white transition-colors">{t.step3}</span>
+                    <span className="text-xs font-bold text-gray-400 tracking-wider uppercase">{t.step3}</span>
                   </div>
                 </div>
               </div>
@@ -326,14 +320,14 @@ const App: React.FC = () => {
                   <button
                     onClick={() => setMode('auto')}
                     className={`
-                      flex-1 py-4 rounded-2xl text-lg md:text-xl font-bold uppercase tracking-wider transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] flex flex-row items-center justify-center gap-3 relative overflow-hidden group border
+                      flex-1 py-4 rounded-2xl text-xl font-bold uppercase tracking-wider transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] flex flex-row items-center justify-center gap-3 relative overflow-hidden group border
                       ${mode === 'auto' 
                         ? 'bg-indigo-600/40 backdrop-blur-2xl text-white shadow-[0_10px_30px_-10px_rgba(79,70,229,0.5)] border-indigo-500/50 scale-[1.02] z-10' 
                         : 'bg-white/5 backdrop-blur-xl text-gray-500 border-white/5 hover:bg-white/10 hover:text-white hover:scale-[1.02] hover:border-white/20 hover:shadow-2xl'
                       }
                     `}
                   >
-                    <div className={`p-2 rounded-xl transition-all duration-500 ${mode === 'auto' ? 'bg-indigo-500 text-white' : 'bg-white/5 text-gray-500 group-hover:text-white'}`}>
+                    <div className={`p-1.5 rounded-lg transition-all duration-500 ${mode === 'auto' ? 'bg-indigo-500 text-white' : 'bg-white/5 text-gray-500 group-hover:text-white'}`}>
                       <Wand2 className="w-5 h-5" />
                     </div>
                     <span>{t.autoModeTitle}</span>
@@ -342,14 +336,14 @@ const App: React.FC = () => {
                   <button
                     onClick={() => setMode('manual')}
                     className={`
-                      flex-1 py-4 rounded-2xl text-lg md:text-xl font-bold uppercase tracking-wider transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] flex flex-row items-center justify-center gap-3 relative overflow-hidden group border
+                      flex-1 py-4 rounded-2xl text-xl font-bold uppercase tracking-wider transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] flex flex-row items-center justify-center gap-3 relative overflow-hidden group border
                       ${mode === 'manual' 
                         ? 'bg-pink-600/40 backdrop-blur-2xl text-white shadow-[0_10px_30px_-10px_rgba(236,72,153,0.5)] border-pink-500/50 scale-[1.02] z-10' 
                         : 'bg-white/5 backdrop-blur-xl text-gray-500 border-white/5 hover:bg-white/10 hover:text-white hover:scale-[1.02] hover:border-white/20 hover:shadow-2xl'
                       }
                     `}
                   >
-                    <div className={`p-2 rounded-xl transition-all duration-500 ${mode === 'manual' ? 'bg-pink-500 text-white' : 'bg-white/5 text-gray-500 group-hover:text-white'}`}>
+                    <div className={`p-1.5 rounded-lg transition-all duration-500 ${mode === 'manual' ? 'bg-pink-500 text-white' : 'bg-white/5 text-gray-500 group-hover:text-white'}`}>
                       <CropIcon className="w-5 h-5" />
                     </div>
                     <span>{t.manualModeTitle}</span>
