@@ -1,5 +1,3 @@
-
-
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import Header from './components/Header';
 import UploadArea from './components/UploadArea';
@@ -202,31 +200,8 @@ const App: React.FC = () => {
                 </p>
               </div>
 
-              {/* Main CTA Button - Moved Here (Above Workflow Steps) */}
-              <div className="pt-2 animate-fade-in-up delay-200">
-                  <button 
-                      onClick={() => heroInputRef.current?.click()}
-                      className="group relative flex items-center gap-4 px-8 py-4 bg-gradient-to-r from-indigo-600 to-pink-600 rounded-2xl hover:from-indigo-500 hover:to-pink-500 transition-all duration-300 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-1 ring-1 ring-white/10"
-                  >
-                      <div className="flex flex-col items-start text-left">
-                           <span className="text-xl font-bold text-white">{t.ctaMain}</span>
-                           <span className="text-xs text-indigo-100/80 font-medium">{t.ctaSub}</span>
-                      </div>
-                      <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 transition-colors border border-white/10">
-                           <UploadCloud className="w-6 h-6 text-white" />
-                      </div>
-                  </button>
-                  <input 
-                      type="file" 
-                      ref={heroInputRef} 
-                      className="hidden" 
-                      accept="image/*"
-                      onChange={handleHeroFileInput}
-                  />
-              </div>
-
-              {/* Redesigned Workflow Steps (Visual Stepper) - Moved Below CTA */}
-              <div className="relative animate-fade-in-up delay-200 pt-8">
+              {/* Redesigned Workflow Steps (Visual Stepper) - Moved Above CTA */}
+              <div className="relative animate-fade-in-up delay-200 pt-4">
                 {/* Connecting Line Layer */}
                 <div className="absolute top-1/2 left-0 w-full h-[2px] -translate-y-1/2 z-0">
                    <div className="w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
@@ -265,8 +240,31 @@ const App: React.FC = () => {
                 </div>
               </div>
 
+              {/* Main CTA Button - Moved Here (Below Workflow Steps, Above Feature Tags) */}
+              <div className="pt-8 animate-fade-in-up delay-200">
+                  <button 
+                      onClick={() => heroInputRef.current?.click()}
+                      className="group relative flex items-center gap-4 px-8 py-4 bg-gradient-to-r from-indigo-600 to-pink-600 rounded-2xl hover:from-indigo-500 hover:to-pink-500 transition-all duration-300 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-1 ring-1 ring-white/10"
+                  >
+                      <div className="flex flex-col items-start text-left">
+                           <span className="text-xl font-bold text-white">{t.ctaMain}</span>
+                           <span className="text-xs text-indigo-100/80 font-medium">{t.ctaSub}</span>
+                      </div>
+                      <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 transition-colors border border-white/10">
+                           <UploadCloud className="w-6 h-6 text-white" />
+                      </div>
+                  </button>
+                  <input 
+                      type="file" 
+                      ref={heroInputRef} 
+                      className="hidden" 
+                      accept="image/*"
+                      onChange={handleHeroFileInput}
+                  />
+              </div>
+
               {/* Feature Tags List (Horizontal Compact) */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 animate-fade-in-up delay-300">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 animate-fade-in-up delay-300">
                 {[
                     { icon: Maximize2, title: t.featRatio, desc: t.featRatioDesc, color: 'text-indigo-400' },
                     { icon: Zap, title: t.featCompress, desc: t.featCompressDesc, color: 'text-yellow-400' },
@@ -356,21 +354,21 @@ const App: React.FC = () => {
                   <button
                     onClick={() => setMode('auto')}
                     className={`
-                      flex-1 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2
+                      flex-1 py-6 rounded-lg text-2xl font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-4
                       ${mode === 'auto' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}
                     `}
                   >
-                    <Wand2 className="w-3 h-3" />
+                    <Wand2 className="w-8 h-8" />
                     {t.autoModeTitle}
                   </button>
                   <button
                     onClick={() => setMode('manual')}
                     className={`
-                      flex-1 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2
+                      flex-1 py-6 rounded-lg text-2xl font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-4
                       ${mode === 'manual' ? 'bg-pink-600 text-white shadow-lg shadow-pink-500/20' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}
                     `}
                   >
-                    <CropIcon className="w-3 h-3" />
+                    <CropIcon className="w-8 h-8" />
                     {t.manualModeTitle}
                   </button>
               </div>
