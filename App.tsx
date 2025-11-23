@@ -389,17 +389,6 @@ const App: React.FC = () => {
                   )}
                 </div>
 
-                {/* Counter - Moved Outside & Enlarged */}
-                <div className="py-6 flex flex-col items-center justify-center text-center animate-fade-in">
-                   <p className="text-[10px] md:text-xs font-bold text-indigo-300/50 uppercase tracking-[0.25em] mb-1">{t.completed}</p>
-                   <div className="flex items-baseline gap-2">
-                       <span key={totalConverted} className="text-5xl md:text-6xl font-black text-white tracking-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]">
-                          {totalConverted}
-                       </span>
-                       <span className="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-widest">{t.converted}</span>
-                   </div>
-                </div>
-
                 {/* Footer Info inside Card */}
                 <div className="px-8 py-5 flex items-center justify-between border-t border-white/5">
                   <div className="flex items-center space-x-3">
@@ -409,6 +398,15 @@ const App: React.FC = () => {
                   <div className="text-xs text-gray-500 font-mono tracking-wider">v2.5.0 PRO</div>
                 </div>
 
+              </div>
+
+              {/* Counter - Inline & Colorful */}
+              <div className="mt-8 flex flex-row items-baseline justify-center gap-3 animate-fade-in">
+                 <span className="text-xl md:text-2xl font-bold text-gray-500 uppercase tracking-widest">{t.completed}</span>
+                 <span key={totalConverted} className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 tracking-tight drop-shadow-[0_0_20px_rgba(168,85,247,0.4)] px-1">
+                    {totalConverted}
+                 </span>
+                 <span className="text-xl md:text-2xl font-bold text-gray-500 uppercase tracking-widest">{t.converted}</span>
               </div>
             </div>
 
