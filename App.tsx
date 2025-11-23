@@ -156,7 +156,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white selection:bg-indigo-500/30 flex flex-col font-sans overflow-x-hidden">
-      <Header totalConverted={totalConverted} lang={lang} setLang={setLang} t={t} />
+      <Header lang={lang} setLang={setLang} t={t} />
 
       <main className="flex-1 container mx-auto px-4 py-12 lg:py-20 flex flex-col justify-center relative z-10">
         
@@ -372,6 +372,17 @@ const App: React.FC = () => {
                     isProcessing={status === ProcessingStatus.PROCESSING} 
                     t={t}
                   />
+
+                  {/* Counter Moved Here */}
+                  <div className="mt-5 flex items-center justify-center group/counter">
+                    <div className="flex items-center gap-3 px-5 h-12 rounded-xl bg-white/5 border border-white/10 shadow-[0_0_20px_rgba(79,70,229,0.05)] backdrop-blur-xl transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-105 hover:bg-white/10 hover:border-indigo-500/30 hover:shadow-[0_0_25px_rgba(79,70,229,0.15)]">
+                        <span className="text-[10px] font-bold text-gray-500 tracking-wide uppercase">{t.completed}</span>
+                        <span key={totalConverted} className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-pink-400 font-mono tabular-nums leading-none tracking-tighter drop-shadow-[0_2px_10px_rgba(168,85,247,0.5)] animate-fade-in-up">
+                        {totalConverted}
+                        </span>
+                        <span className="text-[10px] font-bold text-gray-500 tracking-wide uppercase">{t.converted}</span>
+                    </div>
+                  </div>
 
                   {/* Processing State Overlay */}
                   {status === ProcessingStatus.PROCESSING && (
