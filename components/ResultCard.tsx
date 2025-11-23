@@ -1,124 +1,103 @@
-import React from 'react';
-import { Download, Check, RotateCcw, FileImage, LayoutTemplate, Sparkles, X } from 'lucide-react';
-import { ProcessedImage, formatBytes } from '../utils/imageProcessor';
+import React, { useRef, useState } from 'react';
+import { UploadCloud, Image as ImageIcon, Maximize2 } from 'lucide-react';
 
-interface ResultCardProps {
-  data: ProcessedImage;
-  onReset: () => void;
+interface UploadAreaProps {
+  onFileSelect: (file: File) => void;
+  isProcessing: boolean;
   t: any;
 }
 
-const ResultCard: React.FC<ResultCardProps> = ({ data, onReset, t }) => {
+const UploadArea: React.FC<UploadAreaProps> = ({ onFileSelect, isProcessing, t }) => {
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      validateAndProcess(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      validateAndProcess(e.target.files[0]);
+    }
+  };
+
+  const validateAndProcess = (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      alert(t.alertType);
+      return;
+    }
+    onFileSelect(file);
+  };
+
   return (
-    <div className="w-full max-w-6xl mx-auto mt-8 animate-fade-in-up">
+    <div
+      className={`group relative w-full h-80 rounded-[20px] border-2 border-dashed transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer overflow-hidden backdrop-blur-md
+        ${isDragging 
+          ? 'border-indigo-500/70 bg-indigo-500/10 scale-[1.03] shadow-[0_0_40px_rgba(79,70,229,0.3)]' 
+          : 'border-white/10 bg-white/[0.02] hover:border-indigo-500/40 hover:bg-white/[0.06] hover:scale-[1.02] hover:shadow-2xl'
+        }
+        ${isProcessing ? 'pointer-events-none opacity-50' : ''}
+      `}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      onClick={() => fileInputRef.current?.click()}
+    >
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileInput}
+        className="hidden"
+        accept="image/*"
+      />
       
-      {/* Success Banner */}
-      <div className="relative bg-[#131725]/80 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden shadow-2xl ring-1 ring-white/5">
+      {/* Animated Grid Background (Subtle) */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none transition-opacity duration-500 group-hover:opacity-100 opacity-60"></div>
+
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 z-10">
+        <div className={`
+          relative mb-6 p-5 rounded-2xl transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]
+          ${isDragging 
+              ? 'bg-indigo-500 text-white shadow-[0_10px_30px_rgba(99,102,241,0.5)] scale-110 rotate-3' 
+              : 'bg-white/5 backdrop-blur-xl border border-white/10 text-gray-400 group-hover:text-indigo-400 group-hover:scale-110 group-hover:bg-white/10 group-hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)]'
+          }
+        `}>
+          {isDragging ? (
+            <UploadCloud className="w-10 h-10 animate-bounce" />
+          ) : (
+            <ImageIcon className="w-10 h-10" />
+          )}
+        </div>
+
+        <h3 className={`text-2xl font-bold mb-3 transition-colors duration-300 drop-shadow-md ${isDragging ? 'text-indigo-200' : 'text-white'}`}>
+          {isDragging ? t.uploadRelease : t.uploadClick}
+        </h3>
         
-        {/* Close Button */}
-        <button 
-          onClick={onReset}
-          className="absolute top-4 right-4 z-50 p-2 rounded-full bg-black/20 hover:bg-white/10 text-gray-400 hover:text-white transition-colors border border-white/5 backdrop-blur-sm"
-          aria-label="Close"
-        >
-          <X className="w-5 h-5" />
-        </button>
+        <p className="text-gray-400 text-sm mb-6 max-w-sm leading-relaxed group-hover:text-gray-300 transition-colors">
+          {t.uploadSupport}
+        </p>
 
-        <div className="flex flex-col lg:flex-row">
-          
-          {/* Preview Area (Now on Left) */}
-          <div className="flex-1 p-8 bg-black/20 relative">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
-              
-              {/* Original */}
-              <div className="flex flex-col space-y-3">
-                <div className="flex items-center space-x-2 text-sm text-gray-400 font-medium">
-                  <FileImage className="w-4 h-4" />
-                  <span>{t.rcOriginal} ({formatBytes(data.originalSize)})</span>
-                </div>
-                <div className="flex-1 bg-[#0B0F19] rounded-xl border border-white/10 p-2 flex items-center justify-center overflow-hidden relative group">
-                  <img 
-                    src={data.originalUrl} 
-                    alt="Original" 
-                    className="max-w-full max-h-64 md:max-h-full object-contain opacity-60 grayscale transition-all duration-500 group-hover:opacity-100 group-hover:grayscale-0" 
-                  />
-                </div>
-              </div>
-
-              {/* Result */}
-              <div className="flex flex-col space-y-3">
-                <div className="flex items-center space-x-2 text-sm text-indigo-300 font-medium">
-                  <LayoutTemplate className="w-4 h-4" />
-                  <span>{t.rcPreview}</span>
-                </div>
-                <div className="flex-1 bg-black rounded-xl border-2 border-indigo-500/30 shadow-[0_0_30px_rgba(79,70,229,0.15)] overflow-hidden relative group flex items-center justify-center">
-                  <div className="absolute top-3 right-3 z-10">
-                    <span className="bg-black/60 backdrop-blur text-xs text-white px-2 py-1 rounded-md border border-white/10 flex items-center gap-1">
-                      <Sparkles className="w-3 h-3 text-yellow-400" /> HD
-                    </span>
-                  </div>
-                  <img 
-                    src={data.processedUrl} 
-                    alt="Processed" 
-                    className="max-w-full max-h-full object-contain" 
-                  />
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          {/* Control Sidebar / Header (Now on Right) */}
-          <div className="lg:w-80 p-8 border-t lg:border-t-0 lg:border-l border-white/10 bg-white/[0.02] flex flex-col justify-center relative z-10">
-            <div className="mb-6">
-              <div className="inline-flex items-center space-x-2 text-green-400 bg-green-400/10 px-3 py-1 rounded-full text-sm font-medium mb-3">
-                <Check className="w-4 h-4" />
-                <span>{t.rcReady}</span>
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-1">{t.rcTitle}</h3>
-              <p className="text-gray-400 text-sm">{t.rcDesc}</p>
-            </div>
-
-            <div className="space-y-4 mb-8">
-              <div className="flex justify-between items-center text-sm border-b border-white/5 pb-2">
-                <span className="text-gray-500">{t.rcRes}</span>
-                <span className="text-gray-200 font-mono">{data.width} x {data.height}</span>
-              </div>
-              <div className="flex justify-between items-center text-sm border-b border-white/5 pb-2">
-                <span className="text-gray-500">{t.rcSize}</span>
-                <span className="text-green-400 font-mono">{formatBytes(data.processedSize)}</span>
-              </div>
-               <div className="flex justify-between items-center text-sm border-b border-white/5 pb-2">
-                <span className="text-gray-500">{t.rcRate}</span>
-                <span className="text-indigo-400 font-mono">
-                  {Math.round((1 - data.processedSize / data.originalSize) * 100)}% OFF
-                </span>
-              </div>
-            </div>
-
-            <div className="flex flex-col space-y-3">
-              <a
-                href={data.processedUrl}
-                download={`instacrops-${data.width}x${data.height}.jpg`}
-                className="w-full flex items-center justify-center space-x-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold shadow-lg shadow-indigo-500/25 transition-all active:scale-95"
-              >
-                <Download className="w-5 h-5" />
-                <span>{t.rcDownload}</span>
-              </a>
-              <button
-                onClick={onReset}
-                className="w-full flex items-center justify-center space-x-2 px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 font-medium transition-colors border border-white/5"
-              >
-                <RotateCcw className="w-4 h-4" />
-                <span>{t.rcNext}</span>
-              </button>
-            </div>
-          </div>
-
+        <div className="flex items-center space-x-2 text-xs font-bold text-indigo-300/90 bg-indigo-500/10 px-4 py-2 rounded-full border border-indigo-500/20 group-hover:bg-indigo-500/20 transition-all duration-300">
+          <Maximize2 className="w-3.5 h-3.5" />
+          <span>{t.hdOutput}</span>
         </div>
       </div>
     </div>
   );
 };
 
-export default ResultCard;
+export default UploadArea;
