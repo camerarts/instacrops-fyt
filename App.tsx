@@ -4,7 +4,7 @@ import UploadArea from './components/UploadArea';
 import ResultCard from './components/ResultCard';
 import ManualCropper from './components/ManualCropper';
 import { ProcessedImage, ProcessingStatus, processImage, CropConfig, OutputDimensions } from './utils/imageProcessor';
-import { Loader2, Wand2, Crop as CropIcon, Zap, Lock, Maximize2, UploadCloud, Download, MoveRight, Layout } from 'lucide-react';
+import { Loader2, Wand2, Crop as CropIcon, Zap, Lock, Maximize2, UploadCloud, Download, ChevronRight, Layout } from 'lucide-react';
 import { translations, Language } from './utils/translations';
 
 type ProcessMode = 'auto' | 'manual';
@@ -202,37 +202,48 @@ const App: React.FC = () => {
                 </p>
               </div>
 
-              {/* Redesigned Workflow Steps (Visual Stepper) - Moved Above CTA */}
-              <div className="relative animate-fade-in-up delay-200 pt-4">
-                {/* Connecting Line Layer - Line positioned at top-[2.75rem] to align with center of 3.5rem icons + 1rem padding */}
-                <div className="absolute top-[2.75rem] left-0 w-full h-[2px] -translate-y-1/2 z-0">
-                   <div className="w-full h-full bg-white/10"></div>
-                </div>
-
-                <div className="relative z-10 flex items-center justify-between max-w-sm">
+              {/* Redesigned Workflow Steps (Flex Layout) - Perfectly Aligned Arrows */}
+              <div className="w-full max-w-md pt-4 animate-fade-in-up delay-200">
+                <div className="flex items-start justify-between">
+                  
                   {/* Step 1 */}
-                  <div className="flex flex-col items-center gap-3 relative">
-                    <div className="w-14 h-14 rounded-2xl bg-[#0f172a] border border-white/10 flex items-center justify-center z-10">
-                       <UploadCloud className="w-6 h-6 text-indigo-400" />
+                  <div className="flex flex-col items-center gap-3 relative z-10 shrink-0">
+                    <div className="w-14 h-14 rounded-2xl bg-[#0f172a] border border-white/10 flex items-center justify-center shadow-lg shadow-indigo-500/10 transition-transform duration-300 hover:scale-105">
+                        <UploadCloud className="w-6 h-6 text-indigo-400" />
                     </div>
-                    <span className="text-xs font-bold text-gray-400 tracking-wider uppercase">{t.step1}</span>
+                    <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase text-center max-w-[80px] leading-tight">{t.step1}</span>
                   </div>
 
-                  {/* Step 2 - Layout Icon for Ratio */}
-                  <div className="flex flex-col items-center gap-3 relative">
-                     <div className="w-14 h-14 rounded-2xl bg-[#0f172a] border border-white/10 flex items-center justify-center z-10">
-                       <Layout className="w-6 h-6 text-pink-400" />
-                    </div>
-                    <span className="text-xs font-bold text-gray-400 tracking-wider uppercase">{t.step2}</span>
+                  {/* Connector 1 (Centered Arrow) */}
+                  <div className="flex-1 mx-2 relative h-[2px] bg-white/10 top-7 -translate-y-1/2 min-w-[30px]">
+                     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#0f172a] p-1 rounded-full border border-white/5">
+                         <ChevronRight className="w-5 h-5 text-gray-400" /> 
+                     </div>
+                  </div>
+                  
+                  {/* Step 2 */}
+                  <div className="flex flex-col items-center gap-3 relative z-10 shrink-0">
+                     <div className="w-14 h-14 rounded-2xl bg-[#0f172a] border border-white/10 flex items-center justify-center shadow-lg shadow-pink-500/10 transition-transform duration-300 hover:scale-105">
+                        <Layout className="w-6 h-6 text-pink-400" />
+                     </div>
+                     <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase text-center max-w-[80px] leading-tight">{t.step2}</span>
                   </div>
 
-                  {/* Step 3 - Download Icon */}
-                  <div className="flex flex-col items-center gap-3 relative">
-                    <div className="w-14 h-14 rounded-2xl bg-[#0f172a] border border-white/10 flex items-center justify-center z-10">
-                       <Download className="w-6 h-6 text-indigo-400" />
-                    </div>
-                    <span className="text-xs font-bold text-gray-400 tracking-wider uppercase">{t.step3}</span>
+                  {/* Connector 2 (Centered Arrow) */}
+                  <div className="flex-1 mx-2 relative h-[2px] bg-white/10 top-7 -translate-y-1/2 min-w-[30px]">
+                     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#0f172a] p-1 rounded-full border border-white/5">
+                        <ChevronRight className="w-5 h-5 text-gray-400" />
+                     </div>
                   </div>
+
+                  {/* Step 3 */}
+                  <div className="flex flex-col items-center gap-3 relative z-10 shrink-0">
+                    <div className="w-14 h-14 rounded-2xl bg-[#0f172a] border border-white/10 flex items-center justify-center shadow-lg shadow-indigo-500/10 transition-transform duration-300 hover:scale-105">
+                        <Download className="w-6 h-6 text-indigo-400" />
+                    </div>
+                    <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase text-center max-w-[80px] leading-tight">{t.step3}</span>
+                  </div>
+
                 </div>
               </div>
 
