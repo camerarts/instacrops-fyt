@@ -173,7 +173,7 @@ const App: React.FC = () => {
             <div className="space-y-10 relative z-20">
               {/* Hero Text */}
               <div className="space-y-6">
-                <h1 className="text-5xl lg:text-7xl font-bold tracking-tight leading-[1.1] animate-fade-in-up drop-shadow-xl">
+                <h1 className="text-5xl lg:text-7xl font-bold tracking-tight leading-[1.1] animate-fade-in-up drop-shadow-xl text-center lg:text-left">
                   {t.heroTitleStart} <br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 drop-shadow-[0_0_20px_rgba(168,85,247,0.4)]">
                     {t.heroTitleEnd}
@@ -181,23 +181,23 @@ const App: React.FC = () => {
                 </h1>
                 
                 {/* New Subtitle */}
-                <h2 className="text-2xl lg:text-3xl font-bold tracking-tight animate-fade-in-up delay-100">
+                <h2 className="text-2xl lg:text-3xl font-bold tracking-tight animate-fade-in-up delay-100 text-center lg:text-left">
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200">
                     {t.heroSubtitle}
                   </span>
                 </h2>
                 
                 {/* Free Service Tagline - Updated Text */}
-                <h3 className="text-xl font-medium text-gray-300 tracking-tight animate-fade-in-up delay-100 flex items-center gap-3">
+                <h3 className="text-xl font-medium text-gray-300 tracking-tight animate-fade-in-up delay-100 flex items-center justify-center lg:justify-start gap-3">
                   <div className="p-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/20 backdrop-blur-sm">
                     <Zap className="w-5 h-5 text-yellow-400 fill-yellow-400/20" />
                   </div>
-                  <span className="text-indigo-100">
+                  <span className="text-indigo-100 text-center lg:text-left">
                     {t.freeService}
                   </span>
                 </h3>
                 
-                <p className="text-lg text-gray-400 leading-relaxed max-w-xl animate-fade-in-up delay-100">
+                <p className="text-lg text-gray-400 leading-relaxed max-w-xl animate-fade-in-up delay-100 text-center lg:text-left mx-auto lg:mx-0">
                   {t.heroDesc}
                 </p>
               </div>
@@ -248,7 +248,7 @@ const App: React.FC = () => {
               </div>
 
               {/* Main CTA Button - Liquid Glass & Inertia */}
-              <div className="pt-8 animate-fade-in-up delay-200">
+              <div className="pt-8 animate-fade-in-up delay-200 flex justify-center lg:justify-start">
                   <button 
                       onClick={() => heroInputRef.current?.click()}
                       className="group relative flex items-center gap-6 px-10 py-5 bg-gradient-to-r from-indigo-600/80 to-pink-600/80 backdrop-blur-md rounded-2xl border border-white/20 shadow-[0_8px_32px_rgba(79,70,229,0.3)] hover:scale-105 hover:shadow-[0_15px_40px_rgba(79,70,229,0.5)] active:scale-95 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] overflow-hidden"
@@ -271,21 +271,21 @@ const App: React.FC = () => {
                   />
               </div>
 
-              {/* Feature Tags List */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 animate-fade-in-up delay-300">
+              {/* Feature Tags List - Compressed to one line on mobile (grid-cols-3) */}
+              <div className="grid grid-cols-3 md:grid-cols-3 gap-2 md:gap-4 pt-2 animate-fade-in-up delay-300">
                 {[
                     { icon: Maximize2, title: t.featRatio, desc: t.featRatioDesc, color: 'text-indigo-400' },
                     { icon: Zap, title: t.featCompress, desc: t.featCompressDesc, color: 'text-yellow-400' },
                     { icon: Lock, title: t.featPrivacy, desc: t.featPrivacyDesc, color: 'text-pink-400' }
                 ].map((item, i) => (
-                    <div key={i} className="flex flex-col gap-2 group p-4 rounded-xl hover:bg-white/5 transition-all duration-300 hover:scale-105 border border-transparent hover:border-white/5">
-                        <div className="flex items-center gap-2">
-                            <div className={`${item.color} group-hover:scale-110 transition-transform duration-300 bg-white/5 p-2 rounded-lg`}>
-                                <item.icon className="w-4 h-4" />
+                    <div key={i} className="flex flex-col items-center md:items-start gap-1 md:gap-2 group p-2 md:p-4 rounded-xl hover:bg-white/5 transition-all duration-300 hover:scale-105 border border-transparent hover:border-white/5 text-center md:text-left">
+                        <div className="flex flex-col md:flex-row items-center gap-1.5 md:gap-2">
+                            <div className={`${item.color} group-hover:scale-110 transition-transform duration-300 bg-white/5 p-1.5 md:p-2 rounded-lg`}>
+                                <item.icon className="w-3.5 h-3.5 md:w-4 md:h-4" />
                             </div>
-                            <h4 className="text-sm font-bold text-gray-200 group-hover:text-white transition-colors">{item.title}</h4>
+                            <h4 className="text-[10px] md:text-sm font-bold text-gray-200 group-hover:text-white transition-colors leading-tight">{item.title}</h4>
                         </div>
-                        <p className="text-xs text-gray-500 leading-relaxed opacity-80 group-hover:opacity-100">{item.desc}</p>
+                        <p className="text-[9px] md:text-xs text-gray-500 leading-tight md:leading-relaxed opacity-80 group-hover:opacity-100">{item.desc}</p>
                     </div>
                 ))}
               </div>
@@ -326,20 +326,20 @@ const App: React.FC = () => {
             {/* Right Column: Interactive Card */}
             <div className="relative z-20 animate-fade-in-up delay-200">
               
-              {/* Mode Switcher Tabs - Adjusted Size */}
-              <div className="flex gap-4 mb-6">
+              {/* Mode Switcher Tabs - Adjusted Size (Reduced 50% on mobile) */}
+              <div className="flex gap-2 md:gap-4 mb-4 md:mb-6">
                   <button
                     onClick={() => setMode('auto')}
                     className={`
-                      flex-1 py-4 rounded-2xl text-xl font-bold uppercase tracking-wider transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] flex flex-row items-center justify-center gap-3 relative overflow-hidden group border
+                      flex-1 py-2 md:py-4 rounded-xl md:rounded-2xl text-sm md:text-xl font-bold uppercase tracking-wider transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] flex flex-row items-center justify-center gap-2 md:gap-3 relative overflow-hidden group border
                       ${mode === 'auto' 
                         ? 'bg-indigo-600/40 backdrop-blur-2xl text-white shadow-[0_10px_30px_-10px_rgba(79,70,229,0.5)] border-indigo-500/50 scale-[1.02] z-10' 
                         : 'bg-white/5 backdrop-blur-xl text-gray-500 border-white/5 hover:bg-white/10 hover:text-white hover:scale-[1.02] hover:border-white/20 hover:shadow-2xl'
                       }
                     `}
                   >
-                    <div className={`p-1.5 rounded-lg transition-all duration-500 ${mode === 'auto' ? 'bg-indigo-500 text-white' : 'bg-white/5 text-gray-500 group-hover:text-white'}`}>
-                      <Wand2 className="w-5 h-5" />
+                    <div className={`p-1 md:p-1.5 rounded-lg transition-all duration-500 ${mode === 'auto' ? 'bg-indigo-500 text-white' : 'bg-white/5 text-gray-500 group-hover:text-white'}`}>
+                      <Wand2 className="w-4 h-4 md:w-5 md:h-5" />
                     </div>
                     <span>{t.autoModeTitle}</span>
                   </button>
@@ -347,15 +347,15 @@ const App: React.FC = () => {
                   <button
                     onClick={() => setMode('manual')}
                     className={`
-                      flex-1 py-4 rounded-2xl text-xl font-bold uppercase tracking-wider transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] flex flex-row items-center justify-center gap-3 relative overflow-hidden group border
+                      flex-1 py-2 md:py-4 rounded-xl md:rounded-2xl text-sm md:text-xl font-bold uppercase tracking-wider transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] flex flex-row items-center justify-center gap-2 md:gap-3 relative overflow-hidden group border
                       ${mode === 'manual' 
                         ? 'bg-pink-600/40 backdrop-blur-2xl text-white shadow-[0_10px_30px_-10px_rgba(236,72,153,0.5)] border-pink-500/50 scale-[1.02] z-10' 
                         : 'bg-white/5 backdrop-blur-xl text-gray-500 border-white/5 hover:bg-white/10 hover:text-white hover:scale-[1.02] hover:border-white/20 hover:shadow-2xl'
                       }
                     `}
                   >
-                    <div className={`p-1.5 rounded-lg transition-all duration-500 ${mode === 'manual' ? 'bg-pink-500 text-white' : 'bg-white/5 text-gray-500 group-hover:text-white'}`}>
-                      <CropIcon className="w-5 h-5" />
+                    <div className={`p-1 md:p-1.5 rounded-lg transition-all duration-500 ${mode === 'manual' ? 'bg-pink-500 text-white' : 'bg-white/5 text-gray-500 group-hover:text-white'}`}>
+                      <CropIcon className="w-4 h-4 md:w-5 md:h-5" />
                     </div>
                     <span>{t.manualModeTitle}</span>
                   </button>
