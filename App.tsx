@@ -203,7 +203,7 @@ const App: React.FC = () => {
               </div>
 
               {/* Redesigned Workflow Steps (Flex Layout) - Perfectly Aligned Arrows */}
-              <div className="w-full max-w-lg pt-4 animate-fade-in-up delay-200 mx-auto">
+              <div className="w-full max-w-lg pt-4 animate-fade-in-up delay-200">
                 <div className="flex items-start justify-between">
                   
                   {/* Step 1 */}
