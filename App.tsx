@@ -203,45 +203,45 @@ const App: React.FC = () => {
               </div>
 
               {/* Redesigned Workflow Steps (Flex Layout) - Perfectly Aligned Arrows */}
-              <div className="w-full max-w-md pt-4 animate-fade-in-up delay-200">
+              <div className="w-full max-w-lg pt-4 animate-fade-in-up delay-200 mx-auto">
                 <div className="flex items-start justify-between">
                   
                   {/* Step 1 */}
-                  <div className="flex flex-col items-center gap-3 relative z-10 shrink-0">
+                  <div className="w-24 flex flex-col items-center gap-3 relative z-10 shrink-0">
                     <div className="w-14 h-14 rounded-2xl bg-[#0f172a] border border-white/10 flex items-center justify-center shadow-lg shadow-indigo-500/10 transition-transform duration-300 hover:scale-105">
                         <UploadCloud className="w-6 h-6 text-indigo-400" />
                     </div>
-                    <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase text-center max-w-[80px] leading-tight">{t.step1}</span>
+                    <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase text-center leading-tight">{t.step1}</span>
                   </div>
 
                   {/* Connector 1 (Centered Arrow) */}
-                  <div className="flex-1 mx-2 relative h-[2px] bg-white/10 top-7 -translate-y-1/2 min-w-[30px]">
-                     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#0f172a] p-1 rounded-full border border-white/5">
-                         <ChevronRight className="w-5 h-5 text-gray-400" /> 
-                     </div>
+                  <div className="flex-1 mx-2 relative h-[2px] bg-white/10 mt-[27px] min-w-[40px]">
+                      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#0f172a] p-1.5 rounded-full border border-white/5">
+                          <ChevronRight className="w-6 h-6 text-gray-400" /> 
+                      </div>
                   </div>
                   
                   {/* Step 2 */}
-                  <div className="flex flex-col items-center gap-3 relative z-10 shrink-0">
+                  <div className="w-24 flex flex-col items-center gap-3 relative z-10 shrink-0">
                      <div className="w-14 h-14 rounded-2xl bg-[#0f172a] border border-white/10 flex items-center justify-center shadow-lg shadow-pink-500/10 transition-transform duration-300 hover:scale-105">
                         <Layout className="w-6 h-6 text-pink-400" />
                      </div>
-                     <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase text-center max-w-[80px] leading-tight">{t.step2}</span>
+                     <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase text-center leading-tight">{t.step2}</span>
                   </div>
 
                   {/* Connector 2 (Centered Arrow) */}
-                  <div className="flex-1 mx-2 relative h-[2px] bg-white/10 top-7 -translate-y-1/2 min-w-[30px]">
-                     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#0f172a] p-1 rounded-full border border-white/5">
-                        <ChevronRight className="w-5 h-5 text-gray-400" />
-                     </div>
+                  <div className="flex-1 mx-2 relative h-[2px] bg-white/10 mt-[27px] min-w-[40px]">
+                      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#0f172a] p-1.5 rounded-full border border-white/5">
+                        <ChevronRight className="w-6 h-6 text-gray-400" />
+                      </div>
                   </div>
 
                   {/* Step 3 */}
-                  <div className="flex flex-col items-center gap-3 relative z-10 shrink-0">
+                  <div className="w-24 flex flex-col items-center gap-3 relative z-10 shrink-0">
                     <div className="w-14 h-14 rounded-2xl bg-[#0f172a] border border-white/10 flex items-center justify-center shadow-lg shadow-indigo-500/10 transition-transform duration-300 hover:scale-105">
                         <Download className="w-6 h-6 text-indigo-400" />
                     </div>
-                    <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase text-center max-w-[80px] leading-tight">{t.step3}</span>
+                    <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase text-center leading-tight">{t.step3}</span>
                   </div>
 
                 </div>
@@ -365,24 +365,13 @@ const App: React.FC = () => {
               <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[32px] p-2 shadow-2xl ring-1 ring-white/5 relative group transition-transform duration-700 ease-out hover:scale-[1.01]">
                 
                 {/* Main Upload Area & Toggles */}
-                <div className="bg-[#0B0F19]/50 backdrop-blur-md rounded-[24px] p-6 md:p-8 border border-white/5 shadow-inner">
+                <div className="bg-[#0B0F19]/50 backdrop-blur-md rounded-[24px] p-6 md:p-8 border border-white/5 shadow-inner relative overflow-hidden">
 
                   <UploadArea 
                     onFileSelect={handleFileSelect} 
                     isProcessing={status === ProcessingStatus.PROCESSING} 
                     t={t}
                   />
-
-                  {/* Counter Moved Here */}
-                  <div className="mt-5 flex items-center justify-center group/counter">
-                    <div className="flex items-center gap-3 px-5 h-12 rounded-xl bg-white/5 border border-white/10 shadow-[0_0_20px_rgba(79,70,229,0.05)] backdrop-blur-xl transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-105 hover:bg-white/10 hover:border-indigo-500/30 hover:shadow-[0_0_25px_rgba(79,70,229,0.15)]">
-                        <span className="text-[10px] font-bold text-gray-500 tracking-wide uppercase">{t.completed}</span>
-                        <span key={totalConverted} className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-pink-400 font-mono tabular-nums leading-none tracking-tighter drop-shadow-[0_2px_10px_rgba(168,85,247,0.5)] animate-fade-in-up">
-                        {totalConverted}
-                        </span>
-                        <span className="text-[10px] font-bold text-gray-500 tracking-wide uppercase">{t.converted}</span>
-                    </div>
-                  </div>
 
                   {/* Processing State Overlay */}
                   {status === ProcessingStatus.PROCESSING && (
@@ -398,6 +387,17 @@ const App: React.FC = () => {
                       </p>
                     </div>
                   )}
+                </div>
+
+                {/* Counter - Moved Outside & Enlarged */}
+                <div className="py-6 flex flex-col items-center justify-center text-center animate-fade-in">
+                   <p className="text-[10px] md:text-xs font-bold text-indigo-300/50 uppercase tracking-[0.25em] mb-1">{t.completed}</p>
+                   <div className="flex items-baseline gap-2">
+                       <span key={totalConverted} className="text-5xl md:text-6xl font-black text-white tracking-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]">
+                          {totalConverted}
+                       </span>
+                       <span className="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-widest">{t.converted}</span>
+                   </div>
                 </div>
 
                 {/* Footer Info inside Card */}
