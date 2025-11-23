@@ -3,13 +3,12 @@ import { Crop, Layers, ChevronDown, Check } from 'lucide-react';
 import { languages, Language } from '../utils/translations';
 
 interface HeaderProps {
-  totalConverted: number;
   lang: Language;
   setLang: (lang: Language) => void;
   t: any;
 }
 
-const Header: React.FC<HeaderProps> = ({ totalConverted, lang, setLang, t }) => {
+const Header: React.FC<HeaderProps> = ({ lang, setLang, t }) => {
   const [isLangOpen, setIsLangOpen] = useState(false);
   const currentLang = languages.find(l => l.code === lang) || languages[0];
 
@@ -45,16 +44,7 @@ const Header: React.FC<HeaderProps> = ({ totalConverted, lang, setLang, t }) => 
 
         {/* Right: Actions */}
         <div className="flex items-center gap-4 md:gap-6">
-          {/* Enhanced Conversion Counter Badge - Glass & Hover */}
-          <div className="hidden md:flex items-center justify-center group/counter">
-            <div className="flex items-center gap-3 px-5 h-12 rounded-2xl bg-white/5 border border-white/10 shadow-[0_0_20px_rgba(79,70,229,0.1)] backdrop-blur-xl transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-105 hover:bg-white/10 hover:border-indigo-500/30 hover:shadow-[0_0_25px_rgba(79,70,229,0.25)]">
-              <span className="text-xs font-bold text-gray-400 tracking-wide uppercase">{t.completed}</span>
-              <span key={totalConverted} className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-pink-400 font-mono tabular-nums leading-none tracking-tighter drop-shadow-[0_2px_10px_rgba(168,85,247,0.5)] animate-fade-in-up">
-                {totalConverted}
-              </span>
-              <span className="text-xs font-bold text-gray-400 tracking-wide uppercase">{t.converted}</span>
-            </div>
-          </div>
+          {/* Statistics Counter moved to App.tsx body */}
 
           {/* Custom Language Selector - Glass & Hover */}
           {isLangOpen && (
