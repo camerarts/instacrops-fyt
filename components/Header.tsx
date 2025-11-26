@@ -13,6 +13,10 @@ const Header: React.FC<HeaderProps> = ({ lang, setLang, t, hasSelectedLang }) =>
   const [isLangOpen, setIsLangOpen] = useState(false);
   const currentLang = languages.find(l => l.code === lang) || languages[0];
 
+  const handleLogoClick = () => {
+    window.location.href = '/';
+  };
+
   return (
     <header className="w-full h-24 flex items-center sticky top-0 z-50 transition-all duration-300 shrink-0">
       {/* Liquid Glass Background */}
@@ -20,7 +24,10 @@ const Header: React.FC<HeaderProps> = ({ lang, setLang, t, hasSelectedLang }) =>
       
       <div className="relative container mx-auto px-6 flex items-center justify-between">
         {/* Left: Logo */}
-        <div className="flex items-center gap-5 group cursor-pointer select-none transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-105">
+        <div 
+          onClick={handleLogoClick}
+          className="flex items-center gap-5 group cursor-pointer select-none transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-105"
+        >
           {/* Icon Container - Glassy */}
           <div className="relative w-12 h-12 flex items-center justify-center">
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl blur opacity-40 group-hover:opacity-70 transition-opacity duration-500"></div>
