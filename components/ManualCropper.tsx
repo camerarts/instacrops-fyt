@@ -7,6 +7,7 @@ interface ManualCropperProps {
   onConfirm: (cropConfig: CropConfig, outputDimensions: OutputDimensions, maxSizeBytes: number) => void;
   onCancel: () => void;
   t: any;
+  theme: 'dark' | 'light';
 }
 
 const RATIOS = [
@@ -17,7 +18,7 @@ const RATIOS = [
   { id: '9-16', label: '9:16', width: 1080, height: 1920, icon: Smartphone },
 ];
 
-const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel, t }) => {
+const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel, t, theme }) => {
   const [imageUrl, setImageUrl] = useState<string>('');
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   
@@ -261,18 +262,30 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-lg p-4 animate-fade-in">
-      <div className="w-full max-w-6xl bg-[#0f1219]/90 backdrop-blur-2xl rounded-[32px] border border-white/10 shadow-2xl overflow-hidden flex flex-col h-[90vh] ring-1 ring-white/10">
+      <div className={`w-full max-w-6xl backdrop-blur-2xl rounded-[32px] border shadow-2xl overflow-hidden flex flex-col h-[90vh] ring-1 ${
+        theme === 'dark'
+          ? 'bg-[#0f1219]/90 border-white/10 ring-white/10'
+          : 'bg-white/95 border-slate-200 ring-slate-900/5'
+      }`}>
         
         {/* Header */}
-        <div className="min-h-16 py-4 border-b border-white/5 flex justify-between items-center px-8 shrink-0 bg-[#131620]/80 z-20">
+        <div className={`min-h-16 py-4 border-b flex justify-between items-center px-8 shrink-0 z-20 ${
+          theme === 'dark'
+            ? 'bg-[#131620]/80 border-white/5'
+            : 'bg-white/80 border-slate-100'
+        }`}>
           <div className="flex flex-col">
-            <h3 className="text-white font-semibold flex items-center gap-3 text-xl">
-              <Move className="w-5 h-5 text-indigo-400" />
+            <h3 className={`font-semibold flex items-center gap-3 text-xl ${theme === 'dark' ? 'text-white' : 'text-slate-800'}`}>
+              <Move className="w-5 h-5 text-indigo-500" />
               <span className="tracking-wide drop-shadow-md">{t.mcTitle}</span>
             </h3>
           </div>
 
-          <button onClick={onCancel} className="text-gray-400 hover:text-white transition-all duration-300 p-2 hover:bg-white/10 rounded-full hover:scale-110 active:scale-90 border border-transparent hover:border-white/10">
+          <button onClick={onCancel} className={`transition-all duration-300 p-2 rounded-full hover:scale-110 active:scale-90 border border-transparent ${
+            theme === 'dark'
+              ? 'text-gray-400 hover:text-white hover:bg-white/10 hover:border-white/10'
+              : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100 hover:border-slate-200'
+          }`}>
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -280,10 +293,12 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
         {/* Main Body: Canvas + Right Sidebar */}
         <div className="flex-1 flex overflow-hidden relative">
           
-          {/* Canvas Area (Left) */}
+          {/* Canvas Area (Left) - Keeps dark bg for photo contrast usually, but adapt slightly */}
           <div 
             ref={wrapperRef}
-            className="flex-1 bg-[#090b10]/80 relative flex items-center justify-center p-4 md:p-8 overflow-hidden select-none group cursor-move"
+            className={`flex-1 relative flex items-center justify-center p-4 md:p-8 overflow-hidden select-none group cursor-move ${
+              theme === 'dark' ? 'bg-[#090b10]/80' : 'bg-slate-100/80'
+            }`}
             onMouseDown={handleMouseDown}
             onTouchStart={handleMouseDown}
             onMouseMove={handleMouseMove}
@@ -320,7 +335,7 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
               )}
               
               {/* Dimmed Outside Overlay: A giant ring shadow */}
-              <div className="absolute inset-0 pointer-events-none z-10 shadow-[0_0_0_9999px_rgba(0,0,0,0.7)] rounded-sm"></div>
+              <div className={`absolute inset-0 pointer-events-none z-10 rounded-sm ${theme === 'dark' ? 'shadow-[0_0_0_9999px_rgba(0,0,0,0.7)]' : 'shadow-[0_0_0_9999px_rgba(255,255,255,0.85)]'}`}></div>
 
               {/* Grid & Border Overlay */}
               <div className="absolute inset-0 z-20 pointer-events-none border-2 border-white/60 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
@@ -347,8 +362,12 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
           </div>
 
           {/* Ratio Sidebar (Right) */}
-          <div className="w-28 bg-[#131620]/90 border-l border-white/5 flex flex-col items-center py-6 gap-4 overflow-y-auto scrollbar-hide z-10 shrink-0 backdrop-blur-xl">
-            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">{t.mcRatio}</span>
+          <div className={`w-28 border-l flex flex-col items-center py-6 gap-4 overflow-y-auto scrollbar-hide z-10 shrink-0 backdrop-blur-xl ${
+            theme === 'dark' 
+              ? 'bg-[#131620]/90 border-white/5' 
+              : 'bg-white/90 border-slate-100'
+          }`}>
+            <span className={`text-[10px] font-bold uppercase tracking-wider mb-2 ${theme === 'dark' ? 'text-gray-500' : 'text-slate-400'}`}>{t.mcRatio}</span>
             {RATIOS.map((ratio) => {
               const Icon = ratio.icon;
               const isSelected = selectedRatio.id === ratio.id;
@@ -360,12 +379,12 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
                     flex flex-col items-center justify-center w-20 h-20 rounded-2xl transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group/btn relative
                     ${isSelected 
                       ? 'bg-gradient-to-br from-indigo-600 to-indigo-700 text-white shadow-[0_10px_20px_rgba(79,70,229,0.3)] ring-1 ring-white/20 scale-105' 
-                      : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white hover:scale-110 hover:shadow-lg'
+                      : (theme === 'dark' ? 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white' : 'bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-700') + ' hover:scale-110 hover:shadow-lg'
                     }
                   `}
                   title={ratio.label}
                 >
-                  <Icon className={`w-6 h-6 mb-2 transition-colors ${isSelected ? 'text-white' : 'text-gray-500 group-hover/btn:text-indigo-300'}`} />
+                  <Icon className={`w-6 h-6 mb-2 transition-colors ${isSelected ? 'text-white' : (theme === 'dark' ? 'text-gray-500 group-hover/btn:text-indigo-300' : 'text-slate-400 group-hover/btn:text-indigo-500')}`} />
                   <span className="text-[11px] font-bold tracking-tight">{ratio.label}</span>
                 </button>
               );
@@ -374,26 +393,34 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
         </div>
 
         {/* Bottom Footer: Hints + Sliders & Actions */}
-        <div className="bg-[#131620]/90 backdrop-blur-xl border-t border-white/5 z-20 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <div className={`backdrop-blur-xl border-t z-20 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] ${
+          theme === 'dark' 
+            ? 'bg-[#131620]/90 border-white/5' 
+            : 'bg-white/90 border-slate-100'
+        }`}>
           
           {/* Unified Hint Bar */}
-          <div className="w-full flex items-center justify-center py-2 bg-[#0B0F19]/60 border-b border-white/5 select-none">
+          <div className={`w-full flex items-center justify-center py-2 border-b select-none ${
+            theme === 'dark'
+              ? 'bg-[#0B0F19]/60 border-white/5'
+              : 'bg-slate-50/60 border-slate-100'
+          }`}>
               <div className="flex items-center gap-6">
                    {/* Drag Hint */}
                    <div className="flex items-center gap-2">
-                       <Hand className="w-3.5 h-3.5 text-indigo-400" />
-                       <span className="text-xs text-gray-400 font-medium tracking-wide">{t.mcHint}</span>
+                       <Hand className="w-3.5 h-3.5 text-indigo-500" />
+                       <span className={`text-xs font-medium tracking-wide ${theme === 'dark' ? 'text-gray-400' : 'text-slate-500'}`}>{t.mcHint}</span>
                    </div>
                    
                    {/* Separator */}
-                   <div className="w-px h-3 bg-white/10 hidden md:block"></div>
+                   <div className={`w-px h-3 hidden md:block ${theme === 'dark' ? 'bg-white/10' : 'bg-slate-200'}`}></div>
 
                    {/* Keyboard Tips */}
                    <div className="hidden md:flex items-center gap-4">
                      {t.mcKeyTips && t.mcKeyTips.map((tip: string, idx: number) => (
                        <span key={idx} className="flex items-center gap-1.5">
-                         <div className="w-1 h-1 rounded-full bg-gray-600"></div>
-                         <span className="text-xs text-gray-400 font-mono">{tip}</span>
+                         <div className={`w-1 h-1 rounded-full ${theme === 'dark' ? 'bg-gray-600' : 'bg-slate-400'}`}></div>
+                         <span className={`text-xs font-mono ${theme === 'dark' ? 'text-gray-400' : 'text-slate-500'}`}>{tip}</span>
                        </span>
                      ))}
                    </div>
@@ -410,15 +437,23 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
                 <div className="flex flex-col gap-4 group">
                   <div className="flex justify-between items-end">
                     <div className="flex items-center gap-3">
-                      <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400 ring-1 ring-indigo-500/20 group-hover:bg-indigo-500/20 transition-colors">
+                      <div className={`p-2.5 rounded-xl ring-1 transition-colors ${
+                        theme === 'dark' 
+                          ? 'bg-indigo-500/10 text-indigo-400 ring-indigo-500/20 group-hover:bg-indigo-500/20' 
+                          : 'bg-indigo-50 text-indigo-600 ring-indigo-100 group-hover:bg-indigo-100'
+                      }`}>
                         <ZoomIn className="w-5 h-5" />
                       </div>
                       <div>
-                        <span className="text-sm font-bold text-gray-200 block">{t.mcZoomTitle}</span>
-                        <span className="text-xs text-gray-500 font-medium">{t.mcZoomDesc}</span>
+                        <span className={`text-sm font-bold block ${theme === 'dark' ? 'text-gray-200' : 'text-slate-800'}`}>{t.mcZoomTitle}</span>
+                        <span className={`text-xs font-medium ${theme === 'dark' ? 'text-gray-500' : 'text-slate-500'}`}>{t.mcZoomDesc}</span>
                       </div>
                     </div>
-                    <div className="font-mono text-sm font-bold text-indigo-300 bg-indigo-500/10 px-2.5 py-1 rounded-lg border border-indigo-500/20 shadow-sm">
+                    <div className={`font-mono text-sm font-bold px-2.5 py-1 rounded-lg border shadow-sm ${
+                      theme === 'dark'
+                        ? 'text-indigo-300 bg-indigo-500/10 border-indigo-500/20'
+                        : 'text-indigo-600 bg-indigo-50 border-indigo-100'
+                    }`}>
                       {scale.toFixed(2)}x
                     </div>
                   </div>
@@ -431,7 +466,9 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
                         step="0.01" 
                         value={scale}
                         onChange={(e) => updateScale(parseFloat(e.target.value))}
-                        className="w-full h-1.5 bg-gray-800/80 rounded-lg appearance-none cursor-pointer accent-indigo-500 hover:accent-indigo-400 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+                        className={`w-full h-1.5 rounded-lg appearance-none cursor-pointer accent-indigo-500 hover:accent-indigo-400 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/30 ${
+                          theme === 'dark' ? 'bg-gray-800/80' : 'bg-slate-200'
+                        }`}
                       />
                   </div>
                 </div>
@@ -440,15 +477,23 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
                 <div className="flex flex-col gap-4 group">
                   <div className="flex justify-between items-end">
                     <div className="flex items-center gap-3">
-                      <div className="p-2.5 rounded-xl bg-pink-500/10 text-pink-400 ring-1 ring-pink-500/20 group-hover:bg-pink-500/20 transition-colors">
+                      <div className={`p-2.5 rounded-xl ring-1 transition-colors ${
+                        theme === 'dark' 
+                          ? 'bg-pink-500/10 text-pink-400 ring-pink-500/20 group-hover:bg-pink-500/20' 
+                          : 'bg-pink-50 text-pink-600 ring-pink-100 group-hover:bg-pink-100'
+                      }`}>
                         <HardDrive className="w-5 h-5" />
                       </div>
                       <div>
-                        <span className="text-sm font-bold text-gray-200 block">{t.mcLimitTitle}</span>
-                        <span className="text-xs text-gray-500 font-medium">{t.mcLimitDesc} (Max: {originalSizeMB.toFixed(1)}MB)</span>
+                        <span className={`text-sm font-bold block ${theme === 'dark' ? 'text-gray-200' : 'text-slate-800'}`}>{t.mcLimitTitle}</span>
+                        <span className={`text-xs font-medium ${theme === 'dark' ? 'text-gray-500' : 'text-slate-500'}`}>{t.mcLimitDesc} (Max: {originalSizeMB.toFixed(1)}MB)</span>
                       </div>
                     </div>
-                    <div className="font-mono text-sm font-bold text-pink-300 bg-pink-500/10 px-2.5 py-1 rounded-lg border border-pink-500/20 shadow-sm">
+                    <div className={`font-mono text-sm font-bold px-2.5 py-1 rounded-lg border shadow-sm ${
+                      theme === 'dark'
+                        ? 'text-pink-300 bg-pink-500/10 border-pink-500/20'
+                        : 'text-pink-600 bg-pink-50 border-pink-100'
+                    }`}>
                       {targetSizeMB.toFixed(1)} MB
                     </div>
                   </div>
@@ -461,20 +506,28 @@ const ManualCropper: React.FC<ManualCropperProps> = ({ file, onConfirm, onCancel
                       step="0.1" 
                       value={targetSizeMB}
                       onChange={(e) => updateSize(parseFloat(e.target.value))}
-                      className="w-full h-1.5 bg-gray-800/80 rounded-lg appearance-none cursor-pointer accent-pink-500 hover:accent-pink-400 transition-all focus:outline-none focus:ring-2 focus:ring-pink-500/30"
+                      className={`w-full h-1.5 rounded-lg appearance-none cursor-pointer accent-pink-500 hover:accent-pink-400 transition-all focus:outline-none focus:ring-2 focus:ring-pink-500/30 ${
+                        theme === 'dark' ? 'bg-gray-800/80' : 'bg-slate-200'
+                      }`}
                     />
                   </div>
                 </div>
               </div>
 
               {/* Divider for desktop */}
-              <div className="hidden lg:block w-px h-20 bg-gradient-to-b from-transparent via-white/10 to-transparent"></div>
+              <div className={`hidden lg:block w-px h-20 bg-gradient-to-b from-transparent via-white/10 to-transparent ${
+                theme === 'dark' ? 'via-white/10' : 'via-slate-300'
+              }`}></div>
 
               {/* Action Buttons */}
               <div className="flex items-center gap-4 w-full lg:w-auto shrink-0">
                   <button 
                     onClick={onCancel}
-                    className="px-8 py-4 rounded-2xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all duration-300 font-bold text-sm border border-white/5 hover:border-white/10 hover:scale-105 active:scale-95"
+                    className={`px-8 py-4 rounded-2xl font-bold text-sm border transition-all duration-300 hover:scale-105 active:scale-95 ${
+                      theme === 'dark'
+                        ? 'bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white border-white/5 hover:border-white/10'
+                        : 'bg-white hover:bg-slate-50 text-slate-500 hover:text-slate-700 border-slate-200 hover:border-slate-300'
+                    }`}
                   >
                     {t.mcCancel}
                   </button>
