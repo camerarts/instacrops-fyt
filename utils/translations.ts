@@ -1,8 +1,3 @@
-
-
-
-
-
 export type Language = 'zh-CN' | 'en-US' | 'ja-JP' | 'ko-KR' | 'es-ES' | 'fr-FR' | 'de-DE';
 
 export const languages: { code: Language; label: string; flag: string }[] = [
@@ -24,10 +19,13 @@ export const translations = {
     converted: '张图片',
     heroTitleStart: '智能构建',
     heroTitleEnd: '极致视觉',
-    heroSubtitle: '专为内容创作者设计的 在线图片裁剪与压缩工具',
+    heroSubtitle: '永久免费的在线图片裁剪与压缩工具',
     heroDesc: '专为创作者打造的在线图片裁剪与压缩工具。无论是社交媒体封面还是高清展示图，都能一键完成构图裁剪与无损压缩。',
-    freeService: '永久免费，一键生成适配 YouTube / B站/抖音 / 小红书等平台的标准封面比例',
+    freeService: '一键生成适配 YouTube / B站/抖音 / 小红书等平台的标准封面比例',
     
+    themeDark: '简约黑',
+    themeLight: '简约白',
+
     // Workflow
     step1: '上传图片',
     step2: '选择比例',
@@ -99,10 +97,13 @@ export const translations = {
     converted: 'images for creators',
     heroTitleStart: 'Smart Build',
     heroTitleEnd: 'Visual Excellence',
-    heroSubtitle: 'Online image cropping & compression tool designed for content creators',
+    heroSubtitle: 'Permanently free online image cropping and compression tool',
     heroDesc: 'Online image cropping and compression tool built for creators. Whether for social media covers or HD displays, achieve composition cropping and lossless compression in one click.',
-    freeService: 'Free online image cropping and compression tool, designed for content creators',
+    freeService: 'One-click generation of standard cover ratios for YouTube / Bilibili / TikTok / Xiaohongshu',
     
+    themeDark: 'Dark',
+    themeLight: 'Light',
+
     step1: 'Upload',
     step2: 'Select Ratio',
     step3: 'Export HD Image',
@@ -171,7 +172,10 @@ export const translations = {
     heroTitleEnd: '究極のビジュアル',
     heroSubtitle: 'コンテンツクリエイター向けオンライン画像クロップ＆圧縮ツール',
     heroDesc: 'クリエイター向けに構築されたオンライン画像クロップおよび圧縮ツール。ソーシャルメディアのカバーやHDディスプレイ用など、ワンクリックで構図のクロップとロスレス圧縮を実現します。',
-    freeService: 'コンテンツクリエイター向けに設計された、永久無料のオンライン画像クロップ＆圧縮ツール',
+    freeService: 'YouTube / Bilibili / TikTok / Xiaohongshu などのプラットフォーム向け標準カバー比率をワンクリック生成',
+
+    themeDark: 'ダーク',
+    themeLight: 'ライト',
 
     step1: 'アップロード',
     step2: '比率を選択',
@@ -239,10 +243,13 @@ export const translations = {
     converted: '장 처리됨',
     heroTitleStart: '스마트 빌드',
     heroTitleEnd: '최고의 비주얼',
-    heroSubtitle: '콘텐츠 크리에이터를 위한 온라인 이미지 자르기 및 압축 도구',
+    heroSubtitle: '영구 무료 온라인 이미지 자르기 및 압축 도구',
     heroDesc: '크리에이터를 위해 제작된 온라인 이미지 자르기 및 압축 도구입니다. 소셜 미디어 커버든 HD 디스플레이든 한 번의 클릭으로 구도 자르기 및 무손실 압축을 달성하세요.',
-    freeService: '콘텐츠 크리에이터를 위해 설계된 영구 무료 온라인 이미지 자르기 및 압축 도구',
+    freeService: 'YouTube / Bilibili / TikTok / Xiaohongshu 등 플랫폼의 표준 커버 비율 원클릭 생성',
     
+    themeDark: '다크',
+    themeLight: '라이트',
+
     step1: '업로드',
     step2: '비율 선택',
     step3: 'HD 이미지 내보내기',
@@ -309,10 +316,13 @@ export const translations = {
     converted: 'imágenes',
     heroTitleStart: 'Construcción',
     heroTitleEnd: 'Visual Extrema',
-    heroSubtitle: 'Herramienta de recorte y compresión de imágenes online para creadores',
+    heroSubtitle: 'Herramienta de recorte y compresión de imágenes online gratuita',
     heroDesc: 'Herramienta de recorte y compresión de imágenes online diseñada para creadores. Ya sea para portadas de redes sociales o pantallas HD, logra recortes de composición y compresión sin pérdidas en un solo clic.',
-    freeService: 'Herramienta de recorte y compresión de imágenes online gratuita, diseñada para creadores de contenido',
+    freeService: 'Generación en un clic de proporciones estándar para YouTube / Bilibili / TikTok / Xiaohongshu',
     
+    themeDark: 'Oscuro',
+    themeLight: 'Claro',
+
     step1: 'Subir',
     step2: 'Seleccionar Proporción',
     step3: 'Exportar Imagen HD',
@@ -379,10 +389,13 @@ export const translations = {
     converted: 'images',
     heroTitleStart: 'Création',
     heroTitleEnd: 'Visuelle Ultime',
-    heroSubtitle: 'Outil de recadrage et de compression d\'images en ligne conçu pour les créateurs',
+    heroSubtitle: 'Outil de recadrage et de compression d\'images en ligne gratuit',
     heroDesc: 'Outil de recadrage et de compression d\'images en ligne conçu pour les créateurs. Que ce soit pour des couvertures de réseaux sociaux ou des affichages HD, réalisez un recadrage de composition et une compression sans perte en un clic.',
-    freeService: 'Outil de recadrage et de compression d\'images en ligne gratuit, conçu pour les créateurs de contenu',
+    freeService: 'Génération en un clic de ratios standard pour YouTube / Bilibili / TikTok / Xiaohongshu',
     
+    themeDark: 'Sombre',
+    themeLight: 'Clair',
+
     step1: 'Téléverser',
     step2: 'Choisir le Ratio',
     step3: 'Exporter en HD',
@@ -449,10 +462,13 @@ export const translations = {
     converted: 'Bilder',
     heroTitleStart: 'Smart Build',
     heroTitleEnd: 'Visual Excellence',
-    heroSubtitle: 'Online-Tool zum Zuschneiden und Komprimieren von Bildern für Creator',
+    heroSubtitle: 'Kostenloses Online-Tool zum Zuschneiden und Komprimieren',
     heroDesc: 'Online-Tool zum Zuschneiden und Komprimieren von Bildern, das für Creator entwickelt wurde. Ob für Social-Media-Cover oder HD-Displays – erzielen Sie mit einem Klick den perfekten Zuschnitt und eine verlustfreie Kompression.',
-    freeService: 'Kostenloses Online-Tool zum Zuschneiden und Komprimieren von Bildern, entwickelt für Content Creator',
+    freeService: 'Ein-Klick-Erstellung von Standard-Cover-Verhältnissen für YouTube / Bilibili / TikTok / Xiaohongshu',
     
+    themeDark: 'Dunkel',
+    themeLight: 'Hell',
+
     step1: 'Hochladen',
     step2: 'Verhältnis wählen',
     step3: 'HD Exportieren',
